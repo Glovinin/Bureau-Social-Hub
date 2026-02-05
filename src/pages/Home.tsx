@@ -6,8 +6,24 @@ import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 
+interface HomeContent {
+    hero: {
+        title: string;
+        subtitle: string;
+    };
+    mission: {
+        title: string;
+        text: string;
+    };
+}
+
+interface CMSItem {
+    section_key: string;
+    content: Record<string, string>;
+}
+
 export default function Home() {
-    const [content, setContent] = useState<any>({
+    const [content, setContent] = useState<HomeContent>({
         hero: {
             title: "Tradição que <br /> <span class='text-heritage-terracotta'>Reabilita</span>.",
             subtitle: "Atuamos no coração histórico de Lisboa para preservar a alma dos bairros através da reabilitação urbana e inclusão social."
@@ -22,13 +38,13 @@ export default function Home() {
         const fetchCMS = async () => {
             const { data } = await supabase.from('cms_content').select('*')
             if (data && data.length > 0) {
-                const mapped = data.reduce((acc: any, item: any) => {
+                const mapped = data.reduce((acc: Record<string, Record<string, string>>, item: CMSItem) => {
                     acc[item.section_key] = item.content
                     return acc
                 }, {})
 
                 // Merge carefully to avoid undefined errors if partial content
-                setContent((prev: any) => ({
+                setContent((prev: HomeContent) => ({
                     hero: { ...prev.hero, ...mapped.hero },
                     mission: { ...prev.mission, ...mapped.mission }
                 }))
