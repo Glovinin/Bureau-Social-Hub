@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { motion } from "framer-motion"
+import PasswordGate from "@/components/PasswordGate"
 import {
     LucideBuilding2,
     LucideCastle,
@@ -26,7 +27,11 @@ import {
     LucideTrendingUp,
     LucideShield
 } from "lucide-react"
-import PasswordGate from "@/components/PasswordGate"
+import ModeloInstitucional from "@/components/visuals/ModeloInstitucional"
+import MapaOficios from "@/components/visuals/MapaOficios"
+import FinanciamentoVisual from "@/components/visuals/FinanciamentoVisual"
+import CronogramaVisual from "@/components/visuals/CronogramaVisual"
+import ProcessoOperacional from "@/components/visuals/ProcessoOperacional"
 
 // Dados detalhados dos ofícios tradicionais com descrições
 const oficiosDetalhados = {
@@ -262,45 +267,82 @@ const oficiosDetalhados = {
 const quintaSalreuDetails = {
     historia: {
         titulo: "História da Quinta",
-        texto: "A Quinta do Visconde de Salreu foi mandada construir no século XIX por Domingos Joaquim da Silva, 1.º Visconde de Salreu, um empresário madeireiro que fez fortuna no Brasil e regressou à sua terra natal para investir no desenvolvimento local. Em 1907, o Visconde ofereceu um edifício escolar à freguesia de Salreu, demonstrando o seu compromisso com a comunidade. A quinta compreende um palacete com torre, um jardim histórico de estilo romântico com elementos construídos característicos da época, coleções botânicas de espécies exóticas trazidas das viagens do Visconde, e uma área agrícola significativa com vista panorâmica para a Ria de Aveiro."
+        texto: "A Quinta do Visconde de Salreu constitui um exemplar notável do património rural português do século XIX. Mandada construir por Domingos Joaquim da Silva (1.º Visconde de Salreu), empresário que fez fortuna no Brasil e regressou à sua terra natal para investir no desenvolvimento local, a propriedade é um testemunho da filantropia e do gosto romântico da época. Compreende um palacete com torre, jardim histórico com espécies exóticas raras e uma área agrícola estratégica integrada na paisagem da Ria de Aveiro."
     },
     patrimonio: {
         titulo: "Património a Preservar",
         elementos: [
-            { nome: "Palacete com Torre", estado: "Necessita manutenção", descricao: "Edifício principal de arquitetura oitocentista com torre panorâmica" },
-            { nome: "Jardim Histórico", estado: "Degradado", descricao: "Jardim de estilo romântico com espécies exóticas raras" },
-            { nome: "Estufa e Viveiro", estado: "Degradado", descricao: "Estruturas de apoio à produção de plantas" },
-            { nome: "Pérgulas e Estruturas", estado: "Degradado", descricao: "Elementos arquitetónicos do jardim" },
-            { nome: "Sistema Hidráulico", estado: "Urgente", descricao: "Reservatórios de água e rede de saneamento" }
+            { nome: "Reservatórios e Conexões", estado: "Urgente", descricao: "Sistemas hidráulicos originais fundamentais para a rega do jardim" },
+            { nome: "Rede de Saneamento", estado: "Alta", descricao: "Necessita de intervenção infraestrutural completa" },
+            { nome: "Pérgulas e Estruturas", estado: "Alta", descricao: "Elementos decorativos em ferro e alvenaria no jardim histórico" },
+            { nome: "Pavimentos e Caminhos", estado: "Média", descricao: "Recuperação de calçadas e trilhos de saibro tradicionais" },
+            { nome: "Estufa e Viveiro", estado: "Média", descricao: "Estruturas de vidro e ferro para propagação botânica" },
+            { nome: "Palacete Principal", estado: "Manutenção", descricao: "Arquitetura oitocentista com torre panorâmica" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Constituição", periodo: "1º Semestre 2026", descricao: "Criação da associação local, assinatura de contratos e termo de cooperação com IPNS", orcamento: "€15.000" },
-        { fase: "2", nome: "Diagnóstico", periodo: "2º Semestre 2026", descricao: "Levantamento técnico completo, mapeamento de competências, preparação de candidaturas", orcamento: "€25.000" },
-        { fase: "3", nome: "Formação", periodo: "2027", descricao: "Captação de mestres artesãos, recrutamento e formação de aprendizes locais", orcamento: "€120.000" },
-        { fase: "4", nome: "Execução", periodo: "2027-2028", descricao: "Trabalhos de restauro com participação dos aprendizes formados", orcamento: "€350.000" },
-        { fase: "5", nome: "Operação", periodo: "2028+", descricao: "Abertura ao público, centro de formação, comercialização de produtos", orcamento: "€80.000/ano" }
+        { fase: "1", nome: "Constituição", periodo: "2026", descricao: "Criação da associação local (APQVS) e licenciamentos", orcamento: "€15.000" },
+        { fase: "2", nome: "Diagnóstico", periodo: "2026", descricao: "Levantamento técnico, mapeamento e projeto de arquitetura", orcamento: "€25.000" },
+        { fase: "3", nome: "Formação", periodo: "2027", descricao: "Recrutamento de mestres e seleção de 50 aprendizes locais", orcamento: "€120.000" },
+        { fase: "4", nome: "Execução", periodo: "2027-2028", descricao: "Restauro de sistemas, jardim histórico e centro de formação", orcamento: "€350.000" },
+        { fase: "5", nome: "Operação", periodo: "2028+", descricao: "Abertura ao público, turismo cultural e produção orgânica", orcamento: "€80.000/ano" }
     ],
     impacto: [
-        { indicador: "Pessoas Formadas", valor: "50", descricao: "Artesãos locais formados em ofícios tradicionais até 2028" },
-        { indicador: "Empregos Criados", valor: "15", descricao: "Postos de trabalho diretos permanentes" },
-        { indicador: "Área Restaurada", valor: "500 m²", descricao: "Elementos patrimoniais recuperados" },
-        { indicador: "Visitantes/Ano", valor: "8.000", descricao: "Estimativa de turismo cultural após abertura" }
+        { indicador: "Património", valor: "80%", descricao: "Elementos restaurados até 2028" },
+        { indicador: "Social", valor: "50", descricao: "Artesãos formados em ofícios tradicionais" },
+        { indicador: "Económico", valor: "15", descricao: "Postos de trabalho diretos criados" },
+        { indicador: "Ambiental", valor: "2 ha", descricao: "Área em produção agrícola orgânica" }
     ],
     modelo: {
-        titulo: "Modelo Institucional",
         pilares: [
-            { nome: "Família Proprietária", descricao: "Mantém a titularidade do imóvel e constitui uma associação local para gerir o património" },
-            { nome: "Associação Local (APQVS)", descricao: "Arrendatária e gestora, responsável pela execução do projeto" },
-            { nome: "IPNS - Bureau Social", descricao: "Parceiro estratégico, fornece apoio técnico, formação e acesso a redes de financiamento" }
+            { nome: "Família Proprietária", descricao: "Mantém a titularidade e constitui a associação local gerida pela família." },
+            { nome: "Associação Local (APQVS)", descricao: "Entidade gestora e arrendatária responsável pela execução local." },
+            { nome: "IPNS - Bureau Social", descricao: "Parceiro estratégico para apoio técnico, formação e financiamento." }
+        ]
+    }
+}
+
+// Detalhes do projeto Torre do Carvalhal
+const torreCarvalhalDetails = {
+    historia: {
+        titulo: "História da Torre",
+        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. Mandada construir por André de Vilalobos e Vasconcelos, cavaleiro da Ordem de Avis, a torre de 17m apresenta planta quadrangular e três pisos abobadados. Em 1569, o mestre pedreiro Diogo Velho (que trabalhou na Igreja de Santo Antão de Évora) adossou um corpo residencial ao conjunto original. A propriedade inclui a Capela de São Cristóvão e está inserida na Rede Natura 2000 (Sítio Monfurado)."
+    },
+    patrimonio: {
+        titulo: "Património a Preservar",
+        elementos: [
+            { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
+            { nome: "Capela S. Cristóvão", estado: "Ruína", descricao: "Modelo tardo-gótico alentejano com chaminés típicas" },
+            { nome: "Corpo Residencial", estado: "Devoluto", descricao: "Conjunto enriquecido pelo mestre pedreiro Diogo Velho" },
+            { nome: "Jardim e Horta", estado: "Abandonado", descricao: "Espaço ampliado no séc. XIX com elementos românticos" },
+            { nome: "Montado Envolvente", estado: "Bom", descricao: "Área florestal preservada em zona de Rede Natura 2000" }
+        ]
+    },
+    fases: [
+        { fase: "1", nome: "Consolidação", periodo: "2026-2027", descricao: "Intervenção estrutural urgente na torre e na capela", orcamento: "€180.000" },
+        { fase: "2", nome: "Formação Sul", periodo: "2027-2028", descricao: "Mestres de taipa, adobe e cantaria de granito alentejana", orcamento: "€80.000" },
+        { fase: "3", nome: "Restauro Alentejo", periodo: "2028-2029", descricao: "Execução integral de rebocos tradicionais e acabamentos", orcamento: "€350.000" },
+        { fase: "4", nome: "Operação Sustentável", periodo: "2030+", descricao: "Turismo de natureza, apicultura e observação astronómica", orcamento: "€50.000/ano" }
+    ],
+    impacto: [
+        { indicador: "Património Sul", valor: "500 m²", descricao: "Área de edifícios históricos recuperada" },
+        { indicador: "Capacitação", valor: "30", descricao: "Artesãos formados em técnicas alentejanas" },
+        { indicador: "Localização", valor: "321m", descricao: "Altitude com excelentes vistas panorâmicas" },
+        { indicador: "Rede Natura", valor: "100%", descricao: "Inserção em área de proteção ambiental" }
+    ],
+    modelo: {
+        pilares: [
+            { nome: "Proprietário (DOVA)", descricao: "Detém a titularidade e assegura a visão de longo prazo do legado." },
+            { nome: "Associação (APHC)", descricao: "Gestora local focada no restauro e dinamização do montado." },
+            { nome: "Rede de Mestres", descricao: "Especialistas em técnicas alentejanas que coordenam a formação." }
         ]
     }
 }
 
 const propostas = [
-    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€77.450", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto da Quinta do Visconde de Salreu" },
-    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "€105.850", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto da Torre do Carvalhal" },
-    { opcao: "C", projeto: "Programa Integrado", honorarios: "€170.805", desconto: "15%", destaque: true, descricao: "Assessoria simultânea para ambos os projetos com sinergias e economia" }
+    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€77.450", investimento: "€590.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto de Estarreja (Norte/Centro)" },
+    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "€105.850", investimento: "€720.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto do Escoural (Alentejo)" },
+    { opcao: "C", projeto: "Programa Integrado", honorarios: "€170.805", investimento: "€1.310.000", taxaGestao: "6,8%", economia: "€12.495", desconto: "15%", destaque: true, descricao: "Assessoria simultânea para ambos os projetos com sinergias Norte-Sul e marca comum." }
 ]
 
 const financiamento = [
@@ -341,23 +383,24 @@ const funcionamentoDetails = {
 
 const governancaDetails = {
     niveis: [
-        { pilar: "Sócios Fundadores", papel: "Família proprietária. Detém direito de veto em admissões e garante o DNA do projeto." },
-        { pilar: "APQVS (Associação)", papel: "Entidade gestora e arrendatária. Responsável pela execução e contratos locais." },
-        { pilar: "IPNS (Bureau Social)", papel: "Parceiro estratégico. Captação de recursos, mestres e gestão de impacto." }
+        { pilar: "Sócios Fundadores", papel: "Membros da família proprietária. Detêm direito de veto em admissões de novos sócios e garantem o DNA do projeto." },
+        { pilar: "Associados Efetivos", papel: "Pessoas singulares ou coletivas admitidas pela Direção que participam na gestão e votação." },
+        { pilar: "Associados Honorários", papel: "Distinguidos pela Assembleia Geral por serviços relevantes prestados à associação/comunidade." }
     ],
     estatutos: [
-        "Natureza jurídica sem fins lucrativos",
-        "Resultados integralmente reinvestidos nos fins estatutários",
-        "Mandatos de 3 anos para órgãos sociais",
-        "Presidente da Direção obrigatoriamente um Sócio Fundador"
+        "Presidente da Direção obrigatoriamente um Sócio Fundador",
+        "Resultados integralmente reinvestidos nos fins estatutários da associação",
+        "Mandatos de 3 anos para os órgãos sociais (Assembleia, Direção e Conselho Fiscal)",
+        "Associação sem fins lucrativos geradora de impacto social e ambiental",
+        "Direito de veto da família proprietária para proteção do legado histórico"
     ]
 }
 
 const kpiDetails = [
-    { meta: "Constituição Associações", kpi: "2 entidades", prazo: "6 meses", icon: LucideFileText },
-    { meta: "Financiamento Captado", kpi: "€750.000", prazo: "24 meses", icon: LucideEuro },
-    { meta: "Mestres Recrutados", kpi: "10 especialistas", prazo: "18 meses", icon: LucideAward },
-    { meta: "Formandos Certificados", kpi: "30 aprendizes", prazo: "24 meses", icon: LucideCheckCircle2 }
+    { meta: "Associações Constituídas", kpi: "2 entidades", prazo: "6 meses", icon: LucideFileText, desc: "Constituição das associações locais APQVS e APHC para gestão patrimonial." },
+    { meta: "Financiamento Captado", kpi: "€750.000", prazo: "24 meses", icon: LucideEuro, desc: "Captação mínima garantida através de fundos UE (LIFE, FSE+) e nacionais." },
+    { meta: "Mestres Recrutados", kpi: "12 especialistas", prazo: "18 meses", icon: LucideAward, desc: "Recrutamento de mestres artesãos em ofícios tradicionais do Norte e Sul." },
+    { meta: "Formandos Integrados", kpi: "40 aprendizes", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Capacitação profissional da comunidade local para os trabalhos de restauro." }
 ]
 
 export default function Assessoria() {
@@ -496,29 +539,24 @@ export default function Assessoria() {
                                 </div>
 
                                 {/* Modelo Institucional Visual */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Modelo Institucional</h3>
-                                    <img src="/assessoria/fluxograma_programa_integrado.png" alt="Modelo Institucional" className="w-full rounded-3xl" />
+                                <div className="space-y-8">
+                                    <div className="flex items-center gap-3">
+                                        <LucideShieldCheck className="w-8 h-8 text-heritage-terracotta" />
+                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Modelo Institucional Integrado</h3>
+                                    </div>
+                                    <ModeloInstitucional />
                                 </div>
 
-                                {/* Equipa */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Equipa de Projeto</h3>
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {[
-                                            { nome: "António José Alves Caixeiro", cargo: "Coordenador Geral", dedicacao: "20%", bio: "Fundador do IPNS, com vasta experiência em projetos de impacto social" },
-                                            { nome: "Diego Mendes da Rocha", cargo: "Gestor de Projetos", dedicacao: "60%", bio: "Especialista em gestão de projetos e desenvolvimento comunitário" },
-                                            { nome: "Fabiana Berne", cargo: "Responsável Financeiro", dedicacao: "20%", bio: "Experiência em contabilidade e gestão financeira de IPSS" }
-                                        ].map((membro, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-2xl">
-                                                <p className="font-black text-heritage-navy dark:text-white text-lg">{membro.nome}</p>
-                                                <p className="text-heritage-terracotta font-bold mb-2">{membro.cargo}</p>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50 mb-3">{membro.bio}</p>
-                                                <Badge className="bg-heritage-terracotta/10 text-heritage-terracotta border-none">{membro.dedicacao} Dedicação</Badge>
-                                            </div>
-                                        ))}
+                                {/* Processo Operacional Visual */}
+                                <div className="space-y-8">
+                                    <div className="flex items-center gap-3">
+                                        <LucideCheckCircle2 className="w-8 h-8 text-heritage-terracotta" />
+                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white uppercase tracking-tight">O Processo em 5 Fases</h3>
                                     </div>
+                                    <ProcessoOperacional />
                                 </div>
+
+
                             </TabsContent>
 
                             {/* TAB: Quinta Salreu (Detalhada) */}
@@ -637,21 +675,22 @@ export default function Assessoria() {
                                 </div>
                             </TabsContent>
 
-                            {/* TAB: Torre Carvalhal */}
+                            {/* TAB: Torre Carvalhal (Detalhada) */}
                             <TabsContent value="torre" className="space-y-12">
+                                {/* Header do Projeto */}
                                 <div className="glass-card p-10 rounded-[40px]">
                                     <div className="flex flex-col lg:flex-row lg:items-start gap-10">
                                         <div className="flex-1 space-y-6">
                                             <Badge className="bg-heritage-ocean/10 text-heritage-ocean border-none uppercase tracking-widest text-[10px] font-black">
-                                                Projeto Complementar
+                                                Projeto Alentejo
                                             </Badge>
-                                            <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Torre do Carvalhal</h2>
+                                            <h2 className="text-4xl font-black text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h2>
                                             <div className="flex items-center gap-2 text-heritage-navy/60 dark:text-white/40">
                                                 <LucideMapPin className="w-5 h-5" />
                                                 <span className="font-medium">Santiago do Escoural, Montemor-o-Novo, Évora</span>
                                             </div>
                                             <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                Torre manuelina-mudéjar do século XVI (17 metros de altura) com capela gótica, integrada na Rede Natura 2000 (Sítio de Monfurado). Arquitetura característica do Alentejo com técnicas de taipa e adobe.
+                                                Património histórico manuelino-mudéjar integrado na Rede Natura 2000, unindo a preservação florestal ao restauro arquitetónico.
                                             </p>
                                         </div>
                                         <div className="flex gap-8">
@@ -667,45 +706,105 @@ export default function Assessoria() {
                                     </div>
                                 </div>
 
+                                {/* História */}
                                 <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-6">História</h3>
+                                    <div className="flex items-start gap-4 mb-6">
+                                        <LucideHistory className="w-8 h-8 text-heritage-ocean shrink-0" />
+                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h3>
+                                    </div>
                                     <p className="text-heritage-navy/70 dark:text-white/60 leading-relaxed text-lg">
-                                        A Torre do Carvalhal foi mandada construir no início do século XVI por <strong>André de Vilalobos e Vasconcelos</strong>, cavaleiro da Ordem de Avis e detentor do morgado do Carvalhal. A construção inicial foi a torre, símbolo de poder senhorial característico da arquitetura manuelino-mudéjar alentejana, com planta quadrangular de aproximadamente 17 metros de altura e três pisos parcialmente abobadados. Em 1569, Nicolau de Castro da Cunha contratou o pedreiro Diogo Velho para construir um corpo residencial adossado à torre, duplicando o volume do edifício.
+                                        {torreCarvalhalDetails.historia.texto}
                                     </p>
                                 </div>
 
+                                {/* Património */}
                                 <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Ofícios Alentejanos Específicos</h3>
-                                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        {["Mestre de Taipa", "Mestre de Adobe", "Abobadeiro", "Pintor de Cal", "Corticeiro", "Pastor/Monteiro", "Canteiro de Granito", "Apicultor"].map((oficio, i) => (
-                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-5 rounded-2xl border-l-4 border-heritage-ocean">
-                                                <p className="font-bold text-heritage-navy dark:text-white">{oficio}</p>
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estado de Conservação</h3>
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {torreCarvalhalDetails.patrimonio.elementos.map((elem, i) => (
+                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-5 rounded-2xl">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <h4 className="font-black text-heritage-navy dark:text-white">{elem.nome}</h4>
+                                                    <Badge variant="outline" className={
+                                                        elem.estado === "Ruína avançada" || elem.estado === "Ruína" ? "border-red-500 text-red-500" :
+                                                            elem.estado === "Devoluto" ? "border-amber-500 text-amber-500" :
+                                                                "border-heritage-ocean/30 text-heritage-ocean"
+                                                    }>
+                                                        {elem.estado}
+                                                    </Badge>
+                                                </div>
+                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{elem.descricao}</p>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="grid md:grid-cols-4 gap-4">
-                                    {[
-                                        { label: "Área Restaurada", value: "500 m²" },
-                                        { label: "Artesãos Formados", value: "30" },
-                                        { label: "Empregos Criados", value: "8" },
-                                        { label: "Visitantes/Ano", value: "5.000" }
-                                    ].map((meta, i) => (
+                                {/* Fases do Projeto */}
+                                <div className="glass-card p-10 rounded-[40px]">
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Cronograma de Intervenção</h3>
+                                    <div className="space-y-4">
+                                        {torreCarvalhalDetails.fases.map((fase, i) => (
+                                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-6 bg-heritage-ocean/5 dark:bg-white/5 rounded-2xl">
+                                                <div className="w-14 h-14 rounded-2xl bg-heritage-ocean text-white flex items-center justify-center font-black text-xl shrink-0">
+                                                    {fase.fase}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex flex-wrap items-center gap-4 mb-1">
+                                                        <h4 className="font-black text-heritage-navy dark:text-white text-lg">{fase.nome}</h4>
+                                                        <Badge variant="outline" className="border-heritage-terracotta text-heritage-terracotta">{fase.periodo}</Badge>
+                                                    </div>
+                                                    <p className="text-sm text-heritage-navy/60 dark:text-white/50">{fase.descricao}</p>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    <p className="text-xl font-black text-heritage-ocean">{fase.orcamento}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Metas Torre */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {torreCarvalhalDetails.impacto.map((meta, i) => (
                                         <div key={i} className="glass-card p-6 rounded-3xl text-center">
-                                            <p className="text-3xl font-black text-heritage-ocean">{meta.value}</p>
-                                            <p className="text-xs font-bold text-heritage-navy/40 dark:text-white/40 uppercase tracking-wider mt-2">{meta.label}</p>
+                                            <p className="text-3xl font-black text-heritage-ocean">{meta.valor}</p>
+                                            <p className="text-xs font-bold text-heritage-navy/40 dark:text-white/40 uppercase tracking-wider mt-2">{meta.indicador}</p>
+                                            <p className="text-[10px] text-heritage-navy/30 dark:text-white/20 mt-1 uppercase font-bold">{meta.descricao}</p>
                                         </div>
                                     ))}
+                                </div>
+
+                                {/* Modelo Institucional Sul */}
+                                <div className="glass-card p-10 rounded-[40px]">
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estrutura Organizacional Sul</h3>
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        {torreCarvalhalDetails.modelo.pilares.map((pilar, i) => (
+                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-6 rounded-2xl border-t-4 border-heritage-ocean">
+                                                <h4 className="font-black text-heritage-navy dark:text-white mb-2">{pilar.nome}</h4>
+                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{pilar.descricao}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </TabsContent>
 
                             {/* TAB: Ofícios (com modais) */}
                             <TabsContent value="oficios" className="space-y-12">
-                                <div className="text-center space-y-4 mb-8">
-                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Ofícios Tradicionais</h2>
-                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                        Clique em cada ofício para saber mais sobre as competências, duração da formação e aplicação no projeto.
+                                {/* Mapa de Ofícios Norte vs Sul */}
+                                <div className="space-y-8">
+                                    <div className="text-center space-y-4">
+                                        <h2 className="text-4xl font-black text-heritage-navy dark:text-white leading-tight">Distribuição de Saberes</h2>
+                                        <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
+                                            O programa cobre as principais tradições construtivas de Portugal, desde as técnicas do Norte e Centro até à sabedoria do Alentejo.
+                                        </p>
+                                    </div>
+                                    <MapaOficios />
+                                </div>
+
+                                <div className="text-center space-y-4 pt-12">
+                                    <h3 className="text-3xl font-black text-heritage-navy dark:text-white">Catálogo de Especialidade</h3>
+                                    <p className="text-heritage-navy/60 dark:text-white/40">
+                                        Clique em cada ofício para saber mais sobre as competências e aplicação no projeto.
                                     </p>
                                 </div>
 
@@ -943,34 +1042,40 @@ export default function Assessoria() {
                                             </div>
                                             <h3 className="text-xl font-black text-heritage-navy dark:text-white mb-2">{prop.projeto}</h3>
                                             <p className="text-4xl font-black text-heritage-terracotta mb-2">{prop.honorarios}</p>
-                                            {prop.desconto !== "—" && (
-                                                <Badge className="bg-heritage-success/20 text-heritage-success border-none mb-4">
-                                                    {prop.desconto} Desconto
-                                                </Badge>
-                                            )}
-                                            <p className="text-sm text-heritage-navy/60 dark:text-white/50 mt-4">{prop.descricao}</p>
+                                            <div className="flex flex-col gap-2 mb-4">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <span className="text-[10px] font-black uppercase text-heritage-navy/40 dark:text-white/40 tracking-widest">Taxa Gestão</span>
+                                                    <Badge variant="outline" className="text-xs font-black">{prop.taxaGestao}</Badge>
+                                                </div>
+                                                {prop.economia && (
+                                                    <Badge className="bg-heritage-success/10 text-heritage-success border-none text-[10px] font-black uppercase tracking-wider mx-auto">
+                                                        Economia: {prop.economia}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-heritage-navy/60 dark:text-white/50">{prop.descricao}</p>
                                         </motion.div>
                                     ))}
                                 </div>
 
                                 {/* Estrutura de Honorários */}
                                 <div className="glass-card p-10 rounded-[40px] space-y-6">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Estrutura de Honorários</h3>
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Componentes de Assessoria</h3>
                                     <div className="grid md:grid-cols-3 gap-6">
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl">
+                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
                                             <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Taxa de Gestão</p>
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">8%</p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Faturação mensal sobre investimento executado</p>
+                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">8% <span className="text-sm font-normal text-heritage-navy/40 dark:text-white/40">(ou 6.8%)</span></p>
+                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Remuneração fixa pela gestão mensal e técnica do projeto.</p>
                                         </div>
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl">
+                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
                                             <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Taxa de Sucesso</p>
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">5%</p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Sobre financiamento captado com êxito</p>
+                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">5% <span className="text-sm font-normal text-heritage-navy/40 dark:text-white/40">(ou 4.25%)</span></p>
+                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Remuneração variável indexada ao financiamento captado.</p>
                                         </div>
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl">
-                                            <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Serviços Especializados</p>
+                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
+                                            <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Serviços Extra</p>
                                             <p className="text-2xl font-black text-heritage-navy dark:text-white">Tabela</p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Candidaturas, estudos, relatórios ESG</p>
+                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Honorários para estudos de arquitetura, candidaturas e relatórios.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1016,8 +1121,12 @@ export default function Assessoria() {
                                     </p>
                                 </div>
 
-                                <div className="glass-card p-2 rounded-[40px] overflow-hidden mb-12">
-                                    <img src="/assessoria/fluxograma_financiamento.png" alt="Fluxograma de Financiamento" className="w-full max-w-3xl mx-auto rounded-[32px]" />
+                                <div className="space-y-8 mb-12">
+                                    <div className="flex items-center gap-3">
+                                        <LucideEuro className="w-8 h-8 text-heritage-terracotta" />
+                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Arquitetura Financeira</h3>
+                                    </div>
+                                    <FinanciamentoVisual />
                                 </div>
 
                                 <div className="grid md:grid-cols-3 gap-8">
@@ -1041,9 +1150,12 @@ export default function Assessoria() {
                                 </div>
 
                                 {/* Cronograma */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Cronograma Integrado</h3>
-                                    <img src="/assessoria/fluxograma_cronograma_integrado.png" alt="Cronograma" className="w-full rounded-3xl" />
+                                <div className="space-y-8 mt-12">
+                                    <div className="flex items-center gap-3">
+                                        <LucideCalendarClock className="w-8 h-8 text-heritage-ocean" />
+                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Cronograma Integrado de Operação</h3>
+                                    </div>
+                                    <CronogramaVisual />
                                 </div>
                             </TabsContent>
                         </Tabs>
