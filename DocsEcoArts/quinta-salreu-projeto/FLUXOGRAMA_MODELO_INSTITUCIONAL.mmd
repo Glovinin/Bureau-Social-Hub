@@ -1,0 +1,68 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#044050', 'secondaryColor': '#788b92', 'tertiaryColor': '#f0f4f5'}}}%%
+flowchart TB
+    subgraph PROPRIETARIOS["🏠 PROPRIETÁRIOS DA QUINTA"]
+        FAM["Família Proprietária<br/>Quinta do Visconde de Salreu"]
+    end
+
+    subgraph ASSOC_LOCAL["🏛️ ASSOCIAÇÃO LOCAL (A CONSTITUIR)"]
+        direction TB
+        AL_DIR["Direção<br/>(Membros da Família)"]
+        AL_CF["Conselho Fiscal"]
+        AL_AG["Assembleia Geral"]
+        AL_GEST["Gestão Operacional<br/>da Quinta"]
+    end
+
+    subgraph IPNS["🌍 INSTITUTO PORTUGUÊS DE NEGÓCIOS SOCIAIS"]
+        direction TB
+        IPNS_DIR["Direção do IPNS"]
+        IPNS_FORM["Programa de Formação<br/>Ofícios Tradicionais"]
+        IPNS_CAPT["Captação de<br/>Mão de Obra Especializada"]
+        IPNS_PROJ["Gestão de Projetos<br/>Socioambientais"]
+    end
+
+    subgraph COMUNIDADE["👥 COMUNIDADE LOCAL"]
+        direction TB
+        COM_ART["Artesãos Locais"]
+        COM_JOV["Jovens em Formação"]
+        COM_AGRI["Agricultores"]
+        COM_VOL["Voluntários"]
+    end
+
+    subgraph PARCEIROS["🤝 PARCEIROS ESTRATÉGICOS"]
+        direction TB
+        PARC_CM["Câmara Municipal<br/>de Estarreja"]
+        PARC_JF["Junta de Freguesia<br/>de Salreu"]
+        PARC_UNI["Universidades<br/>(ISA, UA)"]
+        PARC_FIN["Financiadores<br/>(LIFE, FSE+, FEADER)"]
+    end
+
+    subgraph ATIVIDADES["⚙️ ATIVIDADES NA QUINTA"]
+        direction TB
+        ACT_REST["Restauro do<br/>Património Histórico"]
+        ACT_JARD["Recuperação do<br/>Jardim Histórico"]
+        ACT_AGRI["Agricultura<br/>Sustentável"]
+        ACT_FORM["Centro de Formação<br/>em Ofícios Tradicionais"]
+        ACT_TUR["Turismo Cultural<br/>e Educativo"]
+    end
+
+    %% Relações Principais
+    FAM -->|"Constitui e<br/>Gere"| ASSOC_LOCAL
+    FAM -->|"Contrato de<br/>Arrendamento"| AL_GEST
+
+    IPNS_DIR -->|"Termo de<br/>Cooperação"| AL_DIR
+    IPNS_FORM -->|"Capacitação"| COM_ART
+    IPNS_FORM -->|"Formação"| COM_JOV
+    IPNS_CAPT -->|"Recrutamento"| COM_ART
+    IPNS_PROJ -->|"Coordenação"| ATIVIDADES
+
+    AL_GEST -->|"Executa"| ATIVIDADES
+    
+    COMUNIDADE -->|"Participa"| ATIVIDADES
+    
+    PARCEIROS -->|"Apoio Técnico<br/>e Financeiro"| ASSOC_LOCAL
+    PARCEIROS -->|"Apoio Técnico<br/>e Financeiro"| IPNS
+
+    %% Fluxos de Valor
+    ACT_REST -->|"Preservação"| FAM
+    ACT_FORM -->|"Emprego e<br/>Qualificação"| COMUNIDADE
+    ACT_TUR -->|"Receitas"| ASSOC_LOCAL

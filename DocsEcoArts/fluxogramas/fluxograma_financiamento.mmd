@@ -1,0 +1,44 @@
+flowchart LR
+    subgraph UE["🇪🇺 UNIÃO EUROPEIA"]
+        LIFE["🌿 LIFE<br/>€300k"]
+        FEADER["🌾 FEADER/PDR<br/>€300k"]
+        FSE["👥 FSE+<br/>€150k"]
+    end
+    
+    subgraph PT["🇵🇹 PORTUGAL"]
+        TUR["✈️ Turismo PT<br/>€150k"]
+        AUT["🏛️ Autarquias<br/>€50k"]
+    end
+    
+    subgraph PRIV["💼 PRIVADO"]
+        MEC["🎭 Mecenato<br/>€80k"]
+        PROP["👨‍👩‍👧‍👦 Fundos<br/>Próprios<br/>€280k"]
+    end
+    
+    subgraph PROJ["📊 PROJETOS"]
+        QVS["🏠 Quinta Salreu<br/>€590k"]
+        TC["🏰 Torre Carvalhal<br/>€720k"]
+    end
+    
+    LIFE -->|"€300k"| TC
+    FEADER -->|"€150k"| QVS
+    FEADER -->|"€150k"| TC
+    FSE -->|"€75k"| QVS
+    FSE -->|"€75k"| TC
+    TUR -->|"€75k"| QVS
+    TUR -->|"€75k"| TC
+    AUT -->|"€25k"| QVS
+    AUT -->|"€25k"| TC
+    MEC -->|"€40k"| QVS
+    MEC -->|"€40k"| TC
+    PROP -->|"€225k"| QVS
+    PROP -->|"€55k"| TC
+    
+    QVS --> TOTAL["💰 TOTAL<br/>€1.310.000"]
+    TC --> TOTAL
+    
+    style UE fill:#e3f2fd,stroke:#1565c0
+    style PT fill:#c8e6c9,stroke:#2e7d32
+    style PRIV fill:#fff3e0,stroke:#e65100
+    style PROJ fill:#f3e5f5,stroke:#7b1fa2
+    style TOTAL fill:#fce4ec,stroke:#c2185b

@@ -1,0 +1,65 @@
+flowchart TB
+    subgraph IPNS["🏢 INSTITUTO PORTUGUÊS DE NEGÓCIOS SOCIAIS"]
+        COORD["📋 Coordenação<br/>Estratégica"]
+        CAPT["🔍 Captação de<br/>Mestres Artesãos"]
+        FORM["📚 Programas de<br/>Formação"]
+        FINANC["💰 Apoio a<br/>Candidaturas"]
+    end
+    
+    subgraph NORTE["🌊 PROJETO NORTE<br/>Quinta do Visconde de Salreu"]
+        APQVS["🏠 APQVS<br/>Associação Local"]
+        QVS_PAT["🏛️ Solar Barroco<br/>Capela, Jardins"]
+        QVS_OF["🔨 Ofícios Norte<br/>Cantaria, Azulejaria<br/>Carpintaria, Estucaria"]
+    end
+    
+    subgraph SUL["🌳 PROJETO SUL<br/>Torre do Carvalhal"]
+        APHC["🏠 APHC<br/>Associação Local"]
+        TC_PAT["🏰 Torre Manuelina<br/>Capela, Montado"]
+        TC_OF["🔨 Ofícios Alentejo<br/>Taipa, Adobe<br/>Caiação, Cortiça"]
+    end
+    
+    subgraph PROP["👨‍👩‍👧‍👦 PROPRIETÁRIO COMUM"]
+        VS["🎩 Visconde de Salreu"]
+    end
+    
+    subgraph RESULT["🎯 RESULTADOS INTEGRADOS"]
+        RES1["100 Artesãos<br/>Formados"]
+        RES2["1.000 m²<br/>Restaurados"]
+        RES3["15.000<br/>Visitantes/ano"]
+        RES4["20 Empregos<br/>Criados"]
+    end
+    
+    VS -->|"Arrendamento"| APQVS
+    VS -->|"Arrendamento"| APHC
+    
+    COORD --> APQVS
+    COORD --> APHC
+    CAPT --> QVS_OF
+    CAPT --> TC_OF
+    FORM --> QVS_OF
+    FORM --> TC_OF
+    FINANC --> APQVS
+    FINANC --> APHC
+    
+    APQVS --> QVS_PAT
+    QVS_PAT --> QVS_OF
+    
+    APHC --> TC_PAT
+    TC_PAT --> TC_OF
+    
+    QVS_OF -->|"Intercâmbio"| TC_OF
+    
+    QVS_OF --> RES1
+    TC_OF --> RES1
+    QVS_PAT --> RES2
+    TC_PAT --> RES2
+    APQVS --> RES3
+    APHC --> RES3
+    QVS_OF --> RES4
+    TC_OF --> RES4
+    
+    style IPNS fill:#fff3e0,stroke:#e65100
+    style NORTE fill:#e3f2fd,stroke:#1565c0
+    style SUL fill:#e8f5e9,stroke:#2e7d32
+    style PROP fill:#f3e5f5,stroke:#7b1fa2
+    style RESULT fill:#fce4ec,stroke:#c2185b

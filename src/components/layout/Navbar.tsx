@@ -28,6 +28,7 @@ export default function Navbar() {
         { name: "Projetos", path: "/project" },
         { name: "Tradições", path: "/traditions" },
         { name: "Transparência", path: "/docs" },
+        { name: "Assessoria", path: "/assessoria" },
     ]
 
     const dashboardLinks = [

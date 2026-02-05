@@ -25,6 +25,7 @@ const Admin = lazy(() => import("./pages/Admin"))
 const AssemblyLive = lazy(() => import("./pages/AssemblyLive"))
 const Onboarding = lazy(() => import("./pages/Onboarding"))
 const CandidaturaDetails = lazy(() => import("./pages/CandidaturaDetails"))
+const Assessoria = lazy(() => import("./pages/Assessoria"))
 
 // Loading fallback component
 function PageLoader() {
@@ -57,6 +58,7 @@ function App() {
                 <Route path="project" element={<HousingProject />} />
                 <Route path="traditions" element={<Traditions />} />
                 <Route path="candidatura" element={<Candidatura />} />
+                <Route path="assessoria" element={<Assessoria />} />
 
                 {/* Portal Area (Dashboard) - Protected */}
                 <Route element={<ProtectedRoute />}>

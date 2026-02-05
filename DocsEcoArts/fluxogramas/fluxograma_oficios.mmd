@@ -1,0 +1,57 @@
+flowchart TB
+    subgraph TITULO["🔨 MAPA DE OFÍCIOS TRADICIONAIS PORTUGUESES"]
+        direction TB
+    end
+    
+    subgraph NORTE["🌊 REGIÃO NORTE/CENTRO<br/>Quinta do Visconde de Salreu"]
+        N1["🪨 Pedreiro de Cantaria"]
+        N2["🪚 Carpinteiro de Limpos"]
+        N3["🎨 Estucador"]
+        N4["🎭 Azulejista"]
+        N5["⚒️ Ferreiro"]
+        N6["🏺 Oleiro"]
+        N7["🧺 Cesteiro"]
+        N8["🧵 Tecelão"]
+        N9["🪡 Bordadeira"]
+        N10["🌿 Jardineiro"]
+        N11["🌱 Viveirista"]
+        N12["🪨 Calceteiro"]
+    end
+    
+    subgraph SUL["🌳 REGIÃO ALENTEJO<br/>Torre do Carvalhal"]
+        S1["🪨 Pedreiro de Cantaria"]
+        S2["🧱 Mestre de Taipa"]
+        S3["🧱 Mestre de Adobe"]
+        S4["🏛️ Abobadeiro"]
+        S5["🖌️ Pintor de Cal"]
+        S6["🪨 Calceteiro"]
+        S7["⚒️ Ferreiro"]
+        S8["🏺 Oleiro"]
+        S9["🐑 Pastor/Monteiro"]
+        S10["🐝 Apicultor"]
+        S11["🌳 Corticeiro"]
+        S12["🪚 Carpinteiro"]
+    end
+    
+    subgraph COMUNS["🤝 OFÍCIOS COMUNS"]
+        C1["Pedreiro de Cantaria"]
+        C2["Carpinteiro"]
+        C3["Ferreiro"]
+        C4["Oleiro"]
+        C5["Calceteiro"]
+    end
+    
+    N1 -.-> C1
+    S1 -.-> C1
+    N2 -.-> C2
+    S12 -.-> C2
+    N5 -.-> C3
+    S7 -.-> C3
+    N6 -.-> C4
+    S8 -.-> C4
+    N12 -.-> C5
+    S6 -.-> C5
+    
+    style NORTE fill:#e3f2fd,stroke:#1565c0
+    style SUL fill:#e8f5e9,stroke:#2e7d32
+    style COMUNS fill:#fff3e0,stroke:#e65100
