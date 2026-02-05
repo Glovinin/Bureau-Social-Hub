@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "react-router-dom"
-import { LucideArrowRight, LucideGlobe, LucideShield, LucideUsers, LucideHistory, LucideRocket, LucideLeaf, LucideHeart } from "lucide-react"
+import { LucideArrowRight, LucideShield, LucideUsers, LucideRocket, LucideLeaf, LucideHeart } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
