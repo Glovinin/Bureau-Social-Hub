@@ -25,7 +25,9 @@ import {
     LucideShieldCheck,
     LucideBriefcase,
     LucideTrendingUp,
-    LucideShield
+    LucideShield,
+    LucideListOrdered,
+    LucideBookOpen
 } from "lucide-react"
 import ModeloInstitucional from "@/components/visuals/ModeloInstitucional"
 import MapaOficios from "@/components/visuals/MapaOficios"
@@ -33,128 +35,98 @@ import FinanciamentoVisual from "@/components/visuals/FinanciamentoVisual"
 import CronogramaVisual from "@/components/visuals/CronogramaVisual"
 import ProcessoOperacional from "@/components/visuals/ProcessoOperacional"
 
-// Dados detalhados dos ofícios tradicionais com descrições
+// Dados detalhados dos ofícios tradicionais — Artes & Ofícios (atualizado reunião Fev/2026)
 const oficiosDetalhados = {
-    construcao: [
+    culinaria: [
         {
-            nome: "Pedreiro de Alvenaria Tradicional",
+            nome: "Culinária Portuguesa Tradicional",
             duracao: "6 meses",
-            horas: "600h (300h teóricas + 300h práticas)",
-            certificacao: "Pedreiro de Alvenaria Tradicional - Nível 4",
-            aplicacao: "Restauro de muros e estruturas em pedra",
-            descricao: "O pedreiro de alvenaria tradicional domina técnicas centenárias de construção em pedra, utilizando argamassas de cal e técnicas de assentamento que garantem a durabilidade e a autenticidade das construções históricas.",
-            competencias: ["Leitura de aparelhos de pedra", "Preparação de argamassas de cal", "Técnicas de rejuntamento", "Consolidação de paredes históricas"],
-            insercao: "Empresas de restauro, trabalho autónomo"
+            horas: "600h (200h teóricas + 400h práticas)",
+            certificacao: "Cozinheiro Tradicional - Nível 4",
+            aplicacao: "Escola de culinária imersiva na Quinta",
+            descricao: "Formação em gastronomia tradicional portuguesa utilizando os produtos locais da região — o arroz das rias (que só cresce naquela água salobra), o azeite (herança direta do Visconde, maior exportador de azeite), o vinho e o pão artesanal dos moinhos históricos.",
+            competencias: ["Receitas tradicionais da Ria de Aveiro", "Preparação de arroz das rias", "Conservação e cura de alimentos", "Apresentação e serviço"],
+            insercao: "Restaurantes, turismo gastronómico, produção própria"
         },
         {
-            nome: "Estucador",
+            nome: "Produção de Pão Artesanal",
             duracao: "4 meses",
-            horas: "400h (160h teóricas + 240h práticas)",
-            certificacao: "Estucador Ornamentista - Nível 4",
-            aplicacao: "Recuperação de ornamentos do palacete",
-            descricao: "O estucador é responsável pela criação e restauro de elementos decorativos em estuque, incluindo molduras, rosetas, cornijas e ornamentos característicos da arquitetura portuguesa dos séculos XVIII e XIX.",
-            competencias: ["Preparação de gessos e cales", "Modelação de ornamentos", "Restauro de molduras", "Técnicas de douramento"],
-            insercao: "Restauro de edifícios históricos, decoração de interiores"
+            horas: "400h (120h teóricas + 280h práticas)",
+            certificacao: "Padeiro Artesanal - Nível 3",
+            aplicacao: "Produção nos 11 moinhos históricos da região",
+            descricao: "A região possui 11 moinhos antigos de pão e trigo. A formação recupera as técnicas de panificação artesanal com farinhas moídas em mó de pedra, ligando a tradição milenar ao turismo de experiência.",
+            competencias: ["Moagem em mó de pedra", "Fermentação natural", "Fornos a lenha tradicionais", "Receitas regionais de pão"],
+            insercao: "Padarias artesanais, mercados locais, turismo"
         },
         {
-            nome: "Carpinteiro de Limpos",
+            nome: "Produção de Vinho",
             duracao: "6 meses",
-            horas: "600h (240h teóricas + 360h práticas)",
-            certificacao: "Carpinteiro de Limpos - Nível 4",
-            aplicacao: "Restauro de caixilharias e elementos em madeira",
-            descricao: "Especialista em trabalhos finos de carpintaria, restaura e reproduz elementos de madeira como portas, janelas, lambris e forros. Domina técnicas de marcenaria tradicional.",
-            competencias: ["Restauro de caixilharias", "Marcenaria tradicional", "Técnicas de ensamblagem", "Acabamentos e vernizes"],
-            insercao: "Marcenarias, empresas de restauro, trabalho autónomo"
+            horas: "600h (200h teóricas + 400h práticas)",
+            certificacao: "Vinicultor Tradicional - Nível 4",
+            aplicacao: "Aproveitamento do lagar de vinho existente nos anexos",
+            descricao: "A Quinta possui um lagar de vinho nos anexos que era parte da fazenda produtiva original. A formação recupera as técnicas de vinificação tradicional, conectando o saber-fazer ancestral com práticas modernas.",
+            competencias: ["Vinificação artesanal", "Gestão de lagar", "Enologia básica", "Harmonização e degustação"],
+            insercao: "Adegas, enoturismo, produção própria"
         },
         {
-            nome: "Calceteiro",
+            nome: "Produção de Azeite",
+            duracao: "4 meses",
+            horas: "400h (120h teóricas + 280h práticas)",
+            certificacao: "Oleicultor - Nível 3",
+            aplicacao: "Restauração do lagar de azeite da Quinta",
+            descricao: "O Visconde de Salreu foi o maior exportador de azeite de Portugal. A formação honra esse legado, ensinando as técnicas de produção, desde o cultivo do olival até à prensagem e armazenamento tradicionais.",
+            competencias: ["Cultivo e poda do olival", "Prensagem tradicional", "Classificação de azeites", "Conservação e embalagem"],
+            insercao: "Produção própria, cooperativas, turismo gastronómico"
+        },
+        {
+            nome: "Doceiro Tradicional",
             duracao: "3 meses",
             horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Calceteiro - Nível 3",
-            aplicacao: "Recuperação de pavimentos históricos",
-            descricao: "Domina a arte de assentar pedras em padrões decorativos, utilizando técnicas que remontam a séculos de tradição (calçada portuguesa).",
-            competencias: ["Preparação de bases", "Corte de pedra", "Padrões decorativos", "Manutenção de calçadas"],
-            insercao: "Câmaras municipais, empresas de construção"
-        },
-        {
-            nome: "Serralheiro Artístico",
-            duracao: "4 meses",
-            horas: "400h (160h teóricas + 240h práticas)",
-            certificacao: "Serralheiro Artístico - Nível 4",
-            aplicacao: "Restauro de gradeamentos e portões",
-            descricao: "Trabalha o ferro forjado, criando e restaurando portões, gradeamentos e elementos decorativos que caracterizam as quintas e solares portugueses.",
-            competencias: ["Forja tradicional", "Soldadura artística", "Restauro de ferragens", "Design de elementos decorativos"],
-            insercao: "Empresas de serralharia, restauro, trabalho autónomo"
-        },
-        {
-            nome: "Telhador",
-            duracao: "3 meses",
-            horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Telhador - Nível 3",
-            aplicacao: "Manutenção de coberturas do palacete",
-            descricao: "Especializado na execução e reparação de coberturas tradicionais portuguesas, incluindo assentamento de telha e estruturas de madeira.",
-            competencias: ["Assentamento de telha", "Estruturas de madeira", "Impermeabilização tradicional", "Reparação de coberturas"],
-            insercao: "Empresas de construção, trabalho autónomo"
-        },
-        {
-            nome: "Pintor Decorador",
-            duracao: "4 meses",
-            horas: "400h (160h teóricas + 240h práticas)",
-            certificacao: "Pintor Decorador - Nível 4",
-            aplicacao: "Restauro de acabamentos decorativos",
-            descricao: "Artífice especializado em técnicas decorativas de pintura, incluindo marmoreados, fingidos de madeira e douramento.",
-            competencias: ["Marmoreados", "Fingidos de madeira", "Douramento", "Pintura decorativa"],
-            insercao: "Restauro de interiores, decoração"
+            certificacao: "Doceiro Tradicional - Nível 3",
+            aplicacao: "Produção de doçaria conventual e regional",
+            descricao: "Especializado na produção de doçaria tradicional portuguesa e receitas conventuais da região de Aveiro.",
+            competencias: ["Receitas conventuais", "Ponto de açúcar", "Conservação", "Apresentação criativa"],
+            insercao: "Pastelarias gourmet, produção própria"
         }
     ],
-    jardinagem: [
+    botanica: [
         {
-            nome: "Jardineiro Paisagista",
+            nome: "Jardineiro de Jardins Históricos",
             duracao: "6 meses",
             horas: "600h (240h teóricas + 360h práticas)",
             certificacao: "Jardineiro Paisagista - Nível 4",
-            aplicacao: "Manutenção do jardim histórico",
-            descricao: "Compreende a evolução dos estilos de jardinagem e as técnicas de manutenção que respeitam o carácter original dos espaços históricos.",
-            competencias: ["Poda ornamental", "Gestão de coleções botânicas", "Restauro de canteiros", "Sistemas de rega históricos"],
-            insercao: "Empresas de jardinagem, Câmaras Municipais"
+            aplicacao: "Restauro do jardim histórico (proj. Cristina Castelo Branco)",
+            descricao: "Formação especializada no restauro e manutenção de jardins históricos, baseada no pré-projeto da Profª Cristina Castelo Branco. O jardim contém espécies raras do mundo todo, um lago com ponte, estufas e um jardim de inverno.",
+            competencias: ["Restauro de jardins históricos", "Gestão de coleções botânicas raras", "Recuperação de sistemas de rega por gravidade", "Plano de manejo paisagístico"],
+            insercao: "Quintas históricas, câmaras municipais, jardins botânicos"
         },
         {
-            nome: "Viveirista",
+            nome: "Viveirista e Botânico",
             duracao: "4 meses",
             horas: "400h (160h teóricas + 240h práticas)",
             certificacao: "Viveirista - Nível 3",
-            aplicacao: "Produção de plantas na estufa histórica",
-            descricao: "Especializado na propagação e cultivo de plantas em viveiro, incluindo sementeira, estacaria e enxertia.",
-            competencias: ["Sementeira", "Estacaria", "Enxertia", "Aclimatação de plantas"],
-            insercao: "Viveiros, centros de jardinagem"
+            aplicacao: "Propagação de espécies raras nas estufas da Quinta",
+            descricao: "A Quinta possui duas estufas históricas. O viveirista aprende a propagar e cuidar de espécies botânicas raras trazidas de todo o mundo pelo Visconde, seguindo os levantamentos de flora do naturalista português Brotero.",
+            competencias: ["Propagação de espécies raras", "Gestão de estufas históricas", "Catalogação botânica", "Aclimatação de plantas exóticas"],
+            insercao: "Jardins botânicos, viveiros especializados"
         },
         {
-            nome: "Podador de Árvores",
-            duracao: "3 meses",
-            horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Podador de Árvores - Nível 3",
-            aplicacao: "Manutenção do arvoredo histórico",
-            descricao: "Especializado na poda e manutenção de árvores ornamentais e de fruto, garantindo a segurança e a saúde do arvoredo.",
-            competencias: ["Poda de formação", "Poda de manutenção", "Trepa de árvores", "Segurança"],
-            insercao: "Manutenção de espaços verdes, trabalho autónomo"
-        },
-        {
-            nome: "Agricultor Biológico",
+            nome: "Agricultor Biológico e Sustentável",
             duracao: "6 meses",
             horas: "600h (240h teóricas + 360h práticas)",
             certificacao: "Agricultor Biológico - Nível 4",
-            aplicacao: "Produção agrícola sustentável",
-            descricao: "Especializado em técnicas de agricultura sustentável e biológica, incluindo rotação de culturas e compostagem.",
-            competencias: ["Rotação de culturas", "Compostagem", "Controlo biológico", "Certificação biológica"],
-            insercao: "Exploração própria, cooperativas"
+            aplicacao: "Produção sustentável e sequestro de carbono",
+            descricao: "A Quinta visa tornar-se um modelo de quinta sustentável replicável. A formação inclui técnicas de agricultura biológica, compostagem e sequestro carbónico, transformando o espaço numa referência de sustentabilidade.",
+            competencias: ["Rotação de culturas", "Compostagem", "Sequestro de carbono", "Certificação biológica"],
+            insercao: "Exploração própria, cooperativas, consultoria"
         },
         {
             nome: "Apicultor",
             duracao: "3 meses",
             horas: "300h (120h teóricas + 180h práticas)",
             certificacao: "Apicultor - Nível 3",
-            aplicacao: "Produção de mel e polinização",
-            descricao: "Especializado na criação de abelhas e produção de mel e derivados, garantindo a polinização do jardim e pomar.",
+            aplicacao: "Produção de mel e serviços de polinização",
+            descricao: "Criação de abelhas e produção de mel, contribuindo para a polinização do jardim histórico e das áreas agrícolas da Quinta.",
             competencias: ["Gestão de colmeias", "Extração de mel", "Produção de cera", "Polinização"],
             insercao: "Produção própria, cooperativas"
         },
@@ -163,32 +135,52 @@ const oficiosDetalhados = {
             duracao: "4 meses",
             horas: "400h (160h teóricas + 240h práticas)",
             certificacao: "Ervanário - Nível 3",
-            aplicacao: "Horto de plantas aromáticas",
-            descricao: "Especializado no cultivo, colheita e preparação de plantas aromáticas e medicinais.",
-            competencias: ["Cultivo de ervas", "Secagem", "Preparação de infusões", "Óleos essenciais"],
-            insercao: "Produção própria, herbanárias"
+            aplicacao: "Horto de plantas aromáticas e medicinais",
+            descricao: "Cultivo, colheita e preparação de plantas aromáticas e medicinais dentro do ecossistema do jardim histórico.",
+            competencias: ["Cultivo de ervas", "Secagem e conservação", "Preparação de infusões", "Óleos essenciais"],
+            insercao: "Produção própria, herbanárias, mercados locais"
         }
     ],
-    artesanais: [
+    artes: [
+        {
+            nome: "Músico — Fila Harmónica",
+            duracao: "6 meses",
+            horas: "600h (200h teóricas + 400h práticas)",
+            certificacao: "Formação Musical - Nível 4",
+            aplicacao: "Concertos nos jardins e estufas da Quinta",
+            descricao: "Em parceria com a Banda Visconde de Salreu (escola de música com espaço físico e alunos de 9 a 90 anos), a formação musical inclui concertos temáticos nos jardins — Vivaldi na primavera, repertório de outono no outono — trazendo vida e cultura ao espaço.",
+            competencias: ["Instrumento musical", "Repertório clássico e popular", "Performance ao ar livre", "Produção de eventos musicais"],
+            insercao: "Bandas filarmónicas, escolas de música, eventos"
+        },
+        {
+            nome: "Laceira / Rendeira",
+            duracao: "6 meses",
+            horas: "600h (240h teóricas + 360h práticas)",
+            certificacao: "Rendeira - Nível 4",
+            aplicacao: "Preservação dos rendados da região de Aveiro",
+            descricao: "A região é conhecida pelos seus bordados e rendados tradicionais. A formação preserva esta arte centenária da renda de bilros e outras técnicas regionais específicas da zona de Aveiro.",
+            competencias: ["Renda de bilros", "Bordados regionais", "Design de padrões tradicionais", "Acabamentos finos"],
+            insercao: "Produção própria, lojas de artesanato, turismo"
+        },
+        {
+            nome: "Decoração Tradicional Portuguesa",
+            duracao: "4 meses",
+            horas: "400h (160h teóricas + 240h práticas)",
+            certificacao: "Artesão Decorador - Nível 3",
+            aplicacao: "Decoração dos espaços restaurados e das unidades Airbnb",
+            descricao: "Formação em decoração de interiores com técnicas e estéticas tradicionais portuguesas — mosaicos, azulejos, bordados de parede, mobiliário rústico e arranjos florais com espécies do jardim.",
+            competencias: ["Decoração de interiores tradicional", "Restauro de mobiliário", "Azulejaria decorativa", "Arranjos florais"],
+            insercao: "Decoração de quintas, turismo rural, eventos"
+        },
         {
             nome: "Oleiro / Ceramista",
             duracao: "6 meses",
             horas: "600h (240h teóricas + 360h práticas)",
             certificacao: "Oleiro/Ceramista - Nível 4",
-            aplicacao: "Produção de azulejos e vasos",
-            descricao: "Especializado na modelação e decoração de peças em barro e cerâmica, incluindo azulejos para o jardim.",
+            aplicacao: "Produção de azulejos e vasos para o jardim",
+            descricao: "Modelação e decoração de peças em barro e cerâmica, incluindo azulejos decorativos para os espaços restaurados.",
             competencias: ["Torno de oleiro", "Modelação manual", "Vidrados", "Pintura cerâmica"],
             insercao: "Oficina própria, cooperativas de artesanato"
-        },
-        {
-            nome: "Cesteiro",
-            duracao: "3 meses",
-            horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Cesteiro - Nível 3",
-            aplicacao: "Produção de cestos para colheitas",
-            descricao: "Artífice especializado na produção de cestos e objetos em vime, verga e outras fibras naturais.",
-            competencias: ["Cestaria em vime", "Técnicas regionais", "Tratamento de fibras", "Design de objetos"],
-            insercao: "Produção própria, mercados de artesanato"
         },
         {
             nome: "Tecelão",
@@ -196,173 +188,189 @@ const oficiosDetalhados = {
             horas: "600h (240h teóricas + 360h práticas)",
             certificacao: "Tecelão - Nível 4",
             aplicacao: "Produção de têxteis tradicionais",
-            descricao: "Especializado na produção de tecidos em tear manual, seguindo padrões tradicionais.",
+            descricao: "Produção de tecidos em tear manual, seguindo padrões tradicionais da região de Aveiro.",
             competencias: ["Tear de pedais", "Urdidura", "Padrões tradicionais", "Acabamentos têxteis"],
             insercao: "Oficinas de artes e ofícios, lojas de artesanato"
-        },
-        {
-            nome: "Bordadeira",
-            duracao: "4 meses",
-            horas: "400h (160h teóricas + 240h práticas)",
-            certificacao: "Bordadeira - Nível 3",
-            aplicacao: "Produção de peças bordadas",
-            descricao: "Especialista em técnicas de bordado tradicional português (Viana, Castelo Branco, etc.).",
-            competencias: ["Pontos tradicionais", "Design de padrões", "Seleção de fios", "Acabamentos finos"],
-            insercao: "Produção própria, cooperativas"
-        },
-        {
-            nome: "Rendeira",
-            duracao: "6 meses",
-            horas: "600h (240h teóricas + 360h práticas)",
-            certificacao: "Rendeira - Nível 4",
-            aplicacao: "Produção de rendas",
-            descricao: "Preservação da arte centenária da renda de bilros e outras técnicas regionais.",
-            competencias: ["Renda de bilros", "Renda de agulha", "Técnicas regionais", "Design de padrões"],
-            insercao: "Produção própria, cooperativas"
-        },
-        {
-            nome: "Alfaiate",
-            duracao: "6 meses",
-            horas: "600h (240h teóricas + 360h práticas)",
-            certificacao: "Alfaiate - Nível 4",
-            aplicacao: "Confeção de trajes tradicionais",
-            descricao: "Especializado na confeção de vestuário por medida, incluindo trajes tradicionais para eventos.",
-            competencias: ["Corte por medida", "Costura manual", "Alfaiataria tradicional", "Ajustes e moldes"],
-            insercao: "Ateliers de costura, teatro, cinema"
         },
         {
             nome: "Tanoeiro",
             duracao: "6 meses",
             horas: "600h (240h teóricas + 360h práticas)",
             certificacao: "Tanoeiro - Nível 4",
-            aplicacao: "Produção de vasilhame em madeira",
-            descricao: "Especializado na produção de vasilhame em madeira (pipas, barris) para vinho e decoração.",
+            aplicacao: "Produção de vasilhame para o lagar de vinho",
+            descricao: "Produção de vasilhame em madeira (pipas, barris) para vinho, conectando com a tradição vinícola da Quinta.",
             competencias: ["Seleção de madeiras", "Arqueamento", "Montagem de pipas", "Acabamentos"],
             insercao: "Adegas, produção própria, decoração"
+        }
+    ],
+    restauro: [
+        {
+            nome: "Pedreiro de Alvenaria Tradicional",
+            duracao: "6 meses",
+            horas: "600h (300h teóricas + 300h práticas)",
+            certificacao: "Pedreiro de Alvenaria Tradicional - Nível 4",
+            aplicacao: "Restauro de muros e estruturas em pedra",
+            descricao: "Domina técnicas centenárias de construção em pedra, utilizando argamassas de cal e técnicas de assentamento para o restauro autêntico dos anexos e muros da Quinta.",
+            competencias: ["Leitura de aparelhos de pedra", "Preparação de argamassas de cal", "Técnicas de rejuntamento", "Consolidação de paredes históricas"],
+            insercao: "Empresas de restauro, trabalho autónomo"
         },
         {
-            nome: "Doceiro Tradicional",
-            duracao: "3 meses",
-            horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Doceiro Tradicional - Nível 3",
-            aplicacao: "Produção de doçaria conventual",
-            descricao: "Especializado na produção de doçaria tradicional portuguesa e receitas conventuais.",
-            competencias: ["Receitas conventuais", "Ponto de açúcar", "Conservação", "Apresentação criativa"],
-            insercao: "Pastelarias gourmet, produção própria"
+            nome: "Carpinteiro de Limpos",
+            duracao: "6 meses",
+            horas: "600h (240h teóricas + 360h práticas)",
+            certificacao: "Carpinteiro de Limpos - Nível 4",
+            aplicacao: "Restauro de caixilharias e elementos em madeira",
+            descricao: "Trabalhos finos de carpintaria para restauro de portas, janelas, lambris e forros dos anexos e do palacete.",
+            competencias: ["Restauro de caixilharias", "Marcenaria tradicional", "Técnicas de ensamblagem", "Acabamentos e vernizes"],
+            insercao: "Marcenarias, empresas de restauro"
         },
         {
-            nome: "Latoeiro",
+            nome: "Estucador",
+            duracao: "4 meses",
+            horas: "400h (160h teóricas + 240h práticas)",
+            certificacao: "Estucador Ornamentista - Nível 4",
+            aplicacao: "Recuperação de ornamentos do palacete",
+            descricao: "Criação e restauro de elementos decorativos em estuque — molduras, rosetas, cornijas e ornamentos do palacete.",
+            competencias: ["Preparação de gessos e cales", "Modelação de ornamentos", "Restauro de molduras", "Técnicas de douramento"],
+            insercao: "Restauro de edifícios históricos"
+        },
+        {
+            nome: "Calceteiro",
             duracao: "3 meses",
             horas: "300h (120h teóricas + 180h práticas)",
-            certificacao: "Latoeiro - Nível 3",
-            aplicacao: "Utensílios e elementos decorativos",
-            descricao: "Especializado no trabalho de folha de flandres e outros metais para fins utilitários e decorativos.",
-            competencias: ["Corte de metais", "Dobragem manual", "Soldadura", "Acabamentos"],
-            insercao: "Oficinas de artesanato, feiras"
+            certificacao: "Calceteiro - Nível 3",
+            aplicacao: "Recuperação de pavimentos e caminhos do jardim",
+            descricao: "Arte de assentar pedras em padrões decorativos para os caminhos e pavimentos do jardim histórico.",
+            competencias: ["Preparação de bases", "Corte de pedra", "Padrões decorativos", "Manutenção de calçadas"],
+            insercao: "Câmaras municipais, empresas de construção"
+        },
+        {
+            nome: "Corticeiro — Tirador de Cortiça",
+            duracao: "4 meses",
+            horas: "400h (120h teóricas + 280h práticas)",
+            certificacao: "Corticeiro - Nível 4",
+            aplicacao: "Torre do Carvalhal — Extração sustentável de cortiça",
+            descricao: "O sombreiro (sobreiro) é uma árvore endémica do Alentejo que só começa a dar cortiça aos 60 anos. A extração é uma arte técnica muito específica: se feita incorretamente, mata a árvore. Este saber-fazer está em risco de desaparecimento e é um ofício prioritário para a Torre do Carvalhal.",
+            competencias: ["Técnica de descortiçamento", "Avaliação da maturidade do sobreiro", "Ferramentas tradicionais", "Processamento artesanal de cortiça"],
+            insercao: "Herdades alentejanas, indústria corticeira, turismo rural"
         }
     ]
 }
 
-// Detalhes do projeto Quinta Salreu
+// Detalhes do projeto Quinta Salreu — atualizado reunião Fev/2026
 const quintaSalreuDetails = {
     historia: {
         titulo: "História da Quinta",
-        texto: "A Quinta do Visconde de Salreu constitui um exemplar notável do património rural português do século XIX. Mandada construir por Domingos Joaquim da Silva (1.º Visconde de Salreu), empresário que fez fortuna no Brasil e regressou à sua terra natal para investir no desenvolvimento local, a propriedade é um testemunho da filantropia e do gosto romântico da época. Compreende um palacete com torre, jardim histórico com espécies exóticas raras e uma área agrícola estratégica integrada na paisagem da Ria de Aveiro."
+        texto: "A Quinta do Visconde de Salreu constitui um exemplar notável do património rural português do século XIX. O Visconde foi o maior exportador de azeite de Portugal e a quinta era uma fazenda produtiva com lagares de azeite e vinho, queijaria e 11 moinhos de pão na região. A propriedade compreende um palacete com torre, jardim histórico romântico com espécies exóticas raras de todo o mundo, lago com ponte, estufas, e uma área agrícola integrada na paisagem da Ria de Aveiro. O projeto visa transformar a Quinta num espaço de experiência imersiva na cultura tradicional portuguesa."
     },
     patrimonio: {
         titulo: "Património a Preservar",
         elementos: [
-            { nome: "Reservatórios e Conexões", estado: "Urgente", descricao: "Sistemas hidráulicos originais fundamentais para a rega do jardim" },
-            { nome: "Rede de Saneamento", estado: "Alta", descricao: "Necessita de intervenção infraestrutural completa" },
-            { nome: "Pérgulas e Estruturas", estado: "Alta", descricao: "Elementos decorativos em ferro e alvenaria no jardim histórico" },
-            { nome: "Pavimentos e Caminhos", estado: "Média", descricao: "Recuperação de calçadas e trilhos de saibro tradicionais" },
-            { nome: "Estufa e Viveiro", estado: "Média", descricao: "Estruturas de vidro e ferro para propagação botânica" },
-            { nome: "Palacete Principal", estado: "Manutenção", descricao: "Arquitetura oitocentista com torre panorâmica" }
+            { nome: "Jardim Histórico", estado: "Urgente", descricao: "Restauro completo do jardim (proj. Cristina Castelo Branco) — lago, ponte, estufas, espécies raras" },
+            { nome: "Sistema Hídrico por Gravidade", estado: "Urgente", descricao: "Recuperação dos dutos de irrigação por gravidade (sem energia elétrica na época)" },
+            { nome: "Lagares de Azeite e Vinho", estado: "Alta", descricao: "Restauro dos lagares nos anexos para produção e experiência turística" },
+            { nome: "14 Unidades Habitacionais", estado: "Alta", descricao: "Conversão dos anexos (garagem, lagar, casa de lenha) em 14 unidades Airbnb" },
+            { nome: "Estufas e Viveiros", estado: "Média", descricao: "Duas estufas históricas para propagação botânica e recuperação de espécies" },
+            { nome: "Palacete Principal", estado: "Preservação", descricao: "Visitação guiada agendada — mantém carácter de casa de família" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Constituição", periodo: "2026", descricao: "Criação da associação local (APQVS) e licenciamentos", orcamento: "€15.000" },
-        { fase: "2", nome: "Diagnóstico", periodo: "2026", descricao: "Levantamento técnico, mapeamento e projeto de arquitetura", orcamento: "€25.000" },
-        { fase: "3", nome: "Formação", periodo: "2027", descricao: "Recrutamento de mestres e seleção de 50 aprendizes locais", orcamento: "€120.000" },
-        { fase: "4", nome: "Execução", periodo: "2027-2028", descricao: "Restauro de sistemas, jardim histórico e centro de formação", orcamento: "€350.000" },
-        { fase: "5", nome: "Operação", periodo: "2028+", descricao: "Abertura ao público, turismo cultural e produção orgânica", orcamento: "€80.000/ano" }
+        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-4", descricao: "Levantamento arquitetónico, estudo estrutural, projeto de arquitetura, licenciamento e projeto de jardim (Cristina Castelo Branco)", orcamento: "€80.000" },
+        { fase: "2", nome: "Estrutura e Cobertura", periodo: "Meses 5-12", descricao: "Consolidação estrutural, substituição de cobertura, reforço de paredes, tratamento de madeiras", orcamento: "€380.000" },
+        { fase: "3", nome: "Instalações e Restauro", periodo: "Meses 13-20", descricao: "Instalação técnica (elétrica/encanamento), restauro de fachadas, caixilharia, pavimentos e revestimentos", orcamento: "€340.000" },
+        { fase: "4", nome: "Paisagismo e Botânica", periodo: "Meses 18-24", descricao: "Restauro do jardim histórico, infraestrutura de água por gravidade, recuperação botânica de espécies raras", orcamento: "€400.000" }
     ],
     impacto: [
-        { indicador: "Património", valor: "80%", descricao: "Elementos restaurados até 2028" },
-        { indicador: "Social", valor: "50", descricao: "Artesãos formados em ofícios tradicionais" },
-        { indicador: "Económico", valor: "15", descricao: "Postos de trabalho diretos criados" },
-        { indicador: "Ambiental", valor: "2 ha", descricao: "Área em produção agrícola orgânica" }
+        { indicador: "Alojamento", valor: "14", descricao: "Unidades habitacionais criadas nos anexos (Airbnb)" },
+        { indicador: "Capacitação", valor: "30+", descricao: "Pessoas formadas em artes, culinária e ofícios" },
+        { indicador: "Emprego", valor: "25", descricao: "Postos de trabalho diretos no restauro" },
+        { indicador: "Sustentável", valor: "Sim", descricao: "Quinta sustentável replicável com sequestro de carbono" }
     ],
     modelo: {
         pilares: [
-            { nome: "Família Proprietária", descricao: "Mantém a titularidade e constitui a associação local gerida pela família." },
-            { nome: "Associação Local (APQVS)", descricao: "Entidade gestora e arrendatária responsável pela execução local." },
-            { nome: "IPNS - Bureau Social", descricao: "Parceiro estratégico para apoio técnico, formação e financiamento." }
+            { nome: "Família Proprietária", descricao: "Mantém a titularidade e a residência no palacete. Visitação guiada agendada." },
+            { nome: "IPSS Banda Visconde de Salreu", descricao: "IPSS já existente (gestora Raquel), articulada com a prefeitura, com licenças e estrutura constituída." },
+            { nome: "IPNS - Bureau Social", descricao: "Parceiro estratégico para captação de recursos, formação e coordenação do projeto." }
         ]
     }
 }
 
-// Detalhes do projeto Torre do Carvalhal
+// Detalhes do projeto Torre do Carvalhal — atualizado reunião Fev/2026
 const torreCarvalhalDetails = {
     historia: {
         titulo: "História da Torre",
-        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. Mandada construir por André de Vilalobos e Vasconcelos, cavaleiro da Ordem de Avis, a torre de 17m apresenta planta quadrangular e três pisos abobadados. Em 1569, o mestre pedreiro Diogo Velho (que trabalhou na Igreja de Santo Antão de Évora) adossou um corpo residencial ao conjunto original. A propriedade inclui a Capela de São Cristóvão e está inserida na Rede Natura 2000 (Sítio Monfurado)."
+        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. A Ermida possui azulejaria do século XVI — comparável apenas à da Universidade de Évora. A propriedade inclui entre 400 e 600 hectares de montado com sobreiros e azinheiras endémicas, várias casas e construções dentro da propriedade, e está inserida na Rede Natura 2000 (Sítio Monfurado). O grande diferencial é o ofício do Corticeiro — a extração de cortiça dos sobreiros centenários, uma arte técnica em risco de desaparecimento."
     },
     patrimonio: {
         titulo: "Património a Preservar",
         elementos: [
             { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
-            { nome: "Capela S. Cristóvão", estado: "Ruína", descricao: "Modelo tardo-gótico alentejano com chaminés típicas" },
-            { nome: "Corpo Residencial", estado: "Devoluto", descricao: "Conjunto enriquecido pelo mestre pedreiro Diogo Velho" },
-            { nome: "Jardim e Horta", estado: "Abandonado", descricao: "Espaço ampliado no séc. XIX com elementos românticos" },
-            { nome: "Montado Envolvente", estado: "Bom", descricao: "Área florestal preservada em zona de Rede Natura 2000" }
+            { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria única, comparável apenas à Universidade de Évora" },
+            { nome: "Casas na Propriedade", estado: "Devoluto", descricao: "6 a 10 casas dentro dos hectares — potencial para turismo rural" },
+            { nome: "Montado (400-600 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça sustentável" },
+            { nome: "Infraestrutura Hídrica", estado: "Abandonado", descricao: "Sistema de irrigação a restaurar para o jardim e horta" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Consolidação", periodo: "2026-2027", descricao: "Intervenção estrutural urgente na torre e na capela", orcamento: "€180.000" },
-        { fase: "2", nome: "Formação Sul", periodo: "2027-2028", descricao: "Mestres de taipa, adobe e cantaria de granito alentejana", orcamento: "€80.000" },
-        { fase: "3", nome: "Restauro Alentejo", periodo: "2028-2029", descricao: "Execução integral de rebocos tradicionais e acabamentos", orcamento: "€350.000" },
-        { fase: "4", nome: "Operação Sustentável", periodo: "2030+", descricao: "Turismo de natureza, apicultura e observação astronómica", orcamento: "€50.000/ano" }
+        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-6", descricao: "Levantamento técnico, projeto de arquitetura, mapeamento das casas e ermida", orcamento: "€60.000" },
+        { fase: "2", nome: "Consolidação", periodo: "Meses 7-18", descricao: "Estabilização estrutural da torre, ermida e casas prioritárias", orcamento: "€250.000" },
+        { fase: "3", nome: "Restauro e Formação", periodo: "Meses 18-30", descricao: "Restauro integral, formação em ofícios alentejanos e corticeiros", orcamento: "€400.000" },
+        { fase: "4", nome: "Operação", periodo: "Meses 30+", descricao: "Turismo de natureza, cortiça, apicultura e turismo rural nas casas", orcamento: "€90.000/ano" }
     ],
     impacto: [
-        { indicador: "Património Sul", valor: "500 m²", descricao: "Área de edifícios históricos recuperada" },
-        { indicador: "Capacitação", valor: "30", descricao: "Artesãos formados em técnicas alentejanas" },
-        { indicador: "Localização", valor: "321m", descricao: "Altitude com excelentes vistas panorâmicas" },
+        { indicador: "Área", valor: "600 ha", descricao: "Hectares de montado sob gestão sustentável" },
+        { indicador: "Capacitação", valor: "30", descricao: "Artesãos e corticeiros formados" },
+        { indicador: "Alojamento", valor: "6-10", descricao: "Casas potenciais para turismo rural / Airbnb" },
         { indicador: "Rede Natura", valor: "100%", descricao: "Inserção em área de proteção ambiental" }
     ],
     modelo: {
         pilares: [
             { nome: "Proprietário (DOVA)", descricao: "Detém a titularidade e assegura a visão de longo prazo do legado." },
-            { nome: "Associação (APHC)", descricao: "Gestora local focada no restauro e dinamização do montado." },
-            { nome: "Rede de Mestres", descricao: "Especialistas em técnicas alentejanas que coordenam a formação." }
+            { nome: "Associação (APHC)", descricao: "Gestora local focada no restauro, cortiça e montado sustentável." },
+            { nome: "IPNS + Rede de Mestres", descricao: "Especialistas em técnicas alentejanas e corticeiros que coordenam a formação." }
         ]
     }
 }
 
 const propostas = [
-    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€77.450", investimento: "€590.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto de Estarreja (Norte/Centro)" },
-    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "€105.850", investimento: "€720.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria exclusiva para o projeto do Escoural (Alentejo)" },
-    { opcao: "C", projeto: "Programa Integrado", honorarios: "€170.805", investimento: "€1.310.000", taxaGestao: "6,8%", economia: "€12.495", desconto: "15%", destaque: true, descricao: "Assessoria simultânea para ambos os projetos com sinergias Norte-Sul e marca comum." }
+    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€160.000", investimento: "€2.000.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (14 unidades, escola de artes e culinária)" },
+    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "TBD", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação de corticeiros no Alentejo (ermida, montado, casas rurais)" },
+    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "A partir de €2.000.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo." }
+]
+
+const passosDetails = [
+    { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos da Quinta do Visconde de Salreu." },
+    { num: "02", titulo: "Orçamentação Torre Carvalhal", desc: "Pesquisa extensiva e estimativa de custos para a Torre do Carvalhal." },
+    { num: "03", titulo: "Constituição das Entidades", desc: "Formalização da IPSS Banda Visconde de Salreu e arranjo jurídico correspondente." },
+    { num: "04", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030, IEFP e procura de mecenato." },
+    { num: "05", titulo: "Início das Obras e Formação", desc: "Arranque do restauro estrutural e da escola de artes e ofícios." }
+]
+
+const fontesDetails = [
+    { titulo: "Transcrição da Reunião de Adequações (Fev/2026)", desc: "Decisões estratégicas sobre orçamento (€2M Quinta), mudança de foco para artes/culinária e novo modelo institucional (IPSS)." },
+    { titulo: "Plano Mestre Bureau Social", desc: "Diretrizes operacionais e estruturais para o IPNS e seus projetos de preservação patrimonial e impacto social." },
+    { titulo: "Programa PRR / Portugal 2030 / IEFP", desc: "Linhas de financiamento europeias e nacionais para qualificação do património, turismo e formação profissional." },
+    { titulo: "Cristina Castelo Branco & Parceiros", desc: "Referências de projeto de restauro botânico e arquitetónico." }
 ]
 
 const financiamento = [
     {
-        fonte: "União Europeia", total: "€750k", items: [
-            { nome: "LIFE", valor: "€300k", descricao: "Biodiversidade e restauro de jardins históricos" },
-            { nome: "FEADER/PDR", valor: "€300k", descricao: "Agricultura sustentável e desenvolvimento rural" },
-            { nome: "FSE+", valor: "€150k", descricao: "Formação profissional e inclusão social" }
+        fonte: "Fundos Europeus (PRR / Portugal 2030)", total: "€1.400k", items: [
+            { nome: "PRR — Reabilitação", valor: "€800k", descricao: "Fundo Europeu para reabilitação e restauro de patrimónios históricos" },
+            { nome: "FEADER/PDR", valor: "€300k", descricao: "Agricultura sustentável, montado e jardins históricos" },
+            { nome: "FSE+ / LIFE", valor: "€300k", descricao: "Formação profissional, biodiversidade e conservação" }
         ]
     },
     {
-        fonte: "Portugal", total: "€200k", items: [
-            { nome: "Turismo PT", valor: "€150k", descricao: "Turismo cultural e patrimonial" },
-            { nome: "Autarquias", valor: "€50k", descricao: "Apoio ao desenvolvimento local" }
+        fonte: "Portugal (IEFP + Turismo)", total: "€400k", items: [
+            { nome: "IEFP", valor: "€250k", descricao: "Programa de formação profissional — certificação de artes e ofícios" },
+            { nome: "Turismo PT", valor: "€150k", descricao: "Turismo cultural, experiência imersiva e Airbnb" }
         ]
     },
     {
-        fonte: "Privado", total: "€360k", items: [
-            { nome: "Mecenato", valor: "€80k", descricao: "Donativos com benefícios fiscais" },
-            { nome: "Fundos Próprios", valor: "€280k", descricao: "Investimento da família proprietária" }
+        fonte: "Privado (10%)", total: "€200k", items: [
+            { nome: "Contrapartida Família", valor: "€150k", descricao: "10% de contrapartida exigida pela família proprietária" },
+            { nome: "Mecenato", valor: "€50k", descricao: "Donativos com benefícios fiscais, prémios de sustentabilidade" }
         ]
     }
 ]
@@ -383,24 +391,24 @@ const funcionamentoDetails = {
 
 const governancaDetails = {
     niveis: [
-        { pilar: "Sócios Fundadores", papel: "Membros da família proprietária. Detêm direito de veto em admissões de novos sócios e garantem o DNA do projeto." },
-        { pilar: "Associados Efetivos", papel: "Pessoas singulares ou coletivas admitidas pela Direção que participam na gestão e votação." },
-        { pilar: "Associados Honorários", papel: "Distinguidos pela Assembleia Geral por serviços relevantes prestados à associação/comunidade." }
+        { pilar: "Família Proprietária (Sócios Fundadores)", papel: "A família mantém a titularidade e residência no palacete. Visitantes acedem apenas por marcação. Garantem o DNA do projeto e o legado histórico." },
+        { pilar: "IPSS Banda Visconde de Salreu", papel: "IPSS já constituída com licenças, estrutura e mais de 50 associados. Gestora: Raquel (presidente da Câmara da Banda). Articulação direta com a prefeitura." },
+        { pilar: "IPNS — Bureau Social", papel: "Assessor estratégico para captação de recursos (PRR, IEFP), coordenação técnica, formação e marcação." }
     ],
     estatutos: [
-        "Presidente da Direção obrigatoriamente um Sócio Fundador",
-        "Resultados integralmente reinvestidos nos fins estatutários da associação",
-        "Mandatos de 3 anos para os órgãos sociais (Assembleia, Direção e Conselho Fiscal)",
-        "Associação sem fins lucrativos geradora de impacto social e ambiental",
+        "IPSS Banda Visconde de Salreu como entidade gestora já constituída",
+        "Mínimo de 50 associados exigido para a estrutura operaçónal",
+        "Resultados integralmente reinvestidos nos fins estatutários",
+        "Articulação com a prefeitura para licenciamentos e apoios",
         "Direito de veto da família proprietária para proteção do legado histórico"
     ]
 }
 
 const kpiDetails = [
-    { meta: "Associações Constituídas", kpi: "2 entidades", prazo: "6 meses", icon: LucideFileText, desc: "Constituição das associações locais APQVS e APHC para gestão patrimonial." },
-    { meta: "Financiamento Captado", kpi: "€750.000", prazo: "24 meses", icon: LucideEuro, desc: "Captação mínima garantida através de fundos UE (LIFE, FSE+) e nacionais." },
-    { meta: "Mestres Recrutados", kpi: "12 especialistas", prazo: "18 meses", icon: LucideAward, desc: "Recrutamento de mestres artesãos em ofícios tradicionais do Norte e Sul." },
-    { meta: "Formandos Integrados", kpi: "40 aprendizes", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Capacitação profissional da comunidade local para os trabalhos de restauro." }
+    { meta: "Unidades Habitacionais", kpi: "14 unidades", prazo: "24 meses", icon: LucideFileText, desc: "Conversão dos anexos da Quinta em 14 unidades de alojamento Airbnb." },
+    { meta: "Financiamento Captado", kpi: "€1.800.000", prazo: "24 meses", icon: LucideEuro, desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus (FEADER, FSE+, LIFE)." },
+    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "24 meses", icon: LucideAward, desc: "Formação em culinária, botânica, música, artes, cortiça e restauro." },
+    { meta: "Empregos Criados", kpi: "25 postos", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
 ]
 
 export default function Assessoria() {
@@ -438,14 +446,14 @@ export default function Assessoria() {
                             <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
                                 <LucideEuro className="w-6 h-6 text-heritage-terracotta" />
                                 <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">€1.310.000</p>
+                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">A partir de €2.000.000</p>
                                     <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Investimento Total</p>
                                 </div>
                             </div>
                             <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
                                 <LucideCalendarClock className="w-6 h-6 text-heritage-ocean" />
                                 <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">42 Meses</p>
+                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">24–30 Meses</p>
                                     <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Duração Integrada</p>
                                 </div>
                             </div>
@@ -474,6 +482,8 @@ export default function Assessoria() {
                                     { value: "governanca", label: "Governança", icon: LucideGavel },
                                     { value: "proposta", label: "Proposta & KPIs", icon: LucideStar },
                                     { value: "financiamento", label: "Financiamento", icon: LucideEuro },
+                                    { value: "passos", label: "Próximos Passos", icon: LucideListOrdered },
+                                    { value: "fontes", label: "Fontes", icon: LucideBookOpen },
                                 ].map((tab) => (
                                     <TabsTrigger key={tab.value} value={tab.value}
                                         className="data-[state=active]:bg-heritage-navy data-[state=active]:text-white dark:data-[state=active]:bg-white dark:data-[state=active]:text-heritage-navy px-6 py-3 rounded-2xl font-bold text-sm transition-all">
@@ -501,9 +511,9 @@ export default function Assessoria() {
 
                                     <div className="grid md:grid-cols-3 gap-6 mt-8">
                                         {[
-                                            { icon: LucideHome, titulo: "Preservação Patrimonial", desc: "Restauro de edifícios, jardins e elementos históricos utilizando técnicas tradicionais que respeitam a autenticidade" },
-                                            { icon: LucideGraduationCap, titulo: "Formação Profissional", desc: "Capacitação da comunidade local em ofícios tradicionais portugueses em risco de desaparecimento" },
-                                            { icon: LucideLeaf, titulo: "Sustentabilidade", desc: "Modelo de operação que gera receitas próprias através de turismo, formação e comercialização de produtos" }
+                                            { icon: LucideHome, titulo: "Preservação Patrimonial", desc: "Restauro de edifícios, jardins históricos e elementos patrimoniais utilizando técnicas tradicionais" },
+                                            { icon: LucideGraduationCap, titulo: "Artes, Culinária e Ofícios", desc: "Formação em culinária portuguesa, botânica, música, rendas, decoração e ofícios tradicionais em risco" },
+                                            { icon: LucideLeaf, titulo: "Turismo de Experiência Imersiva", desc: "14 unidades Airbnb nos anexos, escola de culinária, concertos nos jardins e sequestro de carbono" }
                                         ].map((item, i) => (
                                             <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-3xl">
                                                 <item.icon className="w-10 h-10 text-heritage-terracotta mb-4" />
@@ -519,11 +529,11 @@ export default function Assessoria() {
                                     <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Como Funciona</h3>
                                     <div className="space-y-6">
                                         {[
-                                            { num: "1", titulo: "Constituição da Associação Local", desc: "A família proprietária constitui uma associação sem fins lucrativos que assume a gestão do património através de contrato de arrendamento." },
-                                            { num: "2", titulo: "Parceria com o IPNS", desc: "O Instituto Português de Negócios Sociais atua como parceiro estratégico, fornecendo apoio técnico na captação de mestres artesãos e na gestão de projetos." },
-                                            { num: "3", titulo: "Captação de Financiamento", desc: "Candidatura a fundos europeus (LIFE, FEADER, FSE+) e nacionais, complementados por mecenato e receitas próprias." },
-                                            { num: "4", titulo: "Formação e Restauro", desc: "Mestres artesãos formam aprendizes locais que executam os trabalhos de restauro sob supervisão, aprendendo na prática." },
-                                            { num: "5", titulo: "Operação Sustentável", desc: "Após o restauro, o espaço abre ao público para visitas, eventos e formação, gerando receitas que garantem a sustentabilidade." }
+                                            { num: "1", titulo: "Parceria com IPSS Existente", desc: "Para a Quinta Salreu, articulação com a IPSS da Banda Visconde de Salreu (gestora Raquel), que já possui licenças, estrutura e mais de 50 associados." },
+                                            { num: "2", titulo: "Parceria com o IPNS", desc: "O Instituto Português de Negócios Sociais (Bureau Social) atua como assessor estratégico na captação de recursos, formação e coordenação do projeto." },
+                                            { num: "3", titulo: "Captação de Financiamento", desc: "Candidatura ao PRR/Portugal 2030, IEFP, FEADER e FSE+, complementados por contrapartida da família (10%)." },
+                                            { num: "4", titulo: "Formação e Restauro", desc: "Mestres artesãos e especialistas formam aprendizes locais em culinária, botânica, música, restauro e ofícios tradicionais." },
+                                            { num: "5", titulo: "Turismo de Experiência Imersiva", desc: "14 unidades Airbnb nos anexos, escola de culinária, concertos nos jardins, turismo rural no Alentejo — gerando receitas sustentáveis." }
                                         ].map((step) => (
                                             <div key={step.num} className="flex gap-6">
                                                 <div className="w-12 h-12 rounded-full bg-heritage-terracotta text-white flex items-center justify-center font-black text-lg shrink-0">
@@ -574,16 +584,16 @@ export default function Assessoria() {
                                                 <span className="font-medium">Freguesia de Salreu, Estarreja, Aveiro</span>
                                             </div>
                                             <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                Exemplar notável do património rural português do século XIX, propriedade do Visconde de Salreu desde a sua construção.
+                                                Espaço de experiência imersiva na cultura tradicional portuguesa — culinária, botânica, música e ofícios. O Visconde foi o maior exportador de azeite de Portugal.
                                             </p>
                                         </div>
                                         <div className="flex gap-8">
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-terracotta">€590.000</p>
+                                                <p className="text-4xl font-black text-heritage-terracotta">€2.000.000</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">30 meses</p>
+                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">24 meses</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Duração</p>
                                             </div>
                                         </div>
@@ -695,11 +705,11 @@ export default function Assessoria() {
                                         </div>
                                         <div className="flex gap-8">
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-ocean">€720.000</p>
+                                                <p className="text-4xl font-black text-heritage-ocean">TBD</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">42 meses</p>
+                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">30 meses</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Duração</p>
                                             </div>
                                         </div>
@@ -809,9 +819,10 @@ export default function Assessoria() {
                                 </div>
 
                                 {[
-                                    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.construcao, cor: "terracotta" },
-                                    { titulo: "Jardinagem e Agricultura", oficios: oficiosDetalhados.jardinagem, cor: "green" },
-                                    { titulo: "Ofícios Artesanais", oficios: oficiosDetalhados.artesanais, cor: "amber" }
+                                    { titulo: "Culinária e Gastronomia", oficios: oficiosDetalhados.culinaria, cor: "terracotta" },
+                                    { titulo: "Botânica, Jardinismo e Sustentabilidade", oficios: oficiosDetalhados.botanica, cor: "green" },
+                                    { titulo: "Artes e Ofícios Tradicionais", oficios: oficiosDetalhados.artes, cor: "amber" },
+                                    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.restauro, cor: "ocean" }
                                 ].map((categoria, i) => (
                                     <div key={i} className="glass-card p-10 rounded-[40px]">
                                         <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-6">{categoria.titulo}</h3>
@@ -981,7 +992,7 @@ export default function Assessoria() {
                                 </div>
 
                                 <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Princípios Estatutários (APQVS)</h3>
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Princípios Organizacionais (IPSS Banda Visconde)</h3>
                                     <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
                                         {governancaDetails.estatutos.map((item, i) => (
                                             <div key={i} className="flex gap-4">
@@ -998,7 +1009,7 @@ export default function Assessoria() {
                                     <div className="flex-1">
                                         <h3 className="text-2xl font-black mb-4">Acordo de Parceria IPNS</h3>
                                         <p className="text-white/60 leading-relaxed">
-                                            A parceria é selada através de um Termo de Cooperação Estratégica que define as responsabilidades de assessoria, captação de recursos e supervisão técnica da formação por um período de 42 meses.
+                                            A parceria é selada através de um Termo de Cooperação Estratégica que define as responsabilidades de assessoria, captação de recursos e supervisão técnica da formação por um período de 24 a 30 meses.
                                         </p>
                                     </div>
                                     <div className="shrink-0">
@@ -1156,6 +1167,58 @@ export default function Assessoria() {
                                         <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Cronograma Integrado de Operação</h3>
                                     </div>
                                     <CronogramaVisual />
+                                </div>
+                            </TabsContent>
+
+                            {/* TAB: Próximos Passos */}
+                            <TabsContent value="passos" className="space-y-12">
+                                <div className="text-center space-y-4 mb-12">
+                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Próximos Passos</h2>
+                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
+                                        Ações estruturadas para o avanço das assessorias, orçamentação final e formalização jurídica.
+                                    </p>
+                                </div>
+
+                                <div className="glass-card p-10 rounded-[40px]">
+                                    <div className="space-y-6">
+                                        {passosDetails.map((passo, i) => (
+                                            <div key={i} className="flex gap-6 items-start">
+                                                <div className="w-16 h-16 rounded-3xl bg-heritage-navy text-white flex items-center justify-center font-black text-xl shrink-0 shadow-lg">
+                                                    {passo.num}
+                                                </div>
+                                                <div className="pt-3">
+                                                    <h4 className="font-black text-heritage-navy dark:text-white text-xl mb-2">{passo.titulo}</h4>
+                                                    <p className="text-heritage-navy/60 dark:text-white/50 leading-relaxed">
+                                                        {passo.desc}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            {/* TAB: Fontes */}
+                            <TabsContent value="fontes" className="space-y-12">
+                                <div className="text-center space-y-4 mb-12">
+                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Fontes e Referências</h2>
+                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
+                                        Documentação cruzada e transcrições que embasam os dados orçamentários e estratégicos.
+                                    </p>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    {fontesDetails.map((fonte, i) => (
+                                        <div key={i} className="glass-card p-8 rounded-3xl border-t-4 border-heritage-terracotta">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <LucideBookOpen className="w-6 h-6 text-heritage-terracotta" />
+                                                <h4 className="font-black text-heritage-navy dark:text-white text-lg leading-tight uppercase tracking-tight">{fonte.titulo}</h4>
+                                            </div>
+                                            <p className="text-sm text-heritage-navy/60 dark:text-white/50 leading-relaxed">
+                                                {fonte.desc}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
                             </TabsContent>
                         </Tabs>
