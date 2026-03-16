@@ -25,7 +25,6 @@ export default function Navbar() {
 
     const mainLinks = [
         { name: "Associação", path: "/about" },
-        { name: "Projetos", path: "/project" },
         { name: "Tradições", path: "/traditions" },
         { name: "Transparência", path: "/docs" },
         { name: "Assessoria", path: "/assessoria" },

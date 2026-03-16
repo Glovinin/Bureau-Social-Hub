@@ -86,11 +86,6 @@ export default function Home() {
                         transition={{ delay: 0.5, duration: 1 }}
                         className="flex flex-col sm:flex-row gap-6 justify-center pt-8"
                     >
-                        <Link to="/project">
-                            <Button size="lg" className="bg-heritage-terracotta hover:bg-heritage-terracotta/90 text-white rounded-2xl h-16 px-14 text-lg font-black shadow-2xl shadow-heritage-terracotta/30 transition-apple hover:-translate-y-1">
-                                Ver Projeto Piloto
-                            </Button>
-                        </Link>
                         <Link to="/candidatura">
                             <Button size="lg" variant="outline" className="border-2 border-heritage-navy dark:border-white text-heritage-navy dark:text-white hover:bg-heritage-navy hover:text-white dark:hover:bg-white dark:hover:text-heritage-navy rounded-2xl h-16 px-10 text-lg font-black transition-apple hover:-translate-y-1">
                                 Associe-se <LucideArrowRight className="w-5 h-5 ml-2" />
