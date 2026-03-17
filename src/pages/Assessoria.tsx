@@ -269,22 +269,31 @@ const quintaSalreuDetails = {
             { nome: "Jardim Histórico", estado: "Urgente", descricao: "Restauro completo do jardim (proj. Cristina Castelo Branco) — lago, ponte, estufas, espécies raras" },
             { nome: "Sistema Hídrico por Gravidade", estado: "Urgente", descricao: "Recuperação dos dutos de irrigação por gravidade (sem energia elétrica na época)" },
             { nome: "Lagares de Azeite e Vinho", estado: "Alta", descricao: "Restauro dos lagares nos anexos para produção e experiência turística" },
-            { nome: "14 Unidades Habitacionais", estado: "Alta", descricao: "Conversão dos anexos (garagem, lagar, casa de lenha) em 14 unidades Airbnb" },
+            { nome: "8 Unidades Habitacionais", estado: "Alta", descricao: "Conversão dos anexos (garagem, lagar, casa de lenha) em 8 unidades turísticas (4×T0 + 4×T1)" },
             { nome: "Estufas e Viveiros", estado: "Média", descricao: "Duas estufas históricas para propagação botânica e recuperação de espécies" },
             { nome: "Palacete Principal", estado: "Preservação", descricao: "Visitação guiada agendada — mantém carácter de casa de família" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-4", descricao: "Levantamento arquitetónico, estudo estrutural, projeto de arquitetura, licenciamento e projeto de jardim (Cristina Castelo Branco)", orcamento: "€80.000" },
-        { fase: "2", nome: "Estrutura e Cobertura", periodo: "Meses 5-12", descricao: "Consolidação estrutural, substituição de cobertura, reforço de paredes, tratamento de madeiras", orcamento: "€380.000" },
-        { fase: "3", nome: "Instalações e Restauro", periodo: "Meses 13-20", descricao: "Instalação técnica (elétrica/encanamento), restauro de fachadas, caixilharia, pavimentos e revestimentos", orcamento: "€340.000" },
-        { fase: "4", nome: "Paisagismo e Botânica", periodo: "Meses 18-24", descricao: "Restauro do jardim histórico, infraestrutura de água por gravidade, recuperação botânica de espécies raras", orcamento: "€400.000" }
+        { fase: "1", nome: "Projetos e Licenciamento", periodo: "Meses 1-6", descricao: "Levantamento arquitetónico, projeto de arquitetura, engenharia, licenciamento e projeto de jardim (Cristina Castelo Branco)", orcamento: "€80.000" },
+        { fase: "2", nome: "Restauro do Solar Principal", periodo: "Meses 7-16", descricao: "Consolidação estrutural, cobertura, caixilharia, instalações técnicas e restauro do solar", orcamento: "€720.000" },
+        { fase: "3", nome: "Jardim, Alojamento e Formação", periodo: "Meses 12-20", descricao: "Restauro do jardim histórico, conversão dos anexos em 8 unidades de alojamento (T0 e T1) e arranque do centro de formação", orcamento: "€640.000" },
+        { fase: "4", nome: "Equipamento e Arranque", periodo: "Meses 20-24", descricao: "Equipamento das unidades, loja de artesanato, marketing e arranque operacional", orcamento: "€60.000" }
     ],
+    receitas: [
+        { fonte: "Alojamento (8 un. × €78/noite × 153 dias)", ano1: "€50.000", ano2: "€75.000", ano3: "€95.500" },
+        { fonte: "Formação — Cursos longos (54 formandos × €1.200)", ano1: "€25.000", ano2: "€45.000", ano3: "€64.800" },
+        { fonte: "Formação — Workshops (300 participantes × €75)", ano1: "€8.000", ano2: "€15.000", ano3: "€22.500" },
+        { fonte: "Experiências turísticas (2.000 × €80)", ano1: "€15.000", ano2: "€32.000", ano3: "€48.000" },
+        { fonte: "Visitas guiadas (3.000 visitantes × €8)", ano1: "€5.000", ano2: "€14.000", ano3: "€24.000" },
+        { fonte: "Eventos culturais + loja", ano1: "€10.000", ano2: "€25.000", ano3: "€45.200" }
+    ],
+    resultadoOperacional: { receita: "€300k–€350k", custos: "€160k–€190k", resultado: "€130k–€190k", margem: "38–45%", retorno: "~6–8 anos" },
     impacto: [
-        { indicador: "Alojamento", valor: "14", descricao: "Unidades habitacionais criadas nos anexos (Airbnb)" },
-        { indicador: "Capacitação", valor: "30+", descricao: "Pessoas formadas em artes, culinária e ofícios" },
-        { indicador: "Emprego", valor: "25", descricao: "Postos de trabalho diretos no restauro" },
-        { indicador: "Sustentável", valor: "Sim", descricao: "Quinta sustentável replicável com sequestro de carbono" }
+        { indicador: "Alojamento", valor: "8", descricao: "Unidades turísticas nos anexos (4×T0 + 4×T1)" },
+        { indicador: "Formandos/Ano", valor: "54+", descricao: "Certificados IEFP em culinária, jardinismo, música e artes" },
+        { indicador: "Emprego Direto", valor: "8–10", descricao: "Postos de trabalho diretos criados" },
+        { indicador: "Visitantes/Ano", valor: "3.000", descricao: "Visitantes anuais previstos (Ano 3)" }
     ],
     modelo: {
         pilares: [
@@ -295,82 +304,100 @@ const quintaSalreuDetails = {
     }
 }
 
-// Detalhes do projeto Torre do Carvalhal — atualizado reunião Fev/2026
+// Detalhes do projeto Torre do Carvalhal — atualizado documentos Mar/2026
 const torreCarvalhalDetails = {
     historia: {
-        titulo: "História da Torre",
-        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. A Ermida possui azulejaria do século XVI — comparável apenas à da Universidade de Évora. A propriedade inclui entre 400 e 600 hectares de montado com sobreiros e azinheiras endémicas, várias casas e construções dentro da propriedade, e está inserida na Rede Natura 2000 (Sítio Monfurado). O grande diferencial é o ofício do Corticeiro — a extração de cortiça dos sobreiros centenários, uma arte técnica em risco de desaparecimento."
+        titulo: "Torre do Carvalhal",
+        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. A Ermida possui azulejaria do século XVI — comparável apenas à da Universidade de Évora. A propriedade inclui entre 400 e 600 hectares de montado com sobreiros e azinheiras endémicas, inserida na Rede Natura 2000 (Sítio Monfurado). É aqui que se pratica o ofício do Corticeiro — a extração de cortiça dos sobreiros centenários, uma arte técnica em risco de desaparecimento. O projeto adopta um modelo de retiro holístico sustentável com 6 eco-lodges construídas em taipa, pedra e cortiça."
     },
     patrimonio: {
         titulo: "Património a Preservar",
         elementos: [
-            { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
-            { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria única, comparável apenas à Universidade de Évora" },
-            { nome: "Casas na Propriedade", estado: "Devoluto", descricao: "6 a 10 casas dentro dos hectares — potencial para turismo rural" },
-            { nome: "Montado (400-600 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça sustentável" },
-            { nome: "Infraestrutura Hídrica", estado: "Abandonado", descricao: "Sistema de irrigação a restaurar para o jardim e horta" }
+            { nome: "Torre Medieval (150 m²)", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelino-mudéjar de 17 metros" },
+            { nome: "Ermida e Azulejaria Mudejária (séc. XVI)", estado: "Ruína", descricao: "Azulejaria única, comparável à de Sintra e Universidade de Évora" },
+            { nome: "6 Eco-Lodges (taipa/pedra/cortiça)", estado: "Projeto", descricao: "Construção nova com materiais locais, energia solar off-grid e aquecimento a lenha" },
+            { nome: "Montado de Sobro (600 ha)", estado: "Bom", descricao: "Sobreiros centenários — produção de cortiça, mel, cogumelos e plantas aromáticas" },
+            { nome: "Forno de Cal Histórico", estado: "Abandonado", descricao: "Musealização e sinalização interpretativa — peça única de património industrial" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-6", descricao: "Levantamento técnico, projeto de arquitetura, mapeamento das casas e ermida", orcamento: "€60.000" },
-        { fase: "2", nome: "Consolidação", periodo: "Meses 7-18", descricao: "Estabilização estrutural da torre, ermida e casas prioritárias", orcamento: "€250.000" },
-        { fase: "3", nome: "Restauro e Formação", periodo: "Meses 18-30", descricao: "Restauro integral, formação em ofícios alentejanos e corticeiros", orcamento: "€400.000" },
-        { fase: "4", nome: "Operação", periodo: "Meses 30+", descricao: "Turismo de natureza, cortiça, apicultura e turismo rural nas casas", orcamento: "€90.000/ano" }
+        { fase: "1", nome: "Projetos e Licenciamento", periodo: "Meses 1-8", descricao: "Levantamento técnico, projeto de arquitetura, paisagismo, licenciamento municipal e DGPC, arqueologia preventiva", orcamento: "€80.000" },
+        { fase: "2", nome: "Torre Medieval e Ermida", periodo: "Meses 9-20", descricao: "Restauro estrutural da torre + restauro especializado da ermida e azulejaria mudejária", orcamento: "€425.000" },
+        { fase: "3", nome: "Eco-Lodges e Infraestrutura", periodo: "Meses 14-26", descricao: "Construção de 6 eco-lodges em taipa/pedra/cortiça + energia solar off-grid, captação de água e saneamento ecológico", orcamento: "€548.000" },
+        { fase: "4", nome: "Equipamento e Arranque", periodo: "Meses 26-30", descricao: "Forno de cal, centro interpretativo, equipamentos, marketing e arranque operacional", orcamento: "€147.000" }
     ],
+    montado: [
+        { atividade: "Produção de cortiça", receita: "Incluso nos pacotes", obs: "Sobreiros centenários, ciclo de 9 anos" },
+        { atividade: "Mel e apicultura", receita: "Incluso nos pacotes", obs: "Produto local para os retiros" },
+        { atividade: "Cogumelos silvestres", receita: "Incluso nos pacotes", obs: "Colheita sazonal (outono/inverno)" },
+        { atividade: "Plantas aromáticas", receita: "Incluso nos pacotes", obs: "Alecrim, tomilho, orégãos" }
+    ],
+    receitas: [
+        { fonte: "Alojamento (6 eco-lodges × €95/noite × 139 dias)", ano1: "€40.000", ano2: "€62.000", ano3: "€79.230" },
+        { fonte: "Retiros e experiências (800 participantes × €90)", ano1: "€25.000", ano2: "€50.000", ano3: "€72.000" },
+        { fonte: "Formação (32 formandos + 200 workshops)", ano1: "€15.000", ano2: "€30.000", ano3: "€45.000" },
+        { fonte: "Visitas guiadas (2.000 visitantes × €12)", ano1: "€8.000", ano2: "€16.000", ano3: "€24.000" },
+        { fonte: "Produtos do montado (cortiça, mel, cogumelos)", ano1: "€5.000", ano2: "€10.000", ano3: "€15.000" },
+        { fonte: "Eventos e retiros corporativos (6 × €3.000)", ano1: "€6.000", ano2: "€12.000", ano3: "€18.000" }
+    ],
+    resultadoOperacional: { receita: "€253.000", custos: "€133.000", resultado: "€120.000", margem: "47%", retorno: "~5–7 anos" },
     impacto: [
-        { indicador: "Área", valor: "600 ha", descricao: "Hectares de montado sob gestão sustentável" },
-        { indicador: "Capacitação", valor: "30", descricao: "Artesãos e corticeiros formados" },
-        { indicador: "Alojamento", valor: "6-10", descricao: "Casas potenciais para turismo rural / Airbnb" },
-        { indicador: "Rede Natura", valor: "100%", descricao: "Inserção em área de proteção ambiental" }
+        { indicador: "Área", valor: "600 ha", descricao: "Montado sob gestão sustentável (Rede Natura 2000)" },
+        { indicador: "Eco-Lodges", valor: "6", descricao: "Alojamentos em taipa, pedra e cortiça locais" },
+        { indicador: "Formandos/Ano", valor: "32+", descricao: "Azulejaria, taipa, subericultura e cal artesanal" },
+        { indicador: "Investimento", valor: "€1,2M", descricao: "Investimento total em 30 meses" }
     ],
     modelo: {
         pilares: [
-            { nome: "Proprietário (DOVA)", descricao: "Detém a titularidade e assegura a visão de longo prazo do legado." },
-            { nome: "Associação (APHC)", descricao: "Gestora local focada no restauro, cortiça e montado sustentável." },
-            { nome: "IPNS + Rede de Mestres", descricao: "Especialistas em técnicas alentejanas e corticeiros que coordenam a formação." }
+            { nome: "Proprietário (DOVA)", descricao: "Detém a titularidade e assegura a visão de longo prazo do legado familiar." },
+            { nome: "Associação (APHC)", descricao: "Gestora local focada no restauro, cortiça e montado sustentável — parceria com ICNF." },
+            { nome: "IPNS + U. Évora", descricao: "Assessoria estratégica, captação de fundos e parceria científica para azulejaria mudejária." }
         ]
     }
 }
 
+
 const propostas = [
-    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€160.000", investimento: "€2.000.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (14 unidades, escola de artes e culinária)" },
-    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "TBD", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação de corticeiros no Alentejo (ermida, montado, casas rurais)" },
-    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "A partir de €2.000.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo." }
+    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€120.000", investimento: "€1.500.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (8 unidades, escola de artes e culinária, 24 meses)" },
+    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "€96.000", investimento: "€1.200.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e retiro holístico no Alentejo (ermida, 6 eco-lodges, montado, 30 meses)" },
+    { opcao: "C", projeto: "Programa Integrado", honorarios: "€183.600", investimento: "€2.700.000", taxaGestao: "6,8%", economia: "€32.400", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo — poupança de €32.400 vs. projetos separados." }
 ]
 
 const passosDetails = [
-    { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos da Quinta do Visconde de Salreu." },
-    { num: "02", titulo: "Orçamentação Torre Carvalhal", desc: "Pesquisa extensiva e estimativa de custos para a Torre do Carvalhal." },
-    { num: "03", titulo: "Constituição das Entidades", desc: "Formalização da IPSS Banda Visconde de Salreu e arranjo jurídico correspondente." },
-    { num: "04", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030, IEFP e procura de mecenato." },
-    { num: "05", titulo: "Início das Obras e Formação", desc: "Arranque do restauro estrutural e da escola de artes e ofícios." }
+    { num: "01", titulo: "Constituição das Entidades", desc: "Formalização da Associação para a Preservação da Quinta do Visconde de Salreu (IPSS) e protocolo com a APHC para a Torre do Carvalhal." },
+    { num: "02", titulo: "Projetos de Arquitetura e Licenciamento", desc: "Início dos projetos de arquitetura, engenharia e paisagismo. Pedidos de licenciamento junto dos municípios e DGPC." },
+    { num: "03", titulo: "Candidaturas Portugal 2030 e PRR", desc: "Submissão de candidaturas ao Portugal 2030 (abertura prevista 2.º sem. 2026) e ao PRR — Componente 16 Cultura. Estimativa: €1.200.000–€1.400.000 por projeto." },
+    { num: "04", titulo: "Protocolos com Parceiros", desc: "Celebração de protocolos com Banda Visconde de Salreu, IEFP, Câmara Municipal de Estarreja, Câmara de Montemor e Universidade de Évora." },
+    { num: "05", titulo: "Arranque das Obras (Mês 7)", desc: "Início do restauro estrutural em ambos os projetos, com imprevistos de 12,6% (Salreu) e 13,8% (Carvalhal) incluídos no orçamento." }
 ]
 
 const fontesDetails = [
-    { titulo: "Transcrição da Reunião de Adequações (Fev/2026)", desc: "Decisões estratégicas sobre orçamento (€2M Quinta), mudança de foco para artes/culinária e novo modelo institucional (IPSS)." },
-    { titulo: "Plano Mestre Bureau Social", desc: "Diretrizes operacionais e estruturais para o IPNS e seus projetos de preservação patrimonial e impacto social." },
-    { titulo: "Programa PRR / Portugal 2030 / IEFP", desc: "Linhas de financiamento europeias e nacionais para qualificação do património, turismo e formação profissional." },
-    { titulo: "Cristina Castelo Branco & Parceiros", desc: "Referências de projeto de restauro botânico e arquitetónico." }
+    { titulo: "DOCX_v5 — Quinta Salreu (Mar/2026)", desc: "Documentos v5 com orçamento de €1.500.000, modelo de receitas (€300k–€350k Ano 3), 4 fases de 24 meses e modelo de financiamento PT2030/PRR/IEFP." },
+    { titulo: "DOCX_v5 — Torre Carvalhal (Mar/2026)", desc: "Documentos v5 com orçamento de €1.200.000, modelo de receitas (€253k Ano 3), 4 fases de 30 meses e 6 eco-lodges em taipa/pedra/cortiça." },
+    { titulo: "Transcrição da Reunião de Adequações (Fev/2026)", desc: "Decisões estratégicas sobre orçamento, mudança de foco para artes/culinária e novo modelo institucional (IPSS)." },
+    { titulo: "Portugal 2030 / PRR / IEFP / Turismo PT", desc: "Linhas de financiamento: PT2030 — 65-85%, PRR Cultura — 100% fundo perdido, IEFP — 75-100% formação, Turismo PT — 40-75%." },
+    { titulo: "Universidade de Évora / Guedu Atelier / AirDNA", desc: "Referências científicas (azulejaria mudejária), custos de restauro patrimonial em Portugal 2025-2026 e dados de mercado Airbnb/turismo rural." }
 ]
 
 const financiamento = [
     {
-        fonte: "Fundos Europeus (PRR / Portugal 2030)", total: "€1.400k", items: [
-            { nome: "PRR — Reabilitação", valor: "€800k", descricao: "Fundo Europeu para reabilitação e restauro de patrimónios históricos" },
-            { nome: "FEADER/PDR", valor: "€300k", descricao: "Agricultura sustentável, montado e jardins históricos" },
-            { nome: "FSE+ / LIFE", valor: "€300k", descricao: "Formação profissional, biodiversidade e conservação" }
+        fonte: "Portugal 2030 + PRR (por projeto)", total: "€1.200k–€1.400k", items: [
+            { nome: "Portugal 2030 — Centro/Alentejo", valor: "€700k–€900k", descricao: "Programa Regional de Património e Cultura — taxa 65-85% (majoração zona baixa densidade + IPSS)" },
+            { nome: "PRR — Componente 16 Cultura", valor: "€300k–€500k", descricao: "100% fundo perdido — avisos periódicos, adiantamento 30%, decisão em 2-4 meses" },
+            { nome: "FEADER / LIFE", valor: "€80k–€150k", descricao: "Agricultura sustentável, montado e biodiversidade (Torre do Carvalhal)" }
         ]
     },
     {
-        fonte: "Portugal (IEFP + Turismo)", total: "€400k", items: [
-            { nome: "IEFP", valor: "€250k", descricao: "Programa de formação profissional — certificação de artes e ofícios" },
-            { nome: "Turismo PT", valor: "€150k", descricao: "Turismo cultural, experiência imersiva e Airbnb" }
+        fonte: "IEFP + Turismo de Portugal (por projeto)", total: "€180k–€350k", items: [
+            { nome: "IEFP — Formação Profissional", valor: "€80k–€150k", descricao: "Programas de formação certificada em artes e ofícios — taxa 75-100%, contínuo" },
+            { nome: "Turismo de Portugal", valor: "€100k–€200k", descricao: "Linha de Apoio ao Turismo Rural — taxa 50-75%, abertura 1.º sem. 2026" }
         ]
     },
     {
-        fonte: "Privado (10%)", total: "€200k", items: [
-            { nome: "Contrapartida Família", valor: "€150k", descricao: "10% de contrapartida exigida pela família proprietária" },
-            { nome: "Mecenato", valor: "€50k", descricao: "Donativos com benefícios fiscais, prémios de sustentabilidade" }
+        fonte: "Municipal + Mecenato + Capitais Próprios", total: "€280k–€580k", items: [
+            { nome: "Câmara Municipal", valor: "€30k–€80k", descricao: "Apoio a projetos culturais — Estarreja e Montemor-o-Novo" },
+            { nome: "Mecenato Cultural", valor: "€50k–€100k", descricao: "Lei do Mecenato (DL 74/99) — benefício fiscal para mecenas" },
+            { nome: "Capitais Próprios", valor: "€200k–€400k", descricao: "Investimento dos promotores (10-27% do total) — obrigatório nas candidaturas" }
         ]
     }
 ]
@@ -405,10 +432,10 @@ const governancaDetails = {
 }
 
 const kpiDetails = [
-    { meta: "Unidades Habitacionais", kpi: "14 unidades", prazo: "24 meses", icon: LucideFileText, desc: "Conversão dos anexos da Quinta em 14 unidades de alojamento Airbnb." },
-    { meta: "Financiamento Captado", kpi: "€1.800.000", prazo: "24 meses", icon: LucideEuro, desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus (FEADER, FSE+, LIFE)." },
-    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "24 meses", icon: LucideAward, desc: "Formação em culinária, botânica, música, artes, cortiça e restauro." },
-    { meta: "Empregos Criados", kpi: "25 postos", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
+    { meta: "Unidades de Alojamento", kpi: "14 unidades", prazo: "24 meses", icon: LucideFileText, desc: "8 unidades na Quinta Salreu (T0 + T1) + 6 eco-lodges em taipa/pedra na Torre do Carvalhal." },
+    { meta: "Investimento Total", kpi: "€2.700.000", prazo: "30 meses", icon: LucideEuro, desc: "€1.500.000 (Salreu, 24 meses) + €1.200.000 (Carvalhal, 30 meses), financiados por PT2030, PRR e IEFP." },
+    { meta: "Formandos por Ano", kpi: "86+ pessoas", prazo: "Ano 3", icon: LucideAward, desc: "54+ formandos/ano (Salreu) + 32 formandos/ano (Carvalhal), certificados pelo IEFP." },
+    { meta: "Empregos Criados", kpi: "18+ diretos", prazo: "Ano 3", icon: LucideCheckCircle2, desc: "8-10 postos diretos (Salreu) + 8 postos diretos (Carvalhal), com receitas combinadas de €550.000+/ano." }
 ]
 
 export default function Assessoria() {
@@ -446,8 +473,8 @@ export default function Assessoria() {
                             <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
                                 <LucideEuro className="w-6 h-6 text-heritage-terracotta" />
                                 <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">A partir de €2.000.000</p>
-                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Investimento Total</p>
+                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">€2.700.000</p>
+                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Investimento Total (2 Projetos)</p>
                                 </div>
                             </div>
                             <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
@@ -461,7 +488,7 @@ export default function Assessoria() {
                                 <LucideBuilding2 className="w-6 h-6 text-heritage-gold" />
                                 <div className="text-left">
                                     <p className="text-2xl font-black text-heritage-navy dark:text-white">2 Projetos</p>
-                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Norte + Sul</p>
+                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Norte (Aveiro) + Sul (Alentejo)</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -589,7 +616,7 @@ export default function Assessoria() {
                                         </div>
                                         <div className="flex gap-8">
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-terracotta">€2.000.000</p>
+                                                <p className="text-4xl font-black text-heritage-terracotta">€1.500.000</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
                                             </div>
                                             <div className="text-center">
@@ -683,6 +710,47 @@ export default function Assessoria() {
                                         ))}
                                     </div>
                                 </div>
+
+                                {/* Sustentabilidade Financeira — Quinta Salreu */}
+                                <div className="glass-card p-10 rounded-[40px]">
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-2">Sustentabilidade Financeira</h3>
+                                    <p className="text-sm text-heritage-navy/50 dark:text-white/40 mb-8">Projeção de receitas por fonte (operação plena no Ano 3)</p>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b border-heritage-navy/10 dark:border-white/10">
+                                                    <th className="text-left py-3 pr-4 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Fonte de Receita</th>
+                                                    <th className="text-right py-3 px-3 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Ano 1</th>
+                                                    <th className="text-right py-3 px-3 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Ano 2</th>
+                                                    <th className="text-right py-3 pl-3 font-black text-heritage-terracotta uppercase text-[10px] tracking-widest">Ano 3</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {quintaSalreuDetails.receitas.map((r, i) => (
+                                                    <tr key={i} className="border-b border-heritage-navy/5 dark:border-white/5">
+                                                        <td className="py-3 pr-4 text-heritage-navy/70 dark:text-white/60">{r.fonte}</td>
+                                                        <td className="py-3 px-3 text-right text-heritage-navy/50 dark:text-white/40">{r.ano1}</td>
+                                                        <td className="py-3 px-3 text-right text-heritage-navy/50 dark:text-white/40">{r.ano2}</td>
+                                                        <td className="py-3 pl-3 text-right font-black text-heritage-terracotta">{r.ano3}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                                        {[
+                                            { label: "Receita Total Ano 3", valor: quintaSalreuDetails.resultadoOperacional.receita, color: "text-heritage-terracotta" },
+                                            { label: "Custos Operacionais", valor: quintaSalreuDetails.resultadoOperacional.custos, color: "text-heritage-navy dark:text-white" },
+                                            { label: "Margem Operacional", valor: quintaSalreuDetails.resultadoOperacional.margem, color: "text-heritage-success" },
+                                            { label: "Retorno do Investimento", valor: quintaSalreuDetails.resultadoOperacional.retorno, color: "text-heritage-ocean" },
+                                        ].map((item, i) => (
+                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-4 rounded-2xl text-center">
+                                                <p className={`text-2xl font-black ${item.color}`}>{item.valor}</p>
+                                                <p className="text-xs text-heritage-navy/40 dark:text-white/40 font-bold uppercase tracking-wider mt-1">{item.label}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </TabsContent>
 
                             {/* TAB: Torre Carvalhal (Detalhada) */}
@@ -705,7 +773,7 @@ export default function Assessoria() {
                                         </div>
                                         <div className="flex gap-8">
                                             <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-ocean">TBD</p>
+                                                <p className="text-4xl font-black text-heritage-ocean">€1.200.000</p>
                                                 <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
                                             </div>
                                             <div className="text-center">
@@ -784,19 +852,69 @@ export default function Assessoria() {
                                     ))}
                                 </div>
 
-                                {/* Modelo Institucional Sul */}
+                                {/* Gestão do Montado */}
                                 <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estrutura Organizacional Sul</h3>
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {torreCarvalhalDetails.modelo.pilares.map((pilar, i) => (
-                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-6 rounded-2xl border-t-4 border-heritage-ocean">
-                                                <h4 className="font-black text-heritage-navy dark:text-white mb-2">{pilar.nome}</h4>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{pilar.descricao}</p>
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-2">Gestão do Montado de Sobro</h3>
+                                    <p className="text-sm text-heritage-navy/50 dark:text-white/40 mb-6">Receitas complementares do montado de 600 hectares (ciclo anual estimado)</p>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {torreCarvalhalDetails.montado.map((item, i) => (
+                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-5 rounded-2xl flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-black text-heritage-navy dark:text-white">{item.atividade}</p>
+                                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 mt-1">{item.obs}</p>
+                                                </div>
+                                                <p className="text-heritage-ocean font-black text-sm text-right shrink-0 ml-4">{item.receita}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-6 p-4 bg-heritage-ocean/10 rounded-2xl flex items-center justify-between">
+                                        <span className="font-black text-heritage-navy dark:text-white">Total Montado (Ano 3)</span>
+                                        <span className="font-black text-heritage-ocean">€35.000–€63.000/ano</span>
+                                    </div>
+                                </div>
+
+                                {/* Sustentabilidade Financeira — Torre Carvalhal */}
+                                <div className="glass-card p-10 rounded-[40px]">
+                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-2">Sustentabilidade Financeira</h3>
+                                    <p className="text-sm text-heritage-navy/50 dark:text-white/40 mb-8">Projeção de receitas por fonte (operação plena no Ano 3)</p>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b border-heritage-navy/10 dark:border-white/10">
+                                                    <th className="text-left py-3 pr-4 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Fonte de Receita</th>
+                                                    <th className="text-right py-3 px-3 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Ano 1</th>
+                                                    <th className="text-right py-3 px-3 font-black text-heritage-navy/60 dark:text-white/40 uppercase text-[10px] tracking-widest">Ano 2</th>
+                                                    <th className="text-right py-3 pl-3 font-black text-heritage-ocean uppercase text-[10px] tracking-widest">Ano 3</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {torreCarvalhalDetails.receitas.map((r, i) => (
+                                                    <tr key={i} className="border-b border-heritage-navy/5 dark:border-white/5">
+                                                        <td className="py-3 pr-4 text-heritage-navy/70 dark:text-white/60">{r.fonte}</td>
+                                                        <td className="py-3 px-3 text-right text-heritage-navy/50 dark:text-white/40">{r.ano1}</td>
+                                                        <td className="py-3 px-3 text-right text-heritage-navy/50 dark:text-white/40">{r.ano2}</td>
+                                                        <td className="py-3 pl-3 text-right font-black text-heritage-ocean">{r.ano3}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                                        {[
+                                            { label: "Receita Total Ano 3", valor: torreCarvalhalDetails.resultadoOperacional.receita, color: "text-heritage-ocean" },
+                                            { label: "Custos Operacionais", valor: torreCarvalhalDetails.resultadoOperacional.custos, color: "text-heritage-navy dark:text-white" },
+                                            { label: "Margem Operacional", valor: torreCarvalhalDetails.resultadoOperacional.margem, color: "text-heritage-success" },
+                                            { label: "Retorno do Investimento", valor: torreCarvalhalDetails.resultadoOperacional.retorno, color: "text-heritage-terracotta" },
+                                        ].map((item, i) => (
+                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-4 rounded-2xl text-center">
+                                                <p className={`text-2xl font-black ${item.color}`}>{item.valor}</p>
+                                                <p className="text-xs text-heritage-navy/40 dark:text-white/40 font-bold uppercase tracking-wider mt-1">{item.label}</p>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </TabsContent>
+
 
                             {/* TAB: Ofícios (com modais) */}
                             <TabsContent value="oficios" className="space-y-12">
@@ -1224,7 +1342,7 @@ export default function Assessoria() {
                         </Tabs>
                     </div>
                 </section>
-            </div>
-        </PasswordGate>
+            </div >
+        </PasswordGate >
     )
 }
