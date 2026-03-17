@@ -28,7 +28,7 @@ export default function Auth() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f8f6f0] dark:bg-zinc-950 px-6 relative overflow-hidden font-sans">
+        <div className="min-h-screen flex items-center justify-center bg-[#f8f6f0] dark:bg-zinc-950 px-6 pt-40 sm:pt-48 pb-12 relative overflow-hidden font-sans">
             <Grain opacity={0.07} />
             
             {/* Background elements */}

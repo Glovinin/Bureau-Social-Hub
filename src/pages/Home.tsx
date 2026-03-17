@@ -153,18 +153,16 @@ export default function Home() {
                         <FadeIn delay={0.7} direction="left">
                             <div className="w-full">
                                 <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-3 font-semibold">Tome Ação</span>
-                                <Magnetic>
-                                    <Link to="/candidatura" className="block outline-none group">
-                                        <div className="flex items-center justify-between border-b-2 border-heritage-navy dark:border-white pb-3 group-hover:border-heritage-terracotta transition-colors duration-500 cursor-pointer">
-                                            <span className="text-xl sm:text-2xl font-serif font-medium text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors duration-500">
-                                                Associe-se ao Bureau
-                                            </span>
-                                            <div className="w-8 h-8 rounded-full border border-heritage-navy/20 dark:border-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500 group-hover:bg-heritage-terracotta group-hover:border-heritage-terracotta group-hover:text-white">
-                                                <LucideArrowDownRight className="w-4 h-4 text-heritage-navy dark:text-white group-hover:text-white transition-colors" />
-                                            </div>
+                                <Link to="/candidatura" className="block outline-none group">
+                                    <div className="flex items-center justify-between border-b-2 border-heritage-navy dark:border-white pb-3 group-hover:border-heritage-terracotta transition-colors duration-500 cursor-pointer">
+                                        <span className="text-xl font-serif font-medium text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors duration-500">
+                                            Associe-se ao Bureau
+                                        </span>
+                                        <div className="w-8 h-8 rounded-full border border-heritage-navy/20 dark:border-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500 group-hover:bg-heritage-terracotta group-hover:border-heritage-terracotta group-hover:text-white">
+                                            <LucideArrowDownRight className="w-4 h-4 text-heritage-navy dark:text-white group-hover:text-white transition-colors" />
                                         </div>
-                                    </Link>
-                                </Magnetic>
+                                    </div>
+                                </Link>
                             </div>
                         </FadeIn>
                     </div>
