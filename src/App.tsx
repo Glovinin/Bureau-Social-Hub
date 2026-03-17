@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import ScrollToTop from "./components/ScrollToTop"
-import SmoothScroll from "./components/SmoothScroll"
 import { Suspense, lazy } from "react"
 import MainLayout from "./components/layout/MainLayout"
 import AuthWrapper from "./components/layout/AuthWrapper"
@@ -53,9 +52,8 @@ function App() {
     <ThemeProvider defaultTheme="light">
       <GrainProvider>
       <BrowserRouter>
-        <SmoothScroll>
-          <ScrollToTop />
-          <AuthWrapper>
+        <ScrollToTop />
+        <AuthWrapper>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<MainLayout />}>
@@ -89,7 +87,6 @@ function App() {
             </Routes>
           </Suspense>
         </AuthWrapper>
-        </SmoothScroll>
       </BrowserRouter>
       <Toaster />
       </GrainProvider>

@@ -200,7 +200,7 @@ export default function Candidatura() {
                             <div className="h-px flex-1 bg-heritage-navy/10" />
                         </div>
                         <h1 className="text-6xl md:text-8xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.85] tracking-tighter">
-                            A Nossa <span className="italic text-heritage-ocean">Comunidade</span>.
+                            A Nossa <span className="italic text-heritage-terracotta">Comunidade</span>.
                         </h1>
                         <p className="max-w-2xl text-xl text-heritage-navy/60 dark:text-white/40 font-serif leading-relaxed italic">
                             "Propomos um modelo de intervenção onde cada talento é um pilar da estrutura. Escolha a sua modalidade de compromisso."
