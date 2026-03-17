@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useGrain } from "@/contexts/GrainContext";
 
 export function Grain({ opacity = 0.05 }: { opacity?: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { grainEnabled } = useGrain();
 
     useEffect(() => {
+        if (!grainEnabled) return;
         const canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -69,7 +72,9 @@ export function Grain({ opacity = 0.05 }: { opacity?: number }) {
             window.removeEventListener("resize", resize);
             cancelAnimationFrame(animationFrameId);
         };
-    }, []);
+    }, [grainEnabled]);
+
+    if (!grainEnabled) return null;
 
     return (
         <canvas

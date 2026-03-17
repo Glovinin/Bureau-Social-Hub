@@ -9,6 +9,7 @@ import ProtectedRoute from "@/components/layout/ProtectedRoute"
 import AdminRoute from "@/components/layout/AdminRoute"
 import { Toaster } from "@/components/ui/sonner"
 import { Skeleton } from "@/components/ui/skeleton"
+import { GrainProvider } from "@/contexts/GrainContext"
 
 // Lazy loaded pages for code splitting
 const Home = lazy(() => import("./pages/Home"))
@@ -50,6 +51,7 @@ function PageLoader() {
 function App() {
   return (
     <ThemeProvider defaultTheme="light">
+      <GrainProvider>
       <BrowserRouter>
         <SmoothScroll>
           <ScrollToTop />
@@ -90,6 +92,7 @@ function App() {
         </SmoothScroll>
       </BrowserRouter>
       <Toaster />
+      </GrainProvider>
     </ThemeProvider>
   )
 }

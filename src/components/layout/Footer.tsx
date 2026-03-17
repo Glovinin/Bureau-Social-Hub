@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
 import { LucideArrowUpRight } from "lucide-react"
+import { useGrain } from "@/contexts/GrainContext"
 
 export default function Footer() {
+    const { grainEnabled, toggleGrain } = useGrain()
     return (
         <footer className="bg-[#f8f6f0] dark:bg-zinc-950 border-t border-heritage-navy/10 dark:border-white/10 transition-colors pt-16 sm:pt-24 font-sans relative overflow-hidden">
             {/* Ambient Editorial Paper Texture (Subtle) */}
@@ -94,9 +96,17 @@ export default function Footer() {
                             © {new Date().getFullYear()} Inst. Português de Negócios Sociais
                         </span>
                     </div>
-                    <span className="text-[9px] font-bold text-heritage-navy/30 dark:text-white/30 uppercase tracking-[0.3em]">
-                        Edição Online Definitiva
-                    </span>
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={toggleGrain}
+                            className="text-[9px] font-bold text-heritage-navy/40 dark:text-white/40 uppercase tracking-[0.3em] hover:text-heritage-terracotta dark:hover:text-heritage-terracotta transition-colors"
+                        >
+                            {grainEnabled ? "Desativar textura" : "Ativar textura"}
+                        </button>
+                        <span className="text-[9px] font-bold text-heritage-navy/30 dark:text-white/30 uppercase tracking-[0.3em]">
+                            Edição Online Definitiva
+                        </span>
+                    </div>
                 </div>
             </div>
         </footer>
