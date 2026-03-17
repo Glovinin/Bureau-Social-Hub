@@ -13,7 +13,7 @@ const FadeIn = ({ children, delay = 0, className = "", direction = "up", trigger
             <motion.div
                 initial={{ opacity: 0, y: yOffset, x: xOffset }}
                 whileInView={{ opacity: 1, y: 0, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, amount: 0.05, margin: "50px" }}
                 transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
                 className={className}
             >
@@ -83,7 +83,7 @@ export default function About() {
                     
                     {/* Left Column (Image/Photojournalism) */}
                     <div className="md:col-span-6 relative">
-                        <FadeIn delay={0.2} triggerOnView className="h-full">
+                        <FadeIn delay={0.2} className="h-full">
                             <div className="relative border border-heritage-navy/10 dark:border-white/10 p-2 bg-[#f8f6f0] dark:bg-zinc-950 h-[100%]">
                                 <img
                                     src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"
@@ -99,7 +99,7 @@ export default function About() {
                     
                     {/* Center Column / Right Column (Body Copy) */}
                     <div className="md:col-span-6 flex flex-col gap-12 md:pl-12 border-t-2 md:border-t-0 md:border-l-2 border-heritage-terracotta pt-8 md:pt-0">
-                        <FadeIn delay={0.4} direction="left" triggerOnView>
+                        <FadeIn delay={0.4} direction="left">
                             <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Manifesto</span>
                             <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-heritage-navy dark:text-white leading-[1] tracking-tight mb-8">
                                 A nossa missão como <span className="italic text-heritage-terracotta">IPSS</span> é clara.
@@ -115,7 +115,7 @@ export default function About() {
 
                         <div className="w-full border-t border-heritage-navy/10 dark:border-white/10"></div>
 
-                        <FadeIn delay={0.6} direction="left" triggerOnView>
+                        <FadeIn delay={0.6} direction="left">
                             <div className="grid grid-cols-2 gap-x-8 gap-y-12">
                                 {[
                                     { label: "IPSS Certificada", icon: LucideShieldCheck },

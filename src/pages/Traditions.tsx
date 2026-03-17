@@ -139,7 +139,7 @@ const FadeIn = ({ children, delay = 0, className = "", direction = "up", trigger
             <motion.div
                 initial={{ opacity: 0, y: yOffset, x: xOffset }}
                 whileInView={{ opacity: 1, y: 0, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, amount: 0.05, margin: "50px" }}
                 transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
                 className={className}
             >
@@ -216,19 +216,20 @@ export default function Traditions() {
 
             <div className="w-full border-t border-heritage-navy/10 dark:border-white/10 relative z-20"></div>
 
-            {/* Introduction Section */}
+            {/* Introduction Section - sem triggerOnView: secção muitas vezes visível no load;
+                whileInView não dispara quando o elemento já está no viewport ao entrar na página */}
             <section className="relative flex flex-col justify-center px-4 sm:px-8 md:px-12 py-24 overflow-hidden bg-[#f5f3ec] dark:bg-zinc-900/50">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 relative z-10 items-center">
                     
                     <div className="md:col-span-4 border-t-2 md:border-t-0 md:border-l-2 border-heritage-terracotta pt-4 md:pt-0 md:pl-6 bg-transparent h-full">
-                        <FadeIn delay={0.1} direction="left" triggerOnView>
+                        <FadeIn delay={0.1} direction="left" triggerOnView={false}>
                             <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Preservação</span>
                             <h2 className="font-serif text-3xl sm:text-4xl text-heritage-navy dark:text-white tracking-tight leading-tight">A Nossa Herança.</h2>
                         </FadeIn>
                     </div>
                     
                     <div className="md:col-span-8">
-                        <FadeIn delay={0.3} triggerOnView>
+                        <FadeIn delay={0.3}>
                             <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium mb-6">
                                 <span className="float-left text-6xl leading-[0.8] pr-3 pt-2 font-serif text-heritage-terracotta font-medium">P</span>
                                 ortugal possui um rico património de ofícios tradicionais que representa séculos de conhecimento acumulado e transmitido de geração em geração. Estas profissões, que outrora constituíam a base da economia local, encontram-se hoje em risco de desaparecimento.
