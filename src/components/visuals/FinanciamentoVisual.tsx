@@ -4,7 +4,15 @@ import AnimatedCounter from "@/components/ui/AnimatedCounter"
 
 const formatEuro = (n: number) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 
-export default function FinanciamentoVisual() {
+interface FinanciamentoVisualProps {
+    project?: "quinta" | "torre"
+}
+
+export default function FinanciamentoVisual({ project }: FinanciamentoVisualProps) {
+    const totalQuinta = 1500000
+    const totalTorre = 1200000
+    const totalValue = project === "torre" ? totalTorre : totalQuinta
+
     const fontes = [
         {
             categoria: "União Europeia",
@@ -45,11 +53,11 @@ export default function FinanciamentoVisual() {
                 <div className="flex flex-col gap-2">
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50">Investimento Total Captado</span>
                     <h4 className="font-serif text-5xl md:text-6xl tracking-tighter text-heritage-navy dark:text-white leading-none">
-                        <AnimatedCounter to={1660000} prefix="€" format={formatEuro} duration={2} />
+                        <AnimatedCounter to={totalValue} prefix="€" format={formatEuro} duration={2} />
                     </h4>
                 </div>
                 <p className="text-sm text-heritage-navy/60 dark:text-white/60 max-w-sm md:text-right leading-relaxed">
-                    Arquitetura financeira baseada em <strong className="text-heritage-navy dark:text-white">Sinergia Integrada</strong>, permitindo o acesso a fundos de maior escala e otimização de custos em 15%.
+                    Arquitetura financeira diversificada em PRR, Portugal 2030, IEFP e fundos europeus, compatível com património, formação e território.
                 </p>
             </div>
 

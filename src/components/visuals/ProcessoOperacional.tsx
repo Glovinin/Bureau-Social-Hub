@@ -1,39 +1,28 @@
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { useRef } from "react"
 
-export default function ProcessoOperacional() {
-    const fases = [
-        {
-            fase: "Fase 1",
-            nome: "Constituição",
-            periodo: "1º Semestre 2026",
-            tasks: ["Aprovação de Estatutos", "Assembleia Constitutiva", "Termo de Cooperação IPNS", "Contrato de Arrendamento"]
-        },
-        {
-            fase: "Fase 2",
-            nome: "Diagnóstico",
-            periodo: "2º Semestre 2026",
-            tasks: ["Levantamento Técnico", "Plano de Intervenção", "Candidaturas (LIFE/FSE+)", "Mapeamento de Ofícios"]
-        },
-        {
-            fase: "Fase 3",
-            nome: "Captação & Formação",
-            periodo: "2026-2027",
-            tasks: ["Recrutamento de Mestres", "Seleção de Aprendizes", "Módulos Teórico-Práticos", "Certificações Iniciais"]
-        },
-        {
-            fase: "Fase 4",
-            nome: "Execução",
-            periodo: "2027-2028",
-            tasks: ["Restauro do Palacete e Torre", "Jardim Histórico", "Sistemas de Água", "Centro de Formação"]
-        },
-        {
-            fase: "Fase 5",
-            nome: "Operação & ESG",
-            periodo: "2028+",
-            tasks: ["Abertura ao Público", "Programa de Turismo Cultural", "Comercialização de Produtos Artesanais", "Relatórios de Sustentabilidade"]
-        }
+interface ProcessoOperacionalProps {
+    project?: "quinta" | "torre"
+}
+
+export default function ProcessoOperacional({ project }: ProcessoOperacionalProps) {
+    const fasesQuinta = [
+        { fase: "Fase 1", nome: "Constituição", periodo: "1º Semestre 2026", tasks: ["Aprovação de Estatutos", "Assembleia Constitutiva", "Termo de Cooperação IPNS", "Contrato de Arrendamento"] },
+        { fase: "Fase 2", nome: "Diagnóstico", periodo: "2º Semestre 2026", tasks: ["Levantamento Técnico", "Plano de Intervenção", "Candidaturas (LIFE/FSE+)", "Mapeamento de Ofícios"] },
+        { fase: "Fase 3", nome: "Captação & Formação", periodo: "2026-2027", tasks: ["Recrutamento de Mestres", "Seleção de Aprendizes", "Módulos Teórico-Práticos", "Certificações Iniciais"] },
+        { fase: "Fase 4", nome: "Execução", periodo: "2027-2028", tasks: ["Restauro do Palacete e Anexos", "Jardim Histórico", "Sistemas de Água por Gravidade", "Centro de Formação"] },
+        { fase: "Fase 5", nome: "Operação & ESG", periodo: "2028+", tasks: ["Abertura ao Público", "Programa de Turismo Cultural", "Comercialização de Produtos Artesanais", "Relatórios de Sustentabilidade"] }
     ]
+
+    const fasesTorre = [
+        { fase: "Fase 1", nome: "Constituição", periodo: "1º Semestre 2026", tasks: ["Aprovação de Estatutos", "Assembleia Constitutiva", "Termo de Cooperação IPNS", "Contrato de Arrendamento"] },
+        { fase: "Fase 2", nome: "Diagnóstico", periodo: "2º Semestre 2026", tasks: ["Levantamento Técnico", "Plano de Intervenção", "Candidaturas (LIFE/FEADER)", "Mapeamento de Ofícios Alentejanos"] },
+        { fase: "Fase 3", nome: "Captação & Formação", periodo: "2026-2027", tasks: ["Recrutamento de Mestres Corticeiros", "Seleção de Aprendizes", "Módulos Teórico-Práticos", "Certificações Iniciais"] },
+        { fase: "Fase 4", nome: "Execução", periodo: "2027-2029", tasks: ["Consolidação da Torre e Ermida", "Restauro da Azulejaria Mudejar", "Montado e Cortiça", "Turismo de Natureza"] },
+        { fase: "Fase 5", nome: "Operação & ESG", periodo: "2029+", tasks: ["Abertura ao Público", "Ecoturismo e Retiro", "Produção de Cortiça e Mel", "Relatórios de Sustentabilidade"] }
+    ]
+
+    const fases = project === "torre" ? fasesTorre : fasesQuinta
 
     const containerRef = useRef<HTMLDivElement>(null)
     const { scrollYProgress } = useScroll({

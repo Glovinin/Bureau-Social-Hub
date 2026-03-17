@@ -199,7 +199,7 @@ const oficiosDetalhados = {
             horas: "600h (300h teóricas + 300h práticas)",
             certificacao: "Pedreiro de Alvenaria Tradicional - Nível 4",
             aplicacao: "Restauro de muros e estruturas em pedra",
-            descricao: "Domina técnicas centenárias de construção em pedra, utilizando argamassas de cal e técnicas de assentamento para o restauro autêntico dos anexos e muros da Quinta.",
+            descricao: "Domina técnicas centenárias de construção em pedra, utilizando argamassas de cal e técnicas de assentamento para o restauro autêntico dos anexos e muros.",
             competencias: ["Leitura de aparelhos de pedra", "Preparação de argamassas de cal", "Técnicas de rejuntamento", "Consolidação de paredes históricas"],
             insercao: "Empresas de restauro, trabalho autónomo"
         },
@@ -218,8 +218,8 @@ const oficiosDetalhados = {
             duracao: "4 meses",
             horas: "400h (160h teóricas + 240h práticas)",
             certificacao: "Estucador Ornamentista - Nível 4",
-            aplicacao: "Recuperação de ornamentos do palacete",
-            descricao: "Criação e restauro de elementos decorativos em estuque — molduras, rosetas, cornijas e ornamentos do palacete.",
+            aplicacao: "Recuperação de ornamentos",
+            descricao: "Criação e restauro de elementos decorativos em estuque — molduras, rosetas, cornijas e ornamentos.",
             competencias: ["Preparação de gessos e cales", "Modelação de ornamentos", "Restauro de molduras", "Técnicas de douramento"],
             insercao: "Restauro de edifícios históricos"
         },
@@ -228,8 +228,8 @@ const oficiosDetalhados = {
             duracao: "3 meses",
             horas: "300h (120h teóricas + 180h práticas)",
             certificacao: "Calceteiro - Nível 3",
-            aplicacao: "Recuperação de pavimentos e caminhos do jardim",
-            descricao: "Arte de assentar pedras em padrões decorativos para os caminhos e pavimentos do jardim histórico.",
+            aplicacao: "Recuperação de pavimentos e caminhos",
+            descricao: "Arte de assentar pedras em padrões decorativos para os caminhos e pavimentos.",
             competencias: ["Preparação de bases", "Corte de pedra", "Padrões decorativos", "Manutenção de calçadas"],
             insercao: "Câmaras municipais, empresas de construção"
         },
@@ -238,13 +238,33 @@ const oficiosDetalhados = {
             duracao: "4 meses",
             horas: "400h (120h teóricas + 280h práticas)",
             certificacao: "Corticeiro - Nível 4",
-            aplicacao: "Torre do Carvalhal — Extração sustentável de cortiça",
-            descricao: "O sombreiro (sobreiro) é uma árvore endémica do Alentejo que só começa a dar cortiça aos 60 anos. A extração é uma arte técnica muito específica: se feita incorretamente, mata a árvore. Este saber-fazer está em risco de desaparecimento e é um ofício prioritário para a Torre do Carvalhal.",
+            aplicacao: "Extração sustentável de cortiça no montado",
+            descricao: "O sobreiro é uma árvore endémica do Alentejo que só começa a dar cortiça aos 60 anos. A extração é uma arte técnica muito específica: se feita incorretamente, mata a árvore. Este saber-fazer está em risco de desaparecimento e é um ofício prioritário do projeto.",
             competencias: ["Técnica de descortiçamento", "Avaliação da maturidade do sobreiro", "Ferramentas tradicionais", "Processamento artesanal de cortiça"],
             insercao: "Herdades alentejanas, indústria corticeira, turismo rural"
         }
     ]
 }
+
+// Ofícios Torre — descrições específicas do Alentejo (sem referências à Quinta)
+const restauroTorre = [
+    { nome: "Pedreiro de Alvenaria Tradicional", duracao: "6 meses", horas: "600h (300h teóricas + 300h práticas)", certificacao: "Pedreiro de Alvenaria Tradicional - Nível 4", aplicacao: "Restauro da torre e ermida", descricao: "Domina técnicas centenárias de construção em pedra, utilizando argamassas de cal e técnicas de assentamento para o restauro autêntico da torre manuelina e da ermida.", competencias: ["Leitura de aparelhos de pedra", "Preparação de argamassas de cal", "Técnicas de rejuntamento", "Consolidação de paredes históricas"], insercao: "Empresas de restauro, trabalho autónomo" },
+    { nome: "Carpinteiro de Limpos", duracao: "6 meses", horas: "600h (240h teóricas + 360h práticas)", certificacao: "Carpinteiro de Limpos - Nível 4", aplicacao: "Restauro de caixilharias da torre e casas", descricao: "Trabalhos finos de carpintaria para restauro de portas, janelas e elementos em madeira da torre, ermida e casas do montado.", competencias: ["Restauro de caixilharias", "Marcenaria tradicional", "Técnicas de ensamblagem", "Acabamentos e vernizes"], insercao: "Marcenarias, empresas de restauro" },
+    { nome: "Estucador", duracao: "4 meses", horas: "400h (160h teóricas + 240h práticas)", certificacao: "Estucador Ornamentista - Nível 4", aplicacao: "Recuperação de ornamentos da ermida", descricao: "Criação e restauro de elementos decorativos em estuque da ermida com azulejaria mudejar do século XVI.", competencias: ["Preparação de gessos e cales", "Modelação de ornamentos", "Restauro de molduras", "Técnicas de douramento"], insercao: "Restauro de edifícios históricos" },
+    { nome: "Calceteiro", duracao: "3 meses", horas: "300h (120h teóricas + 180h práticas)", certificacao: "Calceteiro - Nível 3", aplicacao: "Recuperação de pavimentos e caminhos", descricao: "Arte de assentar pedras em padrões decorativos para os caminhos do montado e dos acessos à ermida.", competencias: ["Preparação de bases", "Corte de pedra", "Padrões decorativos", "Manutenção de calçadas"], insercao: "Câmaras municipais, empresas de construção" },
+    { nome: "Corticeiro — Tirador de Cortiça", duracao: "4 meses", horas: "400h (120h teóricas + 280h práticas)", certificacao: "Corticeiro - Nível 4", aplicacao: "Extração sustentável de cortiça no montado", descricao: "O sobreiro é uma árvore endémica do Alentejo que só começa a dar cortiça aos 60 anos. A extração é uma arte técnica muito específica: se feita incorretamente, mata a árvore. Este saber-fazer está em risco de desaparecimento e é um ofício prioritário do projeto.", competencias: ["Técnica de descortiçamento", "Avaliação da maturidade do sobreiro", "Ferramentas tradicionais", "Processamento artesanal de cortiça"], insercao: "Herdades alentejanas, indústria corticeira, turismo rural" }
+]
+
+const categoriasQuinta = [
+    { titulo: "Culinária e Gastronomia", oficios: oficiosDetalhados.culinaria, icon: LucideStar },
+    { titulo: "Botânica, Jardinismo e Sustentabilidade", oficios: oficiosDetalhados.botanica, icon: LucideLeaf },
+    { titulo: "Artes e Ofícios Tradicionais", oficios: oficiosDetalhados.artes, icon: LucideHammer },
+    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.restauro.slice(0, 4), icon: LucideCastle }
+]
+
+const categoriasTorre = [
+    { titulo: "Construção e Restauro", oficios: restauroTorre, icon: LucideCastle }
+]
 
 // Detalhes do projeto Quinta Salreu — atualizado reunião Fev/2026
 const quintaSalreuDetails = {
@@ -358,7 +378,7 @@ const financiamento = [
     }
 ]
 
-const funcionamentoDetails = {
+const funcionamentoQuinta = {
     modalidades: [
         { titulo: "Formação Inicial", duracao: "3 a 6 meses", objetivo: "Destinada a pessoas sem experiência prévia no ofício.", icon: LucideGraduationCap },
         { titulo: "Aperfeiçoamento", duracao: "1 a 3 meses", objetivo: "Para profissionais que pretendam atualizar ou aprofundar competências.", icon: LucideTrendingUp },
@@ -368,8 +388,20 @@ const funcionamentoDetails = {
         { label: "Teórica", percent: "20%", desc: "Conhecimentos técnicos, históricos e culturais." },
         { label: "Prática", percent: "70%", desc: "Execução de trabalhos sob supervisão de mestres artesãos." },
         { label: "Projeto", percent: "10%", desc: "Trabalho final demonstrando competências adquiridas." }
+    ]
+}
+
+const funcionamentoTorre = {
+    modalidades: [
+        { titulo: "Formação Inicial", duracao: "3 a 6 meses", objetivo: "Destinada a pessoas sem experiência prévia no ofício.", icon: LucideGraduationCap },
+        { titulo: "Aperfeiçoamento", duracao: "1 a 3 meses", objetivo: "Para profissionais que pretendam atualizar ou aprofundar competências.", icon: LucideTrendingUp },
+        { titulo: "Contexto de Trabalho", duracao: "Variável", objetivo: "Estágios práticos nos trabalhos de restauro e gestão do montado.", icon: LucideBriefcase }
     ],
-    apoios: ["Bolsa de formação mensal", "Subsídio de transporte", "Subsídio de alimentação", "Seguro de acidentes pessoais"]
+    componentes: [
+        { label: "Teórica", percent: "20%", desc: "Conhecimentos técnicos, históricos e culturais." },
+        { label: "Prática", percent: "70%", desc: "Execução de trabalhos sob supervisão de mestres artesãos." },
+        { label: "Projeto", percent: "10%", desc: "Trabalho final demonstrando competências adquiridas." }
+    ]
 }
 
 const governancaQuinta = {
@@ -743,6 +775,7 @@ export default function Assessoria() {
     const governancaDetails = selectedProject === "quinta" ? governancaQuinta : governancaTorre
     const kpiDetails = selectedProject === "quinta" ? kpiQuinta : kpiTorre
     const propostaAtual = selectedProject === "quinta" ? propostas[0] : propostas[1]
+    const funcionamentoDetails = selectedProject === "quinta" ? funcionamentoQuinta : funcionamentoTorre
 
     return (
         <PasswordGate password="#333" disabled>
@@ -929,17 +962,31 @@ export default function Assessoria() {
                                     <div className="space-y-4">
                                         <LucideHome className="w-8 h-8 text-heritage-terracotta" />
                                         <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Preservação Patrimonial</h3>
-                                        <p className="text-heritage-navy/60 dark:text-white/60">Restauro de edifícios, jardins históricos e elementos patrimoniais utilizando técnicas tradicionais.</p>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">
+                                            {selectedProject === "quinta" 
+                                                ? "Restauro de edifícios, jardim histórico e elementos patrimoniais utilizando técnicas tradicionais."
+                                                : "Restauro da torre, ermida e elementos patrimoniais usando taipa, pedra e técnicas construtivas alentejanas."}
+                                        </p>
                                     </div>
                                     <div className="space-y-4">
                                         <LucideGraduationCap className="w-8 h-8 text-heritage-terracotta" />
-                                        <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Artes, Culinária e Ofícios</h3>
-                                        <p className="text-heritage-navy/60 dark:text-white/60">Formação em culinária, botânica, música, e ofícios em risco.</p>
+                                        <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">
+                                            {selectedProject === "quinta" ? "Artes, Culinária e Ofícios" : "Ofícios da Terra e Cortiça"}
+                                        </h3>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">
+                                            {selectedProject === "quinta" 
+                                                ? "Formação em culinária, botânica, música e ofícios em risco."
+                                                : "Formação em cortiça, restauro, azulejaria e gestão do montado."}
+                                        </p>
                                     </div>
                                     <div className="space-y-4 sm:col-span-2 lg:col-span-1">
                                         <LucideLeaf className="w-8 h-8 text-heritage-terracotta" />
                                         <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Turismo Imersivo</h3>
-                                        <p className="text-heritage-navy/60 dark:text-white/60">Alojamento ecológico, escola de culinária e experiências na natureza.</p>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">
+                                            {selectedProject === "quinta" 
+                                                ? "Alojamento ecológico, escola de culinária e experiências na natureza."
+                                                : "Ecoturismo, retiro holístico e experiências no montado e Dark Sky."}
+                                        </p>
                                     </div>
                                 </div>
                             </FadeIn>
@@ -980,7 +1027,7 @@ export default function Assessoria() {
                                     <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
                                         <LucideHome className="w-8 h-8 text-heritage-terracotta mb-4" />
                                         <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">Famílias Proprietárias</h3>
-                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Quintas, torres, herdades e imóveis históricos que precisam de estruturação técnica.</p>
+                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Imóveis históricos e património rural que precisam de estruturação técnica.</p>
                                     </div>
                                     <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
                                         <LucideShield className="w-8 h-8 text-heritage-terracotta mb-4" />
@@ -1020,7 +1067,7 @@ export default function Assessoria() {
                             </div>
                             
                             <FadeIn triggerOnView direction="up">
-                                <ModeloInstitucional />
+                                <ModeloInstitucional project={selectedProject} />
                             </FadeIn>
                         </section>
                         
@@ -1043,7 +1090,7 @@ export default function Assessoria() {
                             </div>
 
                             <FadeIn triggerOnView direction="up">
-                                <ProcessoOperacional />
+                                <ProcessoOperacional project={selectedProject} />
                             </FadeIn>
                         </section>
 
@@ -1154,13 +1201,16 @@ export default function Assessoria() {
                                 <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Escola</span>
-                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Artes & Ofícios <br/><span className="italic font-normal">Tradicionais</span></h2>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">
+                                            {selectedProject === "quinta" ? "Artes & Ofícios" : "Ofícios da Terra"} <br/><span className="italic font-normal">{selectedProject === "quinta" ? "Tradicionais" : "e Restauro"}</span></h2>
                                     </FadeIn>
                                 </div>
                                 <div className="md:col-span-8 flex flex-col gap-10">
                                     <FadeIn triggerOnView direction="left">
                                         <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
-                                            O programa cobre as principais tradições construtivas e culturais de Portugal, garantindo que o saber ancestral é transmitido às novas gerações.
+                                            {selectedProject === "quinta" 
+                                                ? "O programa cobre as tradições construtivas e culturais da Ria de Aveiro, garantindo que o saber ancestral é transmitido às novas gerações."
+                                                : "O programa cobre as tradições construtivas e patrimoniais do Alentejo — cortiça, taipa, azulejaria e gestão do montado."}
                                         </p>
                                     </FadeIn>
                                 </div>
@@ -1168,17 +1218,12 @@ export default function Assessoria() {
 
                             <FadeIn triggerOnView direction="up">
                                 <div className="mb-16">
-                                    <MapaOficios />
+                                    <MapaOficios project={selectedProject} />
                                 </div>
                             </FadeIn>
 
                             <div className="space-y-0">
-                                {[
-                                    { titulo: "Culinária e Gastronomia", oficios: oficiosDetalhados.culinaria, icon: LucideStar },
-                                    { titulo: "Botânica, Jardinismo e Sustentabilidade", oficios: oficiosDetalhados.botanica, icon: LucideLeaf },
-                                    { titulo: "Artes e Ofícios Tradicionais", oficios: oficiosDetalhados.artes, icon: LucideHammer },
-                                    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.restauro, icon: LucideCastle }
-                                ].map((categoria, i) => (
+                                {(selectedProject === "torre" ? categoriasTorre : categoriasQuinta).map((categoria, i) => (
                                     <FadeIn triggerOnView direction="up" key={i}>
                                         <div className="border-t border-heritage-navy/20 dark:border-white/20 pt-12 pb-16 mt-0">
                                             <div className="flex flex-col md:flex-row gap-8 lg:gap-16 items-start">
@@ -1437,13 +1482,13 @@ export default function Assessoria() {
                             
                             <FadeIn triggerOnView direction="up">
                                 <div className="mb-16">
-                                    <FinanciamentoVisual />
+                                    <FinanciamentoVisual project={selectedProject} />
                                 </div>
                             </FadeIn>
                             
                             <FadeIn triggerOnView direction="up">
                                 <div className="mb-8">
-                                    <CronogramaVisual />
+                                    <CronogramaVisual project={selectedProject} />
                                 </div>
                             </FadeIn>
                         </section>
@@ -1470,7 +1515,7 @@ export default function Assessoria() {
                                 <div className="md:col-span-8">
                                     <FadeIn triggerOnView direction="up">
                                         <div className="-mt-8">
-                                            <ProximosPassosVisual />
+                                            <ProximosPassosVisual project={selectedProject} />
                                         </div>
                                     </FadeIn>
 

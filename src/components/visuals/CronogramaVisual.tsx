@@ -2,37 +2,26 @@ import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { LucideCheckCircle2, LucideTarget } from "lucide-react"
 import { useRef } from "react"
 
-export default function CronogramaVisual() {
-    const etapas = [
-        {
-            fase: "I",
-            ano: "2026",
-            label: "Arranque & Governança",
-            desc: "Constituição das Associações (APQVS/APHC), Termos de Cooperação com IPNS e Candidaturas UE.",
-            color: "terracotta"
-        },
-        {
-            fase: "II",
-            ano: "2027",
-            label: "Escola de Ofícios",
-            desc: "Recrutamento de Mestres, Início da Formação e Estabilização Estrutural dos Edifícios.",
-            color: "ocean"
-        },
-        {
-            fase: "III",
-            ano: "2028",
-            label: "Restauro & Produção",
-            desc: "Execução intensiva dos trabalhos de restauro com participação dos aprendizes e início da produção agrícola.",
-            color: "gold"
-        },
-        {
-            fase: "IV",
-            ano: "2029",
-            label: "Abertura & Impacto",
-            desc: "Operação total, abertura ao público, turismo cultural e relatórios de sustentabilidade (ESG).",
-            color: "success"
-        }
+interface CronogramaVisualProps {
+    project?: "quinta" | "torre"
+}
+
+export default function CronogramaVisual({ project }: CronogramaVisualProps) {
+    const etapasQuinta = [
+        { fase: "I", ano: "2026", label: "Arranque & Governança", desc: "Constituição da IPSS Banda Visconde de Salreu, Termo de Cooperação com IPNS e Candidaturas UE.", color: "terracotta" },
+        { fase: "II", ano: "2027", label: "Escola de Ofícios", desc: "Recrutamento de Mestres, Início da Formação e Estabilização Estrutural do Palacete e Anexos.", color: "ocean" },
+        { fase: "III", ano: "2028", label: "Restauro & Produção", desc: "Execução intensiva dos trabalhos de restauro com participação dos aprendizes e início da produção agrícola.", color: "gold" },
+        { fase: "IV", ano: "2029", label: "Abertura & Impacto", desc: "Operação total, abertura ao público, turismo cultural e relatórios de sustentabilidade (ESG).", color: "success" }
     ]
+
+    const etapasTorre = [
+        { fase: "I", ano: "2026", label: "Arranque & Governança", desc: "Constituição da Associação APHC, Termo de Cooperação com IPNS e Candidaturas UE.", color: "terracotta" },
+        { fase: "II", ano: "2027", label: "Escola de Ofícios", desc: "Recrutamento de Mestres Corticeiros, Início da Formação e Consolidação Estrutural da Torre e Ermida.", color: "ocean" },
+        { fase: "III", ano: "2028", label: "Restauro & Montado", desc: "Execução intensiva dos trabalhos de restauro da azulejaria e gestão do montado com participação dos aprendizes.", color: "gold" },
+        { fase: "IV", ano: "2029", label: "Abertura & Impacto", desc: "Operação total, ecoturismo, produção de cortiça e mel, e relatórios de sustentabilidade (ESG).", color: "success" }
+    ]
+
+    const etapas = project === "torre" ? etapasTorre : etapasQuinta
 
     const containerRef = useRef<HTMLDivElement>(null)
     const { scrollYProgress } = useScroll({
@@ -46,8 +35,8 @@ export default function CronogramaVisual() {
         <div className="w-full">
             <div className="mb-12 flex items-center justify-between border-b border-heritage-navy/20 dark:border-white/20 pb-4">
                 <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50">42 Meses</span>
-                    <h4 className="font-serif text-2xl text-heritage-navy dark:text-white">Linha do Tempo Integrada</h4>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50">{project === "torre" ? "30" : "24"} Meses</span>
+                    <h4 className="font-serif text-2xl text-heritage-navy dark:text-white">Linha do Tempo</h4>
                 </div>
             </div>
 
@@ -106,7 +95,7 @@ export default function CronogramaVisual() {
 
             <div className="mt-12 flex items-center gap-3 text-heritage-navy/60 dark:text-white/60 italic text-xs border-t border-heritage-navy/10 dark:border-white/10 pt-6">
                 <LucideCheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <p>O cronograma é partilhado entre os dois projetos para otimizar a movimentação de mestres artesãos e equipamentos de restauro.</p>
+                <p>O cronograma articula restauro, formação e operação para otimizar a movimentação de mestres artesãos e equipamentos.</p>
             </div>
         </div>
     )

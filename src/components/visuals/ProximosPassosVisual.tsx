@@ -2,14 +2,26 @@ import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { useRef } from "react"
 import { LucideArrowDown } from "lucide-react"
 
-export default function ProximosPassosVisual() {
-    const passosDetails = [
-        { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos da Quinta do Visconde de Salreu." },
-        { num: "02", titulo: "Orçamentação Torre Carvalhal", desc: "Pesquisa extensiva e estimativa de custos para a Torre do Carvalhal." },
-        { num: "03", titulo: "Constituição das Entidades", desc: "Formalização da IPSS Banda Visconde de Salreu e arranjo jurídico correspondente." },
-        { num: "04", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030, IEFP e procura de mecenato." },
-        { num: "05", titulo: "Início das Obras e Formação", desc: "Arranque do restauro estrutural e da escola de artes e ofícios." }
+interface ProximosPassosVisualProps {
+    project?: "quinta" | "torre"
+}
+
+export default function ProximosPassosVisual({ project }: ProximosPassosVisualProps) {
+    const passosQuinta = [
+        { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos e do programa de intervenção." },
+        { num: "02", titulo: "Constituição da Entidade Gestora", desc: "Formalização da IPSS Banda Visconde de Salreu e arranjo jurídico correspondente." },
+        { num: "03", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030, IEFP e procura de mecenato." },
+        { num: "04", titulo: "Início das Obras e Formação", desc: "Arranque do restauro estrutural e da escola de artes e ofícios." }
     ]
+
+    const passosTorre = [
+        { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos e do programa de intervenção." },
+        { num: "02", titulo: "Constituição da Entidade Gestora", desc: "Formalização da associação APHC e arranjo jurídico correspondente." },
+        { num: "03", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030 e fundos europeus para montado e património." },
+        { num: "04", titulo: "Início das Obras e Formação", desc: "Arranque da consolidação estrutural e da formação em ofícios alentejanos e corticeiros." }
+    ]
+
+    const passosDetails = project === "torre" ? passosTorre : passosQuinta
 
     const containerRef = useRef<HTMLDivElement>(null)
     const { scrollYProgress } = useScroll({
