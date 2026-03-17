@@ -325,7 +325,7 @@ export default function Candidatura() {
 
             {/* Step > 0: Document Form Area */}
             {currentStep > 0 && (
-                <div className="flex flex-col md:flex-row min-h-screen pt-20 md:pt-0">
+                <div className="flex flex-col md:flex-row min-h-screen pt-20 md:pt-24">
                     {/* Sidebar / Document Spine */}
                     <div className="md:w-80 border-r border-black/10 p-8 flex flex-col justify-between hidden md:flex relative z-20 bg-[#F3F0E6] sticky top-0 h-screen">
                         <div>
@@ -371,7 +371,7 @@ export default function Candidatura() {
                             <div className="text-[10px] font-black uppercase tracking-widest">Passo 0{currentStep} / 0{steps.length}</div>
                         </header>
 
-                        <div className="flex-1 w-full max-w-4xl p-8 md:p-16 lg:p-24 pb-40">
+                        <div className="flex-1 w-full max-w-4xl p-8 md:p-16 lg:p-24 pb-40 pt-12 md:pt-16 lg:pt-24">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentStep}
