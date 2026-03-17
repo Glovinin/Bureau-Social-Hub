@@ -309,11 +309,11 @@ export default function Candidatura() {
                                 className="bg-[#F3F0E6] p-12 flex flex-col items-start text-left group hover:bg-[#1A1A1A] transition-all duration-700 relative overflow-hidden h-full min-h-[400px]"
                             >
                                 <span className="text-8xl font-serif text-black/5 group-hover:text-white/5 mb-auto transition-colors mt-4">{type.num}</span>
-                                <div className="mt-16 space-y-4 relative z-10 w-full">
+                                <div className="mt-16 space-y-4 w-full flex-1 min-h-0">
                                     <h3 className="text-3xl font-serif font-medium text-black group-hover:text-white transition-colors">{type.title}</h3>
                                     <p className="text-lg font-serif italic text-black/60 group-hover:text-white/50 leading-relaxed transition-colors">{type.desc}</p>
                                 </div>
-                                <div className="mt-12 absolute bottom-12 left-12 right-12 opacity-0 group-hover:opacity-100 transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 ease-out flex justify-between items-center text-[10px] uppercase font-black tracking-[0.2em] text-[#E35238]">
+                                <div className="mt-auto pt-8 flex justify-between items-center text-[10px] uppercase font-black tracking-[0.2em] text-[#E35238] group-hover:text-[#E35238] z-20 relative">
                                     <span>Iniciar Dossier</span>
                                     <LucideArrowRight className="w-5 h-5" />
                                 </div>
