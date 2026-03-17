@@ -30,6 +30,8 @@ export default function AnimatedCounter({
 }: AnimatedCounterProps) {
     const ref = useRef<HTMLSpanElement>(null)
     const valueRef = useRef({ val: from })
+    const formatRef = useRef(format)
+    formatRef.current = format
 
     useEffect(() => {
         const el = ref.current
@@ -44,11 +46,13 @@ export default function AnimatedCounter({
                     trigger: el,
                     start: "top 85%",
                     toggleActions: "play none none none",
+                    once: true,
                 },
                 onUpdate: () => {
                     const n = valueRef.current.val
-                    const display = format
-                        ? format(n)
+                    const fmt = formatRef.current
+                    const display = fmt
+                        ? fmt(n)
                         : decimals > 0
                             ? n.toFixed(decimals).replace(".", ",")
                             : Math.round(n).toString()
@@ -58,7 +62,7 @@ export default function AnimatedCounter({
         }, el)
 
         return () => ctx.revert()
-    }, [to, from, duration, decimals, prefix, suffix, format])
+    }, [to, from, duration, decimals, prefix, suffix])
 
     // Initial render
     const initialDisplay = format ? format(from) : decimals > 0 ? from.toFixed(decimals).replace(".", ",") : Math.round(from).toString()
