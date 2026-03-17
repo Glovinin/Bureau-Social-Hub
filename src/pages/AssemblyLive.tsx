@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "@/context/AuthContext"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
@@ -16,13 +16,19 @@ import {
     LucideVote,
     LucideMessageSquare,
     LucideUsers,
-    LucideLogIn
+    LucideLogIn,
+    LucideFileText,
+    LucideInfo,
+    LucideRadio,
+    LucideTrophy,
+    LucideCircle
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { jsPDF } from "jspdf"
 import "jspdf-autotable"
+import { Grain } from "@/components/ui/Grain"
 
 interface Assembly {
     id: string
@@ -59,7 +65,6 @@ export default function AssemblyLive() {
     // Poll for active assembly and data
     const fetchLiveData = async () => {
         try {
-            // 1. Get active assembly
             const { data: assemblyData, error: assemblyError } = await supabase
                 .from('assemblies')
                 .select('*')
@@ -74,7 +79,6 @@ export default function AssemblyLive() {
 
             setActiveAssembly(assemblyData)
 
-            // 2. Get Agenda Items
             const { data: itemsData, error: itemsError } = await supabase
                 .from('assembly_items')
                 .select('*')
@@ -84,7 +88,6 @@ export default function AssemblyLive() {
             if (itemsError) throw itemsError
             setAgendaItems(itemsData || [])
 
-            // 3. Get User's Votes for this assembly's items
             if (profile) {
                 const { data: votesData, error: votesError } = await supabase
                     .from('votes')
@@ -95,7 +98,6 @@ export default function AssemblyLive() {
                 if (votesError) throw votesError
                 setUserVotes(votesData || [])
 
-                // 4. Check if user is checked in
                 const { data: attendanceData } = await supabase
                     .from('assembly_attendances')
                     .select('id')
@@ -106,7 +108,6 @@ export default function AssemblyLive() {
                 setIsCheckedIn(!!attendanceData)
             }
 
-            // 5. Get total attendance count
             const { data: allAttendance } = await supabase
                 .from('assembly_attendances')
                 .select('id')
@@ -124,12 +125,10 @@ export default function AssemblyLive() {
 
     useEffect(() => {
         fetchLiveData()
-        // Simple polling every 10s for updates
         const interval = setInterval(fetchLiveData, 10000)
         return () => clearInterval(interval)
     }, [profile])
 
-    // Elapsed time timer
     useEffect(() => {
         if (!activeAssembly) return
 
@@ -152,19 +151,15 @@ export default function AssemblyLive() {
         return () => clearInterval(timerInterval)
     }, [activeAssembly])
 
-
     const handleVote = async (itemId: string, option: 'approve' | 'reject' | 'abstain') => {
         if (!profile || !activeAssembly) return
 
-        // 1. Permission Check
         if (!profile.can_vote || profile.quota_status !== 'active') {
             toast.error("A sua categoria ou status de quota não permite votar nesta assembleia.")
             return
         }
 
         setVotingItem(itemId)
-
-        // Determine weight based on profile category
         const weight = profile.member_category === 'fundador' ? 3 : 1
 
         try {
@@ -175,38 +170,30 @@ export default function AssemblyLive() {
                     assembly_item_id: itemId,
                     vote_option: option,
                     weight: weight,
-                    project_id: null // Explicitly null to avoid constraint issues if table allows nulls now
+                    project_id: null
                 }])
 
             if (error) {
-                if (error.code === '23505') { // Unique violation
+                if (error.code === '23505') {
                     toast.error("Você já votou neste item.")
                 } else {
                     throw error
                 }
             } else {
                 toast.success("Voto registrado com sucesso!")
-                // Optimistic update
                 setUserVotes([...userVotes, { assembly_item_id: itemId, vote_option: option }])
             }
         } catch (err: any) {
-            console.error(err)
-            toast.error("Erro ao registrar voto", { description: err.message || "Tente novamente." })
+            toast.error("Erro ao registrar voto")
             logSystemError(err, 'AssemblyLive.handleVote', profile?.id)
         } finally {
             setVotingItem(null)
         }
     }
 
-    // Handle Check-In
     const handleCheckIn = async () => {
-        if (!profile || !activeAssembly || isCheckedIn) {
-            console.warn("Cannot check-in:", { profile: !!profile, activeAssembly: !!activeAssembly, isCheckedIn });
-            return
-        }
+        if (!profile || !activeAssembly || isCheckedIn) return
         setIsCheckingIn(true)
-
-        console.log("Checking into assembly:", activeAssembly.id, "for user:", profile.id);
 
         try {
             const { error } = await supabase
@@ -217,7 +204,6 @@ export default function AssemblyLive() {
                 }])
 
             if (error) {
-                console.error("Supabase check-in error:", error);
                 if (error.code === '23505') {
                     toast.info("Você já está registado nesta assembleia.")
                     setIsCheckedIn(true)
@@ -225,13 +211,11 @@ export default function AssemblyLive() {
                     throw error
                 }
             } else {
-                console.log("Check-in success!");
                 toast.success("Presença registada com sucesso!")
                 setIsCheckedIn(true)
                 setAttendanceCount(prev => prev + 1)
             }
         } catch (err: any) {
-            console.error("Catch check-in error:", err);
             toast.error("Erro ao registar presença")
             logSystemError(err, 'AssemblyLive.handleCheckIn', profile?.id)
         } finally {
@@ -239,13 +223,11 @@ export default function AssemblyLive() {
         }
     }
 
-    // Generate Minutes (Ata 2.0)
     const handleGenerateMinutes = async () => {
         if (!activeAssembly || !profile || profile.role !== 'admin') return
         const loadingToast = toast.loading("Gerando Ata consolidada...")
 
         try {
-            // 1. Fetch full attendance with names
             const { data: attendance, error: attError } = await supabase
                 .from('assembly_attendances')
                 .select(`
@@ -257,7 +239,6 @@ export default function AssemblyLive() {
 
             if (attError) throw attError
 
-            // 2. Fetch full votes for consolidation
             const { data: votes, error: votesError } = await supabase
                 .from('votes')
                 .select('*')
@@ -265,11 +246,9 @@ export default function AssemblyLive() {
 
             if (votesError) throw votesError
 
-            // 3. Create PDF
             const doc = new jsPDF()
-            const primaryColor = "#1B2B44" // Heritage Navy
+            const primaryColor = "#1B2B44"
 
-            // Header
             doc.setFillColor(primaryColor)
             doc.rect(0, 0, 210, 40, 'F')
             doc.setTextColor(255, 255, 255)
@@ -279,7 +258,6 @@ export default function AssemblyLive() {
             doc.setFontSize(10)
             doc.text(`BUREAU SOCIAL HUB - REABILITAÇÃO E TRADIÇÃO`, 105, 30, { align: "center" })
 
-            // Info Section
             doc.setTextColor(60, 60, 60)
             doc.setFontSize(12)
             doc.text(`Assembleia: ${activeAssembly.title}`, 20, 50)
@@ -287,7 +265,6 @@ export default function AssemblyLive() {
             doc.text(`Local: Portal Digital Bureau Social`, 20, 64)
             doc.text(`Quórum: ${attendance.length} Associados Registados`, 20, 71)
 
-            // Attendees Table
             doc.setFont("helvetica", "bold")
             doc.text("1. LISTA DE PRESENÇAS", 20, 85)
             const attendeeRows = attendance.map((at: any) => [
@@ -304,7 +281,6 @@ export default function AssemblyLive() {
                     headStyles: { fillStyle: primaryColor }
                 })
 
-            // Voting Results
             let currentY = (doc as any).lastAutoTable.finalY + 15
             doc.setFont("helvetica", "bold")
             doc.text("2. DELIBERAÇÕES E VOTAÇÕES", 20, currentY)
@@ -333,318 +309,306 @@ export default function AssemblyLive() {
                 const resultText = total > 0 && approves > (rejects + abstains) ? "APROVADO" : "REJEITADO / NÃO DELIBERADO"
                 doc.setFont("helvetica", "bold")
                 doc.text(`Conclusão: ${resultText}`, 30, currentY + 6)
-
                 currentY += 18
             })
 
-            // Footer / Signatures
-            if (currentY > 240) {
-                doc.addPage()
-                currentY = 20
-            }
-            currentY += 20
-            doc.line(20, currentY, 90, currentY)
-            doc.line(120, currentY, 190, currentY)
-            doc.setFontSize(9)
-            doc.text("A Direção", 55, currentY + 5, { align: "center" })
-            doc.text("O Secretariado", 155, currentY + 5, { align: "center" })
-
             doc.save(`Ata_${activeAssembly.title.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`)
-
             toast.dismiss(loadingToast)
             toast.success("Ata gerada com sucesso!")
 
         } catch (err: any) {
-            console.error(err)
             toast.dismiss(loadingToast)
-            toast.error("Erro ao gerar ata", { description: err.message })
+            toast.error("Erro ao gerar ata")
         }
     }
-
 
     const hasVoted = (itemId: string) => userVotes.some(v => v.assembly_item_id === itemId)
     const getMyVote = (itemId: string) => userVotes.find(v => v.assembly_item_id === itemId)?.vote_option
 
     if (isLoading) {
         return (
-            <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-zinc-950">
-                <LucideLoader2 className="w-10 h-10 animate-spin text-heritage-gold" />
+            <div className="flex h-screen items-center justify-center bg-[#f8f6f0]">
+                <LucideLoader2 className="w-10 h-10 animate-spin text-heritage-navy" />
             </div>
         )
     }
 
     if (!activeAssembly) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+            <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 flex flex-col items-center justify-center p-12 text-center transition-all">
+                <Grain opacity={0.05} />
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="max-w-md space-y-6"
+                    className="max-w-2xl space-y-12"
                 >
-                    <div className="w-24 h-24 bg-white dark:bg-zinc-900 rounded-[32px] flex items-center justify-center shadow-xl mx-auto mb-8 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-heritage-navy/5 to-heritage-gold/20" />
-                        <LucideGavel className="w-10 h-10 text-heritage-navy dark:text-white relative z-10" />
+                    <div className="relative group">
+                        <div className="absolute -inset-8 bg-heritage-navy/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                        <LucideGavel className="w-20 h-20 text-heritage-navy/10 dark:text-white/10 mx-auto" />
                     </div>
 
-                    <h2 className="text-3xl font-black text-heritage-navy dark:text-white tracking-tight">
-                        Nenhuma Assembleia Ativa
-                    </h2>
-                    <p className="text-lg text-heritage-navy/60 dark:text-white/60 leading-relaxed font-medium">
-                        No momento não há sessões de votação decorrendo ao vivo.<br />
-                        Consulte as notificações ou o calendário.
+                    <div className="space-y-4">
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-navy/30 dark:text-white/30">Sala de Plenário</span>
+                        <h2 className="text-5xl md:text-7xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.9] tracking-tighter italic">
+                            Sem Sessões <span className="block text-heritage-terracotta not-italic">Ativas.</span>
+                        </h2>
+                    </div>
+                    
+                    <p className="text-xl font-serif italic text-heritage-navy/60 dark:text-white/60 max-w-lg mx-auto leading-relaxed">
+                        De momento, os sistemas de votação encontram-se em repouso. Consulte o Diário de Notificações para agendamentos futuros.
                     </p>
-                    <Button
-                        size="lg"
-                        variant="ghost"
-                        className="rounded-full mt-4 text-heritage-navy dark:text-white hover:bg-heritage-navy/5"
+
+                    <button
                         onClick={fetchLiveData}
+                        className="h-16 px-12 border-2 border-heritage-navy dark:border-white text-heritage-navy dark:text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-navy hover:text-white transition-all transform hover:-translate-y-1"
                     >
-                        Verificar Novamente <LucideChevronRight className="ml-2 w-4 h-4" />
-                    </Button>
+                        Atualizar Estado
+                    </button>
                 </motion.div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-[#FDFCF8] dark:bg-zinc-950 transition-colors pb-32">
-            {/* Immersive Hero Header */}
-            <header className="relative w-full h-[320px] lg:h-[380px] bg-heritage-navy-fixed overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1577415124269-fc1140a69e91?q=80&w=2574&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-heritage-navy-fixed via-heritage-navy-fixed/80 to-transparent"></div>
+        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 transition-apple pb-40 font-sans relative overflow-hidden">
+            <Grain opacity={0.05} />
 
+            {/* Editorial Masthead */}
+            <div className="container mx-auto px-6 pt-20 pb-12">
+                <div className="flex flex-col items-center text-center space-y-8 border-b-2 border-heritage-navy/10 dark:border-white/10 pb-16">
+                    <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.4em] text-heritage-navy/40 dark:text-white/40">
+                        <span>Edição Especial</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-heritage-terracotta animate-pulse" />
+                        <span>Transmissão em Direto</span>
+                    </div>
 
-                <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-4xl"
-                    >
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="bg-red-500 text-white text-[10px] font-black tracking-widest uppercase px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg shadow-red-500/20 animate-pulse">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white block"></span>
-                                Em Direto
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2">
-                                <LucideCalendarDays className="w-3.5 h-3.5" />
-                                {new Date(activeAssembly.date).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}
-                            </div>
+                    <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-serif font-medium text-heritage-navy dark:text-white leading-[0.85] tracking-tighter">
+                        Diário da <span className="italic text-heritage-terracotta">Assembleia</span>.
+                    </h1>
+
+                    <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+                        <div className="flex flex-col items-center">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-heritage-navy/30">Assembleia Geral</span>
+                            <span className="text-xl font-serif italic text-heritage-navy dark:text-white">{activeAssembly.title}</span>
                         </div>
-
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight tracking-tight">
-                            {activeAssembly.title}
-                        </h1>
-                        <p className="text-lg md:text-xl text-white/70 max-w-2xl font-medium leading-relaxed">
-                            Participe democraticamente na governação do Bureau Social.
-                            <br className="hidden md:block" /> A sua voz define o nosso futuro.
-                        </p>
-                    </motion.div>
+                        <div className="w-px h-10 bg-heritage-navy/10 dark:bg-white/10 hidden md:block" />
+                        <div className="flex flex-col items-center">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-heritage-navy/30">Data do Plenário</span>
+                            <span className="text-xl font-serif italic text-heritage-navy dark:text-white">{new Date(activeAssembly.date).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                        </div>
+                        <div className="w-px h-10 bg-heritage-navy/10 dark:bg-white/10 hidden md:block" />
+                        <div className="flex flex-col items-center">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-heritage-navy/30">Referência Única</span>
+                            <span className="text-xl font-mono text-heritage-navy/40 uppercase tracking-tighter">{activeAssembly.id.substring(0, 8)}</span>
+                        </div>
+                    </div>
                 </div>
-            </header>
+            </div>
 
-            {/* Agenda Container */}
-            <main className="container mx-auto px-4 md:px-6 -mt-8 relative z-20 space-y-6">
+            <main className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
+                
+                {/* Left Sidebar: Stats & Info Box */}
+                <aside className="lg:col-span-4 space-y-12">
+                    <div className="border-4 border-heritage-navy p-10 bg-white dark:bg-zinc-900 shadow-[20px_20px_0px_0px_rgba(27,43,68,0.05)] space-y-10 sticky top-32">
+                        <div className="flex items-center justify-between border-b border-heritage-navy/10 pb-6 uppercase">
+                            <div className="flex items-center gap-3">
+                                <LucideRadio className="w-4 h-4 text-heritage-terracotta animate-pulse" />
+                                <span className="text-[10px] font-black tracking-[0.2em] text-heritage-navy">Estado da Sessão</span>
+                            </div>
+                            <div className="h-2 w-2 rounded-full bg-heritage-success" />
+                        </div>
 
-                {/* Stats / Info Bar */}
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl shadow-heritage-navy/5 p-4 flex flex-wrap gap-6 md:gap-12 items-center justify-between border border-heritage-navy/5 dark:border-white/5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-heritage-sand/30 dark:bg-white/5 flex items-center justify-center text-heritage-gold">
-                            <LucideUsers className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase font-bold text-heritage-navy/40 dark:text-white/40 tracking-wider">Quórum Atual</p>
-                            <p className="text-lg font-bold text-heritage-navy dark:text-white">{attendanceCount} Membros</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-heritage-sand/30 dark:bg-white/5 flex items-center justify-center text-heritage-gold">
-                            <LucideClock className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase font-bold text-heritage-navy/40 dark:text-white/40 tracking-wider">Tempo Decorrido</p>
-                            <p className="text-lg font-bold text-heritage-navy dark:text-white">{elapsedTime}</p>
-                        </div>
-                    </div>
-                    <div className="hidden md:block w-px h-10 bg-heritage-navy/10 dark:bg-white/10"></div>
+                        <div className="space-y-8">
+                            <div className="space-y-2">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-heritage-navy/30">Quórum Verificado</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl font-serif font-medium text-heritage-navy dark:text-white tracking-tighter">{attendanceCount}</span>
+                                    <span className="text-xs font-serif italic text-heritage-navy/40 uppercase">Delegados</span>
+                                </div>
+                            </div>
 
-                    {/* Check-In Button */}
-                    {!isCheckedIn ? (
-                        <Button
-                            onClick={handleCheckIn}
-                            disabled={isCheckingIn}
-                            className="bg-heritage-success hover:bg-heritage-success/90 rounded-xl h-12 px-6 font-bold text-sm shadow-lg"
-                        >
-                            {isCheckingIn ? (
-                                <LucideLoader2 className="w-4 h-4 mr-2 animate-spin" />
+                            <div className="space-y-2">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-heritage-navy/30">Cronómetro Digital</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl font-serif font-medium text-heritage-navy dark:text-white tracking-tighter">{elapsedTime}</span>
+                                    <LucideClock className="w-4 h-4 text-heritage-gold" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-heritage-navy/5">
+                            {!isCheckedIn ? (
+                                <button
+                                    onClick={handleCheckIn}
+                                    disabled={isCheckingIn}
+                                    className="w-full h-16 bg-heritage-terracotta text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-navy translate-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50"
+                                >
+                                    {isCheckingIn ? "Validando..." : "Registar Presença"}
+                                </button>
                             ) : (
-                                <LucideLogIn className="w-4 h-4 mr-2" />
+                                <div className="p-6 bg-heritage-success/5 border border-heritage-success/20 flex flex-col items-center text-center space-y-2">
+                                    <LucideCheckCircle2 className="w-8 h-8 text-heritage-success" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-success">Presença Registada no Arquivo</span>
+                                    <p className="text-xs font-serif italic text-heritage-navy/40 italic">O seu terminal está habilitado a deliberar.</p>
+                                </div>
                             )}
-                            Registar Presença
-                        </Button>
-                    ) : (
-                        <div className="flex items-center gap-2 text-heritage-success font-bold">
-                            <LucideCheckCircle2 className="w-5 h-5" />
-                            <span className="text-sm">Presença Confirmada</span>
                         </div>
-                    )}
 
-                    <div className="ml-auto text-right hidden md:block">
-                        <p className="text-sm font-medium text-heritage-navy/60 dark:text-white/60">Sessão ID: #{activeAssembly.id.slice(0, 8)}</p>
+                        <div className="bg-[#f8f6f0] p-6 text-[9px] font-serif italic leading-relaxed text-heritage-navy/50">
+                            "A participação plena assegura a transparência democrática. Todos os votos são encriptados e arquivados no Livro de Atas Digital."
+                        </div>
                     </div>
-                </div>
+                </aside>
 
-                <div className="h-6"></div> {/* Spacer */}
+                {/* Right Column: Agenda Items */}
+                <div className="lg:col-span-8 space-y-20">
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="h-px flex-grow bg-heritage-navy/10" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-navy/30">Ordem de Trabalhos Consolidada</span>
+                        <div className="h-px flex-grow bg-heritage-navy/10" />
+                    </div>
 
-                <h3 className="text-sm font-bold uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 px-2">Ordem de Trabalhos</h3>
+                    <div className="space-y-32">
+                        {agendaItems.map((item, index) => {
+                            const voted = hasVoted(item.id)
+                            const myVote = getMyVote(item.id)
+                            const isVotingType = item.type === 'voting_simple' || item.type === 'election'
+                            
+                            return (
+                                <motion.article
+                                    key={item.id}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    className="relative grid grid-cols-1 md:grid-cols-12 gap-8"
+                                >
+                                    {/* Vertical Index Column */}
+                                    <div className="md:col-span-1 flex flex-col items-center">
+                                        <span className="text-[10px] font-black text-heritage-navy/20 dark:text-white/20 mb-4 uppercase tabular-nums">Pauta {String(index + 1).padStart(2, '0')}</span>
+                                        <div className="w-0.5 flex-grow bg-heritage-navy/5 relative">
+                                            {voted && <div className="absolute top-0 left-0 w-full bg-heritage-success transition-all duration-1000 h-full" />}
+                                        </div>
+                                    </div>
 
-                {/* Agenda Items List */}
-                <div className="grid gap-6">
-                    {agendaItems.map((item, index) => {
-                        const voted = hasVoted(item.id)
-                        const myVote = getMyVote(item.id)
-                        const isVotingType = item.type === 'voting_simple' || item.type === 'election'
-                        const isActive = true // You could add logic to highlight only the current item needing vote
-
-                        return (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <div className={`relative group ${isActive ? 'scale-[1.01]' : 'opacity-80'}`}>
-                                    {/* Connectivity Line */}
-                                    {index !== agendaItems.length - 1 && (
-                                        <div className="absolute left-[28px] top-16 bottom-[-24px] w-0.5 bg-heritage-navy/10 dark:bg-white/10 z-0"></div>
-                                    )}
-
-                                    <Card className={`
-                                        border-none shadow-sm hover:shadow-xl transition-all duration-300 rounded-[32px] overflow-hidden
-                                        ${voted
-                                            ? 'bg-gradient-to-br from-gray-50 to-white dark:from-zinc-900 dark:to-zinc-900/50'
-                                            : 'bg-white dark:bg-zinc-800'}
-                                    `}>
-                                        <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 relative z-10">
-
-                                            {/* Index Number */}
-                                            <div className="flex-shrink-0">
-                                                <div className={`
-                                                    w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-black shadow-inner
-                                                    ${voted
-                                                        ? 'bg-heritage-success/10 text-heritage-success'
-                                                        : 'bg-heritage-navy text-white shadow-heritage-navy/30 dark:shadow-none'}
-                                                `}>
-                                                    {voted ? <LucideCheckCircle2 className="w-7 h-7" /> : (index + 1)}
-                                                </div>
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="flex-grow space-y-3">
-                                                <div className="flex items-center gap-3 flex-wrap">
-                                                    <Badge variant={item.type === 'discussion' ? 'secondary' : 'default'} className="rounded-full px-3 py-1 uppercase text-[10px] tracking-wider font-bold shadow-none">
-                                                        {item.type === 'voting_simple' ? (
-                                                            <><LucideVote className="w-3 h-3 mr-1.5" /> Votação</>
-                                                        ) : item.type === 'election' ? (
-                                                            <><LucideUsers className="w-3 h-3 mr-1.5" /> Eleição</>
-                                                        ) : (
-                                                            <><LucideMessageSquare className="w-3 h-3 mr-1.5" /> Discussão</>
-                                                        )}
-                                                    </Badge>
-                                                    {voted && (
-                                                        <Badge variant="outline" className="text-heritage-success border-heritage-success/30 bg-heritage-success/5 rounded-full px-3 py-1 uppercase text-[10px] tracking-wider font-bold">
-                                                            Voto Registrado
-                                                        </Badge>
-                                                    )}
-                                                </div>
-
-                                                <h3 className="text-2xl font-bold text-heritage-navy dark:text-white leading-tight">
-                                                    {item.title}
-                                                </h3>
-                                                <p className="text-heritage-navy/70 dark:text-white/70 text-base leading-relaxed max-w-2xl">
-                                                    {item.description || "Sem descrição disponível."}
-                                                </p>
-
-                                                {/* Action Area */}
-                                                {isVotingType && (
-                                                    <div className="pt-6">
-                                                        {voted ? (
-                                                            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-heritage-success/10 border border-heritage-success/10 text-heritage-success font-bold">
-                                                                <span className="text-sm uppercase tracking-wide opacity-70">A sua escolha:</span>
-                                                                <span className="text-lg">
-                                                                    {myVote === 'approve' && 'A Favor'}
-                                                                    {myVote === 'reject' && 'Contra'}
-                                                                    {myVote === 'abstain' && 'Abstenção'}
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
-                                                                <Button
-                                                                    onClick={() => handleVote(item.id, 'approve')}
-                                                                    disabled={!!votingItem}
-                                                                    className="h-14 rounded-2xl bg-heritage-success hover:bg-heritage-success/90 text-white font-bold text-base shadow-lg shadow-heritage-success/20 hover:-translate-y-0.5 transition-all"
-                                                                >
-                                                                    <LucideCheckCircle2 className="w-5 h-5 mr-2" />
-                                                                    A Favor
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() => handleVote(item.id, 'reject')}
-                                                                    disabled={!!votingItem}
-                                                                    className="h-14 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold text-base shadow-lg shadow-red-500/20 hover:-translate-y-0.5 transition-all"
-                                                                >
-                                                                    <LucideXCircle className="w-5 h-5 mr-2" />
-                                                                    Contra
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() => handleVote(item.id, 'abstain')}
-                                                                    disabled={!!votingItem}
-                                                                    className="h-14 rounded-2xl bg-gray-100 dark:bg-zinc-700 hover:bg-gray-200 text-gray-600 dark:text-white font-bold text-base border border-transparent hover:border-gray-300 hover:-translate-y-0.5 transition-all"
-                                                                >
-                                                                    <LucideMinusCircle className="w-5 h-5 mr-2" />
-                                                                    Abster-se
-                                                                </Button>
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                    {/* Content Column */}
+                                    <div className="md:col-span-11 space-y-8">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-4">
+                                                <Badge className="bg-transparent border-heritage-navy/20 text-heritage-navy/40 rounded-none px-4 py-1 text-[9px] font-black uppercase tracking-widest">
+                                                    {item.type}
+                                                </Badge>
+                                                {voted && (
+                                                    <span className="text-[9px] font-black uppercase tracking-widest text-heritage-success flex items-center gap-2">
+                                                        <LucideFileCheck className="w-3 h-3" /> Digitalmente Assinado
+                                                    </span>
                                                 )}
                                             </div>
+                                            <h3 className="text-4xl md:text-5xl font-serif font-medium text-heritage-navy dark:text-white leading-[1] italic tracking-tight">
+                                                {item.title}
+                                            </h3>
+                                            <p className="text-lg font-serif italic text-heritage-navy/70 dark:text-white/70 leading-relaxed max-w-3xl border-l border-heritage-navy/10 pl-8 ml-2">
+                                                {item.description || "O plenário abre discussão sobre este ponto da ordem de trabalhos para deliberação futura."}
+                                            </p>
                                         </div>
-                                    </Card>
-                                </div>
-                            </motion.div>
-                        )
-                    })}
-                </div>
 
-                {/* Admin Controls: Generate Minutes (Visible only to Admin) */}
-                {profile?.role === 'admin' && (
-                    <div className="mt-12 p-10 bg-heritage-navy rounded-[40px] text-white space-y-6 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-heritage-gold/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                        <div className="relative z-10">
-                            <h3 className="text-3xl font-black mb-2">Finalizar Assembleia</h3>
-                            <p className="text-white/60 font-medium mb-8">Como administrador, pode encerrar a votação e gerar a ata oficial com os resultados consolidados.</p>
+                                        {isVotingType && (
+                                            <div className="pt-8">
+                                                <AnimatePresence mode="wait">
+                                                    {voted ? (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            className="inline-flex items-center gap-8 p-8 border-2 border-heritage-success/20 bg-heritage-success/5"
+                                                        >
+                                                            <div className="space-y-1">
+                                                                <span className="text-[9px] font-black uppercase tracking-widest text-heritage-success/60">Voto do Associado</span>
+                                                                <p className="text-3xl font-serif font-medium italic text-heritage-navy dark:text-white">
+                                                                    {myVote === 'approve' && 'Parecer Favorável'}
+                                                                    {myVote === 'reject' && 'Parecer Contra'}
+                                                                    {myVote === 'abstain' && 'Abstenção de Voto'}
+                                                                </p>
+                                                            </div>
+                                                            <LucideTrophy className="w-12 h-12 text-heritage-success opacity-20" />
+                                                        </motion.div>
+                                                    ) : (
+                                                        <motion.div
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl"
+                                                        >
+                                                            <button
+                                                                onClick={() => handleVote(item.id, 'approve')}
+                                                                disabled={!!votingItem}
+                                                                className="h-20 bg-heritage-navy text-white text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-heritage-success transition-all group overflow-hidden relative"
+                                                            >
+                                                                <LucideCheckCircle2 className="w-5 h-5 group-hover:scale-125 transition-transform" />
+                                                                A Favor
+                                                                <div className="absolute inset-0 bg-white/10 translate-y-full hover:translate-y-0 transition-transform" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleVote(item.id, 'reject')}
+                                                                disabled={!!votingItem}
+                                                                className="h-20 border-2 border-heritage-navy/20 text-heritage-navy text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:border-red-500 hover:text-red-500 transition-all"
+                                                            >
+                                                                <LucideXCircle className="w-5 h-5" />
+                                                                Contra
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleVote(item.id, 'abstain')}
+                                                                disabled={!!votingItem}
+                                                                className="h-20 border-b border-heritage-navy/20 text-heritage-navy/40 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:text-heritage-navy transition-all"
+                                                            >
+                                                                <LucideMinusCircle className="w-5 h-5" />
+                                                                Abster
+                                                            </button>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.article>
+                            )
+                        })}
+                    </div>
 
-                            <div className="flex gap-4">
-                                <Button
-                                    className="bg-white text-heritage-navy hover:bg-heritage-gold hover:text-white rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-xs transition-apple"
+                    {/* Admin Archive Section */}
+                    {profile?.role === 'admin' && (
+                        <motion.section 
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="mt-40 p-16 border-[10px] border-heritage-navy bg-white dark:bg-zinc-900 space-y-12 relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 p-8">
+                                <LucideGavel className="w-32 h-32 text-heritage-navy/5 -rotate-12" />
+                            </div>
+                            
+                            <div className="space-y-4 max-w-xl">
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-terracotta">Gabinete de Presidência</span>
+                                <h3 className="text-5xl font-serif font-medium text-heritage-navy dark:text-white leading-tight italic">Consolidação e <span className="not-italic">Arquivo Final.</span></h3>
+                                <p className="text-xl font-serif italic text-heritage-navy/60 dark:text-white/60">Após a conclusão de todos os pontos da ordem de trabalhos, a Direção deve proceder à emissão do documento oficial de Ata.</p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-8">
+                                <button
+                                    className="h-20 px-12 bg-heritage-navy text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-gold transition-all shadow-xl transform hover:-translate-y-1"
                                     onClick={handleGenerateMinutes}
                                 >
-                                    Gerar Ata (Ata 2.0)
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="border-white/20 hover:bg-white/10 text-white rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-xs transition-apple"
-                                    onClick={() => toast.warning("Encerrar Assembleia?", {
-                                        description: "Isto impedirá novos votos.",
-                                        action: { label: "Confirmar", onClick: () => { } }
+                                    Gerar Ata Consolidada
+                                </button>
+                                <button
+                                    className="h-20 px-12 border-2 border-heritage-navy text-heritage-navy text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-500 hover:border-red-500 hover:text-white transition-all shadow-lg"
+                                    onClick={() => toast.warning("Encerrar Assembleia em Definitivo?", {
+                                        description: "Esta ação impedirá quaisquer novas deliberações digitais.",
+                                        action: { label: "Selar Arquivo", onClick: () => { } }
                                     })}
                                 >
-                                    Encerrar Sessão
-                                </Button>
+                                    Selar Livro de Atas
+                                </button>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </motion.section>
+                    )}
+                </div>
             </main>
         </div>
     )

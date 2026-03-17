@@ -8,13 +8,19 @@ interface PasswordGateProps {
     password: string
     children: React.ReactNode
     storageKey?: string
+    /** Quando true, o portão é desativado e o conteúdo é exibido sem pedir senha. Código do gate permanece intacto. */
+    disabled?: boolean
 }
 
-export default function PasswordGate({ password, children, storageKey = "assessoria_auth" }: PasswordGateProps) {
+export default function PasswordGate({ password, children, storageKey = "assessoria_auth", disabled = false }: PasswordGateProps) {
     const [inputPassword, setInputPassword] = useState("")
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return sessionStorage.getItem(storageKey) === "true"
     })
+
+    if (disabled) {
+        return <>{children}</>
+    }
     const [error, setError] = useState("")
     const [isShaking, setIsShaking] = useState(false)
 

@@ -1,41 +1,26 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { motion } from "framer-motion"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { motion, useScroll, useSpring } from "framer-motion"
 import PasswordGate from "@/components/PasswordGate"
-import {
-    LucideBuilding2,
-    LucideCastle,
-    LucideEuro,
-    LucideCalendarClock,
-    LucideMapPin,
-    LucideGraduationCap,
-    LucideHammer,
-    LucideCheckCircle2,
-    LucideStar,
-    LucideTarget,
-    LucideAward,
-    LucideArrowRight,
-    LucideHistory,
-    LucideHome,
-    LucideLeaf,
-    LucideGavel,
-    LucideFileText,
-    LucideShieldCheck,
-    LucideBriefcase,
-    LucideTrendingUp,
-    LucideShield,
-    LucideListOrdered,
-    LucideBookOpen
+import { 
+    LucideBuilding2, LucideCastle, LucideEuro, LucideCalendarClock, LucideMapPin, 
+    LucideGraduationCap, LucideHammer, LucideCheckCircle2, LucideStar, LucideTarget, 
+    LucideAward, LucideArrowRight, LucideHistory, LucideHome, LucideLeaf, 
+    LucideGavel, LucideFileText, LucideShieldCheck, LucideBriefcase, LucideTrendingUp, 
+    LucideShield, LucideListOrdered, LucideBookOpen, LucideArrowDownRight 
 } from "lucide-react"
 import ModeloInstitucional from "@/components/visuals/ModeloInstitucional"
 import MapaOficios from "@/components/visuals/MapaOficios"
 import FinanciamentoVisual from "@/components/visuals/FinanciamentoVisual"
 import CronogramaVisual from "@/components/visuals/CronogramaVisual"
 import ProcessoOperacional from "@/components/visuals/ProcessoOperacional"
+import ProximosPassosVisual from "@/components/visuals/ProximosPassosVisual"
+import { Grain } from "@/components/ui/Grain"
+import { FadeIn } from "@/components/ui/FadeIn"
+import AnimatedCounter from "@/components/ui/AnimatedCounter"
 
-// Dados detalhados dos ofícios tradicionais — Artes & Ofícios (atualizado reunião Fev/2026)
 const oficiosDetalhados = {
     culinaria: [
         {
@@ -338,14 +323,7 @@ const propostas = [
     { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "A partir de €2.000.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo." }
 ]
 
-const passosDetails = [
-    { num: "01", titulo: "Aprovação do Plano Mestre", desc: "Revisão e validação final da estrutura de custos da Quinta do Visconde de Salreu." },
-    { num: "02", titulo: "Orçamentação Torre Carvalhal", desc: "Pesquisa extensiva e estimativa de custos para a Torre do Carvalhal." },
-    { num: "03", titulo: "Constituição das Entidades", desc: "Formalização da IPSS Banda Visconde de Salreu e arranjo jurídico correspondente." },
-    { num: "04", titulo: "Captação de Financiamento", desc: "Submissão de candidaturas PRR/Portugal 2030, IEFP e procura de mecenato." },
-    { num: "05", titulo: "Início das Obras e Formação", desc: "Arranque do restauro estrutural e da escola de artes e ofícios." }
-]
-
+// passosDetails moved to ProximosPassosVisual component
 const fontesDetails = [
     { titulo: "Transcrição da Reunião de Adequações (Fev/2026)", desc: "Decisões estratégicas sobre orçamento (€2M Quinta), mudança de foco para artes/culinária e novo modelo institucional (IPSS)." },
     { titulo: "Plano Mestre Bureau Social", desc: "Diretrizes operacionais e estruturais para o IPNS e seus projetos de preservação patrimonial e impacto social." },
@@ -411,819 +389,699 @@ const kpiDetails = [
     { meta: "Empregos Criados", kpi: "25 postos", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
 ]
 
+
 export default function Assessoria() {
-    const [activeTab, setActiveTab] = useState("programa")
+    const { scrollYProgress } = useScroll()
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    })
+
+    const [activeSection, setActiveSection] = useState("programa")
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const offset = 280 // altura navbar + margem para considerar secção "ativa"
+            const scrollPos = window.scrollY + offset
+            let current = sections[0].id
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sections[i].id)
+                if (el && el.offsetTop <= scrollPos) {
+                    current = sections[i].id
+                    break
+                }
+            }
+            setActiveSection(prev => prev !== current ? current : prev)
+        }
+        const tid = setTimeout(handleScroll, 100) // aguarda DOM
+        window.addEventListener("scroll", handleScroll, { passive: true })
+        return () => {
+            clearTimeout(tid)
+            window.removeEventListener("scroll", handleScroll)
+        }
+    }, [])
+
+    const sections = [
+        { id: "programa", label: "O Programa" },
+        { id: "modelo", label: "Modelo Institucional" },
+        { id: "processo", label: "Processo Operacional" },
+        { id: "quinta", label: "Quinta Salreu" },
+        { id: "torre", label: "Torre Carvalhal" },
+        { id: "oficios", label: "Artes & Ofícios" },
+        { id: "funcionamento", label: "Funcionamento" },
+        { id: "governanca", label: "Governança" },
+        { id: "proposta", label: "Proposta & KPIs" },
+        { id: "financiamento", label: "Financiamento" },
+        { id: "passos", label: "Próximos Passos" },
+    ]
 
     return (
-        <PasswordGate password="#333">
-            <div className="flex flex-col w-full min-h-screen bg-background">
-                {/* Hero Section */}
-                <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-mesh opacity-30 dark:opacity-10" />
-                    <div className="absolute top-20 right-20 w-96 h-96 bg-heritage-terracotta/10 rounded-full blur-[150px]" />
-                    <div className="absolute bottom-0 left-20 w-64 h-64 bg-heritage-ocean/10 rounded-full blur-[100px]" />
+        <PasswordGate password="#333" disabled>
+            <div className="flex flex-col w-full bg-[#f8f6f0] dark:bg-zinc-950 transition-colors duration-500 relative font-sans text-heritage-navy dark:text-white">
+                <Grain opacity={0.09} />
+                
+                {/* Progress bar editorial style */}
+                <motion.div className="fixed top-0 left-0 right-0 h-1 bg-heritage-terracotta origin-left z-50 mix-blend-multiply" style={{ scaleX }} />
 
-                    <div className="max-w-5xl mx-auto text-center relative z-10 space-y-8">
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                            <Badge className="bg-heritage-gold/20 text-heritage-gold border-heritage-gold/30 px-6 py-2 rounded-full font-black uppercase text-[10px] tracking-widest mb-6">
-                                Proposta de Assessoria Técnica
-                            </Badge>
-                        </motion.div>
-
-                        <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.7 }}
-                            className="text-5xl md:text-7xl font-black text-heritage-navy dark:text-white leading-[0.95] tracking-tighter">
-                            Preservar o <br />
-                            <span className="text-heritage-terracotta">Património Familiar</span>.
-                        </motion.h1>
-
-                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.7 }}
-                            className="text-xl md:text-2xl text-heritage-navy/50 dark:text-white/40 max-w-3xl mx-auto font-medium">
-                            Um programa inovador que combina a preservação patrimonial com a formação em ofícios tradicionais portugueses, gerando impacto social, ambiental e económico.
-                        </motion.p>
-
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
-                            className="flex flex-wrap justify-center gap-6 pt-8">
-                            <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
-                                <LucideEuro className="w-6 h-6 text-heritage-terracotta" />
-                                <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">A partir de €2.000.000</p>
-                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Investimento Total</p>
+                {/* Editorial Hero Section (Masthead Style) */}
+                <section className="relative min-h-[90svh] flex flex-col justify-end px-4 sm:px-8 md:px-12 pb-12 pt-32 overflow-hidden border-b border-heritage-navy/10 dark:border-white/10">
+                    <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end relative z-10">
+                        {/* Main Headline */}
+                        <div className="lg:col-span-8 space-y-8">
+                            <FadeIn delay={0.1}>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-heritage-terracotta"></div>
+                                    <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-heritage-navy/70 dark:text-white/70">
+                                        Caderno Especial // Assessoria Técnica
+                                    </span>
                                 </div>
-                            </div>
-                            <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
-                                <LucideCalendarClock className="w-6 h-6 text-heritage-ocean" />
-                                <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">24–30 Meses</p>
-                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Duração Integrada</p>
+                            </FadeIn>
+                            <FadeIn delay={0.3}>
+                                <h1 className="font-serif text-[4rem] leading-[0.9] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-medium text-heritage-navy dark:text-white tracking-tighter">
+                                    Preservar o <br />
+                                    <span className="text-heritage-terracotta italic font-normal">Património</span>.
+                                </h1>
+                            </FadeIn>
+                        </div>
+
+                        {/* Sub-Article / Lead Paragraph */}
+                        <div className="lg:col-span-4 flex flex-col justify-between h-full border-t border-heritage-navy/20 dark:border-white/20 pt-6 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-12">
+                            <FadeIn delay={0.5} direction="left">
+                                <p className="text-xl sm:text-2xl text-heritage-navy/80 dark:text-white/80 leading-snug font-medium mb-12">
+                                    Um programa inovador que combina a preservação patrimonial com a formação em ofícios tradicionais portugueses.
+                                </p>
+                            </FadeIn>
+
+                            <FadeIn delay={0.7} direction="left">
+                                <div className="w-full">
+                                    <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-3 font-semibold">Resumo Executivo</span>
+                                    <div className="grid grid-cols-2 gap-4 pb-3">
+                                        <div>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">€2.000.000</p>
+                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Investimento Total</p>
+                                        </div>
+                                        <div>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">24-30 Meses</p>
+                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Duração Integrada</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="glass-card px-8 py-4 rounded-2xl flex items-center gap-3">
-                                <LucideBuilding2 className="w-6 h-6 text-heritage-gold" />
-                                <div className="text-left">
-                                    <p className="text-2xl font-black text-heritage-navy dark:text-white">2 Projetos</p>
-                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 font-bold uppercase tracking-wider">Norte + Sul</p>
-                                </div>
-                            </div>
-                        </motion.div>
+                            </FadeIn>
+                        </div>
                     </div>
                 </section>
 
-                {/* Tabs Navigation */}
-                <section className="px-6 pb-20">
-                    <div className="max-w-7xl mx-auto">
-                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="w-full flex flex-wrap justify-center gap-2 bg-transparent h-auto p-0 mb-12">
-                                {[
-                                    { value: "programa", label: "O Programa", icon: LucideTarget },
-                                    { value: "quinta", label: "Quinta Salreu", icon: LucideBuilding2 },
-                                    { value: "torre", label: "Torre Carvalhal", icon: LucideCastle },
-                                    { value: "oficios", label: "Ofícios", icon: LucideHammer },
-                                    { value: "funcionamento", label: "Funcionamento", icon: LucideTrendingUp },
-                                    { value: "governanca", label: "Governança", icon: LucideGavel },
-                                    { value: "proposta", label: "Proposta & KPIs", icon: LucideStar },
-                                    { value: "financiamento", label: "Financiamento", icon: LucideEuro },
-                                    { value: "passos", label: "Próximos Passos", icon: LucideListOrdered },
-                                    { value: "fontes", label: "Fontes", icon: LucideBookOpen },
-                                ].map((tab) => (
-                                    <TabsTrigger key={tab.value} value={tab.value}
-                                        className="data-[state=active]:bg-heritage-navy data-[state=active]:text-white dark:data-[state=active]:bg-white dark:data-[state=active]:text-heritage-navy px-6 py-3 rounded-2xl font-bold text-sm transition-all">
-                                        <tab.icon className="w-4 h-4 mr-2" />
-                                        {tab.label}
-                                    </TabsTrigger>
-                                ))}
-                            </TabsList>
+                <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 relative">
+                    
+                    {/* Left Sidebar Table of Contents (Sticky) */}
+                    <div className="hidden lg:block lg:col-span-3 border-r border-heritage-navy/10 dark:border-white/10 p-12 relative bg-[#f8f6f0]/80 dark:bg-zinc-950/80 backdrop-blur-md">
+                        <div className="sticky top-32 space-y-4">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-terracotta mb-6">Índice da Edição</h4>
+                            {sections.map((item) => (
+                                <a
+                                    key={item.id}
+                                    href={`#${item.id}`}
+                                    className={cn(
+                                        "block group py-1 pl-3 -ml-3 border-l-2 transition-colors",
+                                        activeSection === item.id
+                                            ? "border-heritage-terracotta"
+                                            : "border-transparent"
+                                    )}
+                                >
+                                    <span
+                                        className={cn(
+                                            "text-sm font-semibold transition-colors",
+                                            activeSection === item.id
+                                                ? "text-heritage-terracotta dark:text-heritage-terracotta"
+                                                : "text-heritage-navy/50 dark:text-white/50 group-hover:text-heritage-navy dark:group-hover:text-white"
+                                        )}
+                                    >
+                                        {item.label}
+                                    </span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
 
-                            {/* TAB: O Programa */}
-                            <TabsContent value="programa" className="space-y-12">
-                                {/* Visão Geral */}
-                                <div className="glass-card p-10 rounded-[40px] space-y-8">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-heritage-terracotta/10 flex items-center justify-center shrink-0">
-                                            <LucideTarget className="w-7 h-7 text-heritage-terracotta" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-3xl font-black text-heritage-navy dark:text-white mb-4">O Que é o Programa</h2>
-                                            <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                O <strong>Programa de Preservação e Restauro</strong> é uma iniciativa do Instituto Português de Negócios Sociais (IPNS) que visa recuperar o património histórico familiar através de um modelo inovador que combina:
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-3 gap-6 mt-8">
-                                        {[
-                                            { icon: LucideHome, titulo: "Preservação Patrimonial", desc: "Restauro de edifícios, jardins históricos e elementos patrimoniais utilizando técnicas tradicionais" },
-                                            { icon: LucideGraduationCap, titulo: "Artes, Culinária e Ofícios", desc: "Formação em culinária portuguesa, botânica, música, rendas, decoração e ofícios tradicionais em risco" },
-                                            { icon: LucideLeaf, titulo: "Turismo de Experiência Imersiva", desc: "14 unidades Airbnb nos anexos, escola de culinária, concertos nos jardins e sequestro de carbono" }
-                                        ].map((item, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-3xl">
-                                                <item.icon className="w-10 h-10 text-heritage-terracotta mb-4" />
-                                                <h3 className="font-black text-lg text-heritage-navy dark:text-white mb-2">{item.titulo}</h3>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{item.desc}</p>
-                                            </div>
-                                        ))}
-                                    </div>
+                    {/* Main Content Areas */}
+                    <div className="col-span-1 lg:col-span-9 flex flex-col bg-transparent">
+                        
+                        {/* Section: O Programa */}
+                        <section id="programa" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Visão Geral</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">O Programa de Preservação</h2>
+                                    </FadeIn>
                                 </div>
-
-                                {/* Como Funciona */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Como Funciona</h3>
-                                    <div className="space-y-6">
-                                        {[
-                                            { num: "1", titulo: "Parceria com IPSS Existente", desc: "Para a Quinta Salreu, articulação com a IPSS da Banda Visconde de Salreu (gestora Raquel), que já possui licenças, estrutura e mais de 50 associados." },
-                                            { num: "2", titulo: "Parceria com o IPNS", desc: "O Instituto Português de Negócios Sociais (Bureau Social) atua como assessor estratégico na captação de recursos, formação e coordenação do projeto." },
-                                            { num: "3", titulo: "Captação de Financiamento", desc: "Candidatura ao PRR/Portugal 2030, IEFP, FEADER e FSE+, complementados por contrapartida da família (10%)." },
-                                            { num: "4", titulo: "Formação e Restauro", desc: "Mestres artesãos e especialistas formam aprendizes locais em culinária, botânica, música, restauro e ofícios tradicionais." },
-                                            { num: "5", titulo: "Turismo de Experiência Imersiva", desc: "14 unidades Airbnb nos anexos, escola de culinária, concertos nos jardins, turismo rural no Alentejo — gerando receitas sustentáveis." }
-                                        ].map((step) => (
-                                            <div key={step.num} className="flex gap-6">
-                                                <div className="w-12 h-12 rounded-full bg-heritage-terracotta text-white flex items-center justify-center font-black text-lg shrink-0">
-                                                    {step.num}
-                                                </div>
-                                                <div className="pt-2">
-                                                    <h4 className="font-black text-heritage-navy dark:text-white mb-1">{step.titulo}</h4>
-                                                    <p className="text-sm text-heritage-navy/60 dark:text-white/50">{step.desc}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            <span className="float-left text-6xl leading-[0.8] pr-3 pt-2 font-serif text-heritage-terracotta font-medium">I</span>
+                                            niciativa do Instituto Português de Negócios Sociais (IPNS) que visa recuperar o património histórico familiar através de um modelo inovador que combina preservação, formação e turismo imersivo.
+                                        </p>
+                                    </FadeIn>
                                 </div>
-
-                                {/* Modelo Institucional Visual */}
-                                <div className="space-y-8">
-                                    <div className="flex items-center gap-3">
-                                        <LucideShieldCheck className="w-8 h-8 text-heritage-terracotta" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Modelo Institucional Integrado</h3>
-                                    </div>
-                                    <ModeloInstitucional />
-                                </div>
-
-                                {/* Processo Operacional Visual */}
-                                <div className="space-y-8">
-                                    <div className="flex items-center gap-3">
-                                        <LucideCheckCircle2 className="w-8 h-8 text-heritage-terracotta" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white uppercase tracking-tight">O Processo em 5 Fases</h3>
-                                    </div>
-                                    <ProcessoOperacional />
-                                </div>
-
-
-                            </TabsContent>
-
-                            {/* TAB: Quinta Salreu (Detalhada) */}
-                            <TabsContent value="quinta" className="space-y-12">
-                                {/* Header do Projeto */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <div className="flex flex-col lg:flex-row lg:items-start gap-10">
-                                        <div className="flex-1 space-y-6">
-                                            <Badge className="bg-heritage-terracotta/10 text-heritage-terracotta border-none uppercase tracking-widest text-[10px] font-black">
-                                                Projeto Principal
-                                            </Badge>
-                                            <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Quinta do Visconde de Salreu</h2>
-                                            <div className="flex items-center gap-2 text-heritage-navy/60 dark:text-white/40">
-                                                <LucideMapPin className="w-5 h-5" />
-                                                <span className="font-medium">Freguesia de Salreu, Estarreja, Aveiro</span>
-                                            </div>
-                                            <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                Espaço de experiência imersiva na cultura tradicional portuguesa — culinária, botânica, música e ofícios. O Visconde foi o maior exportador de azeite de Portugal.
-                                            </p>
-                                        </div>
-                                        <div className="flex gap-8">
-                                            <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-terracotta">€2.000.000</p>
-                                                <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">24 meses</p>
-                                                <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Duração</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* História */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <div className="flex items-start gap-4 mb-6">
-                                        <LucideHistory className="w-8 h-8 text-heritage-terracotta shrink-0" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">História da Quinta</h3>
-                                    </div>
-                                    <p className="text-heritage-navy/70 dark:text-white/60 leading-relaxed text-lg">
-                                        {quintaSalreuDetails.historia.texto}
-                                    </p>
-                                </div>
-
-                                {/* Património */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Património a Preservar</h3>
-                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {quintaSalreuDetails.patrimonio.elementos.map((elem, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-5 rounded-2xl">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <h4 className="font-black text-heritage-navy dark:text-white">{elem.nome}</h4>
-                                                    <Badge variant="outline" className={
-                                                        elem.estado === "Urgente" ? "border-red-500 text-red-500" :
-                                                            elem.estado === "Degradado" ? "border-amber-500 text-amber-500" :
-                                                                "border-heritage-navy/30 text-heritage-navy/60"
-                                                    }>
-                                                        {elem.estado}
-                                                    </Badge>
-                                                </div>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{elem.descricao}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Fases do Projeto */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Fases de Implementação</h3>
+                            </div>
+                            
+                            <FadeIn triggerOnView direction="up">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-heritage-navy/10 dark:border-white/10">
                                     <div className="space-y-4">
-                                        {quintaSalreuDetails.fases.map((fase, i) => (
-                                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-6 bg-heritage-sand/20 dark:bg-white/5 rounded-2xl">
-                                                <div className="w-14 h-14 rounded-2xl bg-heritage-terracotta text-white flex items-center justify-center font-black text-xl shrink-0">
-                                                    {fase.fase}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex flex-wrap items-center gap-4 mb-1">
-                                                        <h4 className="font-black text-heritage-navy dark:text-white text-lg">{fase.nome}</h4>
-                                                        <Badge variant="outline" className="border-heritage-ocean text-heritage-ocean">{fase.periodo}</Badge>
-                                                    </div>
-                                                    <p className="text-sm text-heritage-navy/60 dark:text-white/50">{fase.descricao}</p>
-                                                </div>
-                                                <div className="text-right shrink-0">
-                                                    <p className="text-xl font-black text-heritage-terracotta">{fase.orcamento}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        <LucideHome className="w-8 h-8 text-heritage-terracotta" />
+                                        <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Preservação Patrimonial</h3>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">Restauro de edifícios, jardins históricos e elementos patrimoniais utilizando técnicas tradicionais.</p>
                                     </div>
-                                </div>
-
-                                {/* Impacto Esperado */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Impacto Esperado</h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {quintaSalreuDetails.impacto.map((item, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-3xl text-center">
-                                                <p className="text-3xl font-black text-heritage-terracotta">{item.valor}</p>
-                                                <p className="font-bold text-heritage-navy dark:text-white mb-1">{item.indicador}</p>
-                                                <p className="text-xs text-heritage-navy/50 dark:text-white/40">{item.descricao}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Modelo Institucional */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estrutura Organizacional</h3>
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {quintaSalreuDetails.modelo.pilares.map((pilar, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-2xl border-t-4 border-heritage-terracotta">
-                                                <h4 className="font-black text-heritage-navy dark:text-white mb-2">{pilar.nome}</h4>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{pilar.descricao}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </TabsContent>
-
-                            {/* TAB: Torre Carvalhal (Detalhada) */}
-                            <TabsContent value="torre" className="space-y-12">
-                                {/* Header do Projeto */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <div className="flex flex-col lg:flex-row lg:items-start gap-10">
-                                        <div className="flex-1 space-y-6">
-                                            <Badge className="bg-heritage-ocean/10 text-heritage-ocean border-none uppercase tracking-widest text-[10px] font-black">
-                                                Projeto Alentejo
-                                            </Badge>
-                                            <h2 className="text-4xl font-black text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h2>
-                                            <div className="flex items-center gap-2 text-heritage-navy/60 dark:text-white/40">
-                                                <LucideMapPin className="w-5 h-5" />
-                                                <span className="font-medium">Santiago do Escoural, Montemor-o-Novo, Évora</span>
-                                            </div>
-                                            <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                Património histórico manuelino-mudéjar integrado na Rede Natura 2000, unindo a preservação florestal ao restauro arquitetónico.
-                                            </p>
-                                        </div>
-                                        <div className="flex gap-8">
-                                            <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-ocean">TBD</p>
-                                                <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Investimento</p>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-4xl font-black text-heritage-navy dark:text-white">30 meses</p>
-                                                <p className="text-sm font-bold text-heritage-navy/40 dark:text-white/40 uppercase">Duração</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* História */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <div className="flex items-start gap-4 mb-6">
-                                        <LucideHistory className="w-8 h-8 text-heritage-ocean shrink-0" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h3>
-                                    </div>
-                                    <p className="text-heritage-navy/70 dark:text-white/60 leading-relaxed text-lg">
-                                        {torreCarvalhalDetails.historia.texto}
-                                    </p>
-                                </div>
-
-                                {/* Património */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estado de Conservação</h3>
-                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {torreCarvalhalDetails.patrimonio.elementos.map((elem, i) => (
-                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-5 rounded-2xl">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <h4 className="font-black text-heritage-navy dark:text-white">{elem.nome}</h4>
-                                                    <Badge variant="outline" className={
-                                                        elem.estado === "Ruína avançada" || elem.estado === "Ruína" ? "border-red-500 text-red-500" :
-                                                            elem.estado === "Devoluto" ? "border-amber-500 text-amber-500" :
-                                                                "border-heritage-ocean/30 text-heritage-ocean"
-                                                    }>
-                                                        {elem.estado}
-                                                    </Badge>
-                                                </div>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{elem.descricao}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Fases do Projeto */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Cronograma de Intervenção</h3>
                                     <div className="space-y-4">
-                                        {torreCarvalhalDetails.fases.map((fase, i) => (
-                                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-6 bg-heritage-ocean/5 dark:bg-white/5 rounded-2xl">
-                                                <div className="w-14 h-14 rounded-2xl bg-heritage-ocean text-white flex items-center justify-center font-black text-xl shrink-0">
-                                                    {fase.fase}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex flex-wrap items-center gap-4 mb-1">
-                                                        <h4 className="font-black text-heritage-navy dark:text-white text-lg">{fase.nome}</h4>
-                                                        <Badge variant="outline" className="border-heritage-terracotta text-heritage-terracotta">{fase.periodo}</Badge>
-                                                    </div>
-                                                    <p className="text-sm text-heritage-navy/60 dark:text-white/50">{fase.descricao}</p>
-                                                </div>
-                                                <div className="text-right shrink-0">
-                                                    <p className="text-xl font-black text-heritage-ocean">{fase.orcamento}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        <LucideGraduationCap className="w-8 h-8 text-heritage-ocean" />
+                                        <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Artes, Culinária e Ofícios</h3>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">Formação em culinária, botânica, música, e ofícios em risco.</p>
+                                    </div>
+                                    <div className="space-y-4 sm:col-span-2 lg:col-span-1">
+                                        <LucideLeaf className="w-8 h-8 text-heritage-gold" />
+                                        <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Turismo Imersivo</h3>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">14 unidades Airbnb, escola de culinária e concertos nos jardins.</p>
                                     </div>
                                 </div>
+                            </FadeIn>
+                        </section>
 
-                                {/* Metas Torre */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    {torreCarvalhalDetails.impacto.map((meta, i) => (
-                                        <div key={i} className="glass-card p-6 rounded-3xl text-center">
-                                            <p className="text-3xl font-black text-heritage-ocean">{meta.valor}</p>
-                                            <p className="text-xs font-bold text-heritage-navy/40 dark:text-white/40 uppercase tracking-wider mt-2">{meta.indicador}</p>
-                                            <p className="text-[10px] text-heritage-navy/30 dark:text-white/20 mt-1 uppercase font-bold">{meta.descricao}</p>
+                        {/* Section: Modelo Institucional */}
+                        <section id="modelo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f5f3ec] dark:bg-zinc-900">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Estrutura</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Modelo Institucional</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Uma parceria integrada entre os proprietários e a comunidade, coordenada com a expertise do IPNS e projetada para escalar impacto em rede.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+                            
+                            <FadeIn triggerOnView direction="up">
+                                <ModeloInstitucional />
+                            </FadeIn>
+                        </section>
+                        
+                        {/* Section: Processo Operacional */}
+                        <section id="processo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Implementação</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Processo Operacional</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Desenvolvimento minucioso estruturado em 5 fases sequenciais para garantir execução sustentável.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            <FadeIn triggerOnView direction="up">
+                                <ProcessoOperacional />
+                            </FadeIn>
+                        </section>
+
+                        {/* Section: Quinta Salreu */}
+                        <section id="quinta" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-navy dark:border-white pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Projeto Principal</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Quinta do Visconde de Salreu</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            {quintaSalreuDetails.historia.texto}
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            <FadeIn triggerOnView direction="up">
+                                <div className="grid grid-cols-2 gap-4 pb-8 mb-8 border-b border-heritage-navy/10 dark:border-white/10">
+                                    <div>
+                                        <p className="font-serif text-3xl font-medium text-heritage-terracotta">€2M</p>
+                                        <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Investimento</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-serif text-3xl font-medium text-heritage-navy dark:text-white">24 meses</p>
+                                        <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Duração</p>
+                                    </div>
+                                </div>
+                            </FadeIn>
+
+                            <FadeIn triggerOnView direction="up">
+                                <h3 className="font-serif text-2xl mb-6">Património a Preservar</h3>
+                                <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                                    {quintaSalreuDetails.patrimonio.elementos.map((elem, i) => (
+                                        <div key={i} className="p-6 bg-[#f8f6f0] dark:bg-zinc-950 border border-heritage-navy/10 dark:border-white/10">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h4 className="font-bold text-sm tracking-wide">{elem.nome}</h4>
+                                                <Badge variant="outline" className={`text-[10px] rounded-none ${elem.estado === "Urgente" ? "border-red-500 text-red-500" : "border-heritage-navy/30 dark:border-white/30"}`}>
+                                                    {elem.estado}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed">{elem.descricao}</p>
                                         </div>
                                     ))}
                                 </div>
+                            </FadeIn>
 
-                                {/* Modelo Institucional Sul */}
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Estrutura Organizacional Sul</h3>
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {torreCarvalhalDetails.modelo.pilares.map((pilar, i) => (
-                                            <div key={i} className="bg-heritage-ocean/5 dark:bg-white/5 p-6 rounded-2xl border-t-4 border-heritage-ocean">
-                                                <h4 className="font-black text-heritage-navy dark:text-white mb-2">{pilar.nome}</h4>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{pilar.descricao}</p>
+                            <FadeIn triggerOnView direction="up">
+                                <h3 className="font-serif text-2xl mb-6">Cronograma & Orçamento</h3>
+                                <div className="border border-heritage-navy/10 dark:border-white/10 divide-y divide-heritage-navy/10 dark:divide-white/10">
+                                    {quintaSalreuDetails.fases.map((fase, i) => (
+                                        <div key={i} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <div className="flex-1">
+                                                <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-terracotta mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
+                                                <h4 className="font-bold text-sm mb-2">{fase.nome}</h4>
+                                                <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed max-w-lg">{fase.descricao}</p>
                                             </div>
-                                        ))}
-                                    </div>
+                                            <div className="text-right whitespace-nowrap">
+                                                <p className="font-serif text-2xl text-heritage-navy dark:text-white">{fase.orcamento}</p>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            </TabsContent>
+                            </FadeIn>
+                        </section>
 
-                            {/* TAB: Ofícios (com modais) */}
-                            <TabsContent value="oficios" className="space-y-12">
-                                {/* Mapa de Ofícios Norte vs Sul */}
-                                <div className="space-y-8">
-                                    <div className="text-center space-y-4">
-                                        <h2 className="text-4xl font-black text-heritage-navy dark:text-white leading-tight">Distribuição de Saberes</h2>
-                                        <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                            O programa cobre as principais tradições construtivas de Portugal, desde as técnicas do Norte e Centro até à sabedoria do Alentejo.
+                        {/* Section: Torre Carvalhal */}
+                        <section id="torre" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Projeto Alentejo</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            {torreCarvalhalDetails.historia.texto}
                                         </p>
-                                    </div>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            <FadeIn triggerOnView direction="up">
+                                <h3 className="font-serif text-2xl mb-6">Estado de Conservação</h3>
+                                <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                                    {torreCarvalhalDetails.patrimonio.elementos.map((elem, i) => (
+                                        <div key={i} className="p-6 bg-heritage-ocean/5 dark:bg-ocean/10 border border-heritage-ocean/10">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h4 className="font-bold text-sm tracking-wide">{elem.nome}</h4>
+                                                <Badge variant="outline" className={`text-[10px] rounded-none border-heritage-ocean text-heritage-ocean`}>
+                                                    {elem.estado}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed">{elem.descricao}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
+
+                            <FadeIn triggerOnView direction="up">
+                                <h3 className="font-serif text-2xl mb-6">Cronograma de Intervenção</h3>
+                                <div className="border border-heritage-navy/10 dark:border-white/10 divide-y divide-heritage-navy/10 dark:divide-white/10">
+                                    {torreCarvalhalDetails.fases.map((fase, i) => (
+                                        <div key={i} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <div className="flex-1">
+                                                <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-ocean mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
+                                                <h4 className="font-bold text-sm mb-2">{fase.nome}</h4>
+                                                <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed max-w-lg">{fase.descricao}</p>
+                                            </div>
+                                            <div className="text-right whitespace-nowrap">
+                                                <p className="font-serif text-2xl text-heritage-navy dark:text-white">{fase.orcamento}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
+                        </section>
+
+                        {/* Section: Artes & Ofícios */}
+                        <section id="oficios" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Escola</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Artes & Ofícios <br/><span className="italic font-normal">Tradicionais</span></h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            O programa cobre as principais tradições construtivas e culturais de Portugal, garantindo que o saber ancestral é transmitido às novas gerações.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            <FadeIn triggerOnView direction="up">
+                                <div className="mb-16">
                                     <MapaOficios />
                                 </div>
+                            </FadeIn>
 
-                                <div className="text-center space-y-4 pt-12">
-                                    <h3 className="text-3xl font-black text-heritage-navy dark:text-white">Catálogo de Especialidade</h3>
-                                    <p className="text-heritage-navy/60 dark:text-white/40">
-                                        Clique em cada ofício para saber mais sobre as competências e aplicação no projeto.
-                                    </p>
-                                </div>
-
+                            <div className="space-y-0">
                                 {[
-                                    { titulo: "Culinária e Gastronomia", oficios: oficiosDetalhados.culinaria, cor: "terracotta" },
-                                    { titulo: "Botânica, Jardinismo e Sustentabilidade", oficios: oficiosDetalhados.botanica, cor: "green" },
-                                    { titulo: "Artes e Ofícios Tradicionais", oficios: oficiosDetalhados.artes, cor: "amber" },
-                                    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.restauro, cor: "ocean" }
+                                    { titulo: "Culinária e Gastronomia", oficios: oficiosDetalhados.culinaria, icon: LucideStar },
+                                    { titulo: "Botânica, Jardinismo e Sustentabilidade", oficios: oficiosDetalhados.botanica, icon: LucideLeaf },
+                                    { titulo: "Artes e Ofícios Tradicionais", oficios: oficiosDetalhados.artes, icon: LucideHammer },
+                                    { titulo: "Construção e Restauro", oficios: oficiosDetalhados.restauro, icon: LucideCastle }
                                 ].map((categoria, i) => (
-                                    <div key={i} className="glass-card p-10 rounded-[40px]">
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-6">{categoria.titulo}</h3>
-                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                            {categoria.oficios.map((oficio, j) => (
-                                                <Dialog key={j}>
-                                                    <DialogTrigger asChild>
-                                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                                            className="bg-heritage-sand/30 dark:bg-white/5 p-5 rounded-2xl text-left w-full hover:bg-heritage-sand/50 dark:hover:bg-white/10 transition-all group">
-                                                            <div className="flex items-center justify-between">
-                                                                <div>
-                                                                    <h4 className="font-bold text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors">{oficio.nome}</h4>
-                                                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40 mt-1">{oficio.aplicacao}</p>
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <Badge variant="outline" className="text-xs">{oficio.duracao}</Badge>
-                                                                    <LucideArrowRight className="w-4 h-4 text-heritage-navy/30 dark:text-white/30 group-hover:text-heritage-terracotta transition-colors" />
-                                                                </div>
-                                                            </div>
-                                                        </motion.button>
-                                                    </DialogTrigger>
-                                                    <DialogContent className="max-w-2xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle className="text-3xl font-black text-heritage-navy dark:text-white leading-tight">{oficio.nome}</DialogTitle>
-                                                        </DialogHeader>
-                                                        <div className="space-y-6">
-                                                            <div className="flex flex-wrap gap-3">
-                                                                <Badge className="bg-heritage-terracotta/10 text-heritage-terracotta border-none px-4 py-1">{oficio.duracao}</Badge>
-                                                                <Badge variant="secondary" className="bg-heritage-ocean/10 text-heritage-ocean border-none px-4 py-1">{oficio.certificacao}</Badge>
-                                                                <Badge variant="outline" className="px-4 py-1">{oficio.aplicacao}</Badge>
-                                                            </div>
-
-                                                            <p className="text-heritage-navy/70 dark:text-white/60 leading-relaxed text-lg">{oficio.descricao}</p>
-
-                                                            <div className="grid md:grid-cols-2 gap-8">
-                                                                <div className="space-y-4">
-                                                                    <h4 className="font-bold text-heritage-navy dark:text-white flex items-center gap-2">
-                                                                        <LucideAward className="w-5 h-5 text-heritage-terracotta" />
-                                                                        Competências
-                                                                    </h4>
-                                                                    <ul className="space-y-2">
-                                                                        {oficio.competencias.map((comp, k) => (
-                                                                            <li key={k} className="flex items-center gap-2 text-sm text-heritage-navy/60 dark:text-white/50">
-                                                                                <LucideCheckCircle2 className="w-4 h-4 text-heritage-success shrink-0" />
-                                                                                {comp}
-                                                                            </li>
-                                                                        ))}
-                                                                    </ul>
-                                                                </div>
-
-                                                                <div className="space-y-6">
-                                                                    <div className="p-4 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-l-4 border-heritage-terracotta">
-                                                                        <h4 className="text-xs font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 mb-1">Carga Horária</h4>
-                                                                        <p className="font-bold text-heritage-navy dark:text-white">{oficio.horas}</p>
+                                    <FadeIn triggerOnView direction="up" key={i}>
+                                        <div className="border-t border-heritage-navy/20 dark:border-white/20 pt-12 pb-16 mt-0">
+                                            <div className="flex flex-col md:flex-row gap-8 lg:gap-16 items-start">
+                                                <div className="md:w-1/3 shrink-0 flex items-start gap-4">
+                                                    <div className="w-8 h-8 rounded-full border border-heritage-navy/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                                                        <categoria.icon className="w-4 h-4 text-heritage-navy/60 dark:text-white/60" />
+                                                    </div>
+                                                    <h3 className="font-serif text-3xl text-heritage-navy dark:text-white leading-tight">{categoria.titulo}</h3>
+                                                </div>
+                                                <div className="md:w-2/3 w-full grid sm:grid-cols-2 gap-x-12 gap-y-0">
+                                                    {categoria.oficios.map((oficio, j) => (
+                                                        <Sheet key={j}>
+                                                            <SheetTrigger asChild>
+                                                                <button
+                                                                    className="text-left w-full group py-5 border-b border-heritage-navy/10 dark:border-white/10 last:border-b-0 sm:last:border-b relative"
+                                                                    title="Clique para ver detalhes"
+                                                                >
+                                                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-heritage-terracotta text-white text-[10px] font-bold uppercase tracking-widest rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 shadow-xl whitespace-nowrap after:absolute after:left-1/2 after:-translate-x-1/2 after:top-full after:border-4 after:border-transparent after:border-t-heritage-terracotta">
+                                                                        Clique para ver detalhes
+                                                                    </span>
+                                                                    <div className="flex items-start justify-between gap-4">
+                                                                        <div>
+                                                                            <h4 className="font-bold text-sm text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors leading-snug">{oficio.nome}</h4>
+                                                                            <p className="text-[10px] font-bold text-heritage-navy/40 dark:text-white/40 mt-1 uppercase tracking-widest leading-relaxed line-clamp-1">{oficio.aplicacao}</p>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-3 shrink-0 pt-0.5">
+                                                                            <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 border border-heritage-navy/20 dark:border-white/20 whitespace-nowrap">{oficio.duracao}</span>
+                                                                            <LucideArrowRight className="w-4 h-4 text-heritage-navy/30 dark:text-white/30 group-hover:text-heritage-navy dark:group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200" />
+                                                                        </div>
+                                                                    </div>
+                                                                </button>
+                                                            </SheetTrigger>
+                                                            <SheetContent side="right" className="w-full max-w-2xl font-sans rounded-none border-l-2 border-heritage-navy dark:border-white bg-[#f8f6f0] dark:bg-zinc-950 overflow-y-auto p-8 pt-14">
+                                                                <SheetHeader>
+                                                                    <SheetTitle className="font-serif text-4xl text-heritage-navy dark:text-white leading-tight mb-2">{oficio.nome}</SheetTitle>
+                                                                </SheetHeader>
+                                                                <div className="space-y-6 mt-4">
+                                                                    <div className="flex flex-wrap gap-2 text-[10px] uppercase font-bold tracking-wider">
+                                                                        <span className="px-3 py-1 border border-heritage-navy/20 dark:border-white/20 text-heritage-navy dark:text-white">{oficio.duracao}</span>
+                                                                        <span className="px-3 py-1 border border-heritage-navy/20 dark:border-white/20 text-heritage-navy dark:text-white">{oficio.certificacao}</span>
+                                                                        <span className="px-3 py-1 border border-heritage-navy/20 dark:border-white/20 text-heritage-navy/60 dark:text-white/60">{oficio.aplicacao}</span>
                                                                     </div>
 
-                                                                    <div className="p-4 bg-heritage-ocean/5 dark:bg-white/5 rounded-2xl border-l-4 border-heritage-ocean">
-                                                                        <h4 className="text-xs font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 mb-1">Inserção Profissional</h4>
-                                                                        <p className="font-bold text-heritage-navy dark:text-white">{oficio.insercao}</p>
+                                                                    <p className="text-heritage-navy/80 dark:text-white/80 leading-relaxed text-lg font-serif italic border-l block border-heritage-navy/20 dark:border-white/20 pl-6 my-8">{oficio.descricao}</p>
+
+                                                                    <div className="grid md:grid-cols-2 gap-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10">
+                                                                        <div>
+                                                                            <h4 className="font-bold text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-4 flex items-center gap-2">
+                                                                                Competências
+                                                                            </h4>
+                                                                            <ul className="space-y-3">
+                                                                                {oficio.competencias.map((comp, k) => (
+                                                                                    <li key={k} className="flex items-start gap-3 text-sm font-medium text-heritage-navy/80 dark:text-white/80">
+                                                                                        <span className="text-[10px] tabular-nums font-bold tracking-widest text-heritage-navy/30 dark:text-white/30 pt-0.5">{k + 1}</span>
+                                                                                        {comp}
+                                                                                    </li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+
+                                                                        <div className="space-y-8">
+                                                                            <div>
+                                                                                <h4 className="font-bold text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-2">Carga Horária</h4>
+                                                                                <p className="font-serif text-2xl">{oficio.horas}</p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <h4 className="font-bold text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-2">Inserção Profissional</h4>
+                                                                                <p className="font-serif text-2xl leading-tight">{oficio.insercao}</p>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            ))}
+                                                            </SheetContent>
+                                                        </Sheet>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </FadeIn>
                                 ))}
+                            </div>
+                        </section>
 
-                                <div className="glass-card p-10 rounded-[40px] bg-heritage-navy dark:bg-zinc-900 text-white text-center">
-                                    <p className="text-5xl font-black mb-2">21</p>
-                                    <p className="text-xl font-bold mb-2">Ofícios Tradicionais</p>
-                                    <p className="text-white/60">Em risco de desaparecimento, a serem transmitidos às novas gerações</p>
+                        {/* Section: Funcionamento */}
+                        <section id="funcionamento" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Pedagogia</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Funcionamento <br/>da Escola</h2>
+                                    </FadeIn>
                                 </div>
-                            </TabsContent>
-
-                            {/* TAB: Funcionamento */}
-                            <TabsContent value="funcionamento" className="space-y-12">
-                                <div className="glass-card p-10 rounded-[40px] space-y-8">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-heritage-ocean/10 flex items-center justify-center shrink-0">
-                                            <LucideGraduationCap className="w-7 h-7 text-heritage-ocean" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-3xl font-black text-heritage-navy dark:text-white mb-4">Escola de Ofícios: Como Aprendemos</h2>
-                                            <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                A formação é baseada no método "Aprender Fazendo", utilizando o restauro do próprio património como laboratório vivo.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {funcionamentoDetails.modalidades.map((mod, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-3xl">
-                                                <mod.icon className="w-10 h-10 text-heritage-ocean mb-4" />
-                                                <h3 className="font-black text-lg text-heritage-navy dark:text-white mb-1">{mod.titulo}</h3>
-                                                <Badge className="bg-heritage-ocean/10 text-heritage-ocean border-none mb-3">{mod.duracao}</Badge>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{mod.objetivo}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    <div className="glass-card p-10 rounded-[40px]">
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-6">Componentes da Formação</h3>
-                                        <div className="space-y-6">
-                                            {funcionamentoDetails.componentes.map((comp, i) => (
-                                                <div key={i} className="space-y-2">
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="font-bold text-heritage-navy dark:text-white">{comp.label}</span>
-                                                        <span className="font-black text-heritage-ocean">{comp.percent}</span>
-                                                    </div>
-                                                    <div className="w-full bg-heritage-navy/5 dark:bg-white/5 h-2 rounded-full overflow-hidden">
-                                                        <div className="bg-heritage-ocean h-full" style={{ width: comp.percent }} />
-                                                    </div>
-                                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40">{comp.desc}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="glass-card p-10 rounded-[40px]">
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-6">Apoios aos Formandos</h3>
-                                        <ul className="space-y-4">
-                                            {funcionamentoDetails.apoios.map((apoio, i) => (
-                                                <li key={i} className="flex items-center gap-3 text-heritage-navy/70 dark:text-white/60">
-                                                    <LucideCheckCircle2 className="w-5 h-5 text-heritage-success shrink-0" />
-                                                    <span className="font-medium">{apoio}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <div className="mt-8 p-6 bg-heritage-ocean/5 rounded-2xl border border-heritage-ocean/20">
-                                            <p className="text-sm text-heritage-ocean font-bold">Certificação</p>
-                                            <p className="text-xs text-heritage-navy/60 dark:text-white/40 mt-1">
-                                                Todos os cursos conferem certificado de competências reconhecido, facilitando a inserção profissional posterior.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </TabsContent>
-
-                            {/* TAB: Governança */}
-                            <TabsContent value="governanca" className="space-y-12">
-                                <div className="glass-card p-10 rounded-[40px] space-y-8">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-heritage-gold/10 flex items-center justify-center shrink-0">
-                                            <LucideGavel className="w-7 h-7 text-heritage-gold" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-3xl font-black text-heritage-navy dark:text-white mb-4">Governança e Transparência</h2>
-                                            <p className="text-lg text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                Uma estrutura sólida que envolve a família, a comunidade e especialistas.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        {governancaDetails.niveis.map((nivel, i) => (
-                                            <div key={i} className="bg-heritage-sand/30 dark:bg-white/5 p-6 rounded-3xl border-t-4 border-heritage-gold">
-                                                <h3 className="font-black text-lg text-heritage-navy dark:text-white mb-3">{nivel.pilar}</h3>
-                                                <p className="text-sm text-heritage-navy/60 dark:text-white/50">{nivel.papel}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white mb-8">Princípios Organizacionais (IPSS Banda Visconde)</h3>
-                                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
-                                        {governancaDetails.estatutos.map((item, i) => (
-                                            <div key={i} className="flex gap-4">
-                                                <div className="w-8 h-8 rounded-full bg-heritage-gold/20 flex items-center justify-center shrink-0">
-                                                    <LucideShieldCheck className="w-4 h-4 text-heritage-gold" />
-                                                </div>
-                                                <p className="text-heritage-navy/70 dark:text-white/60 font-medium">{item}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="bg-heritage-navy p-10 rounded-[40px] text-white flex flex-col md:flex-row items-center gap-10">
-                                    <div className="flex-1">
-                                        <h3 className="text-2xl font-black mb-4">Acordo de Parceria IPNS</h3>
-                                        <p className="text-white/60 leading-relaxed">
-                                            A parceria é selada através de um Termo de Cooperação Estratégica que define as responsabilidades de assessoria, captação de recursos e supervisão técnica da formação por um período de 24 a 30 meses.
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Metodologia assente no princípio "Aprender Fazendo", utilizando os imóveis a restaurar como laboratórios reais de obra.
                                         </p>
-                                    </div>
-                                    <div className="shrink-0">
-                                        <LucideShield className="w-24 h-24 text-heritage-gold opacity-50" />
-                                    </div>
+                                    </FadeIn>
                                 </div>
-                            </TabsContent>
+                            </div>
 
-                            {/* TAB: Proposta */}
-                            <TabsContent value="proposta" className="space-y-12">
-                                <div className="text-center space-y-4 mb-12">
-                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Proposta & Metas (KPIs)</h2>
-                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                        O compromisso do IPNS com resultados tangíveis e mensuráveis.
-                                    </p>
-                                </div>
-
-                                {/* KPIs Section */}
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                                    {kpiDetails.map((kpi, i) => (
-                                        <div key={i} className="glass-card p-6 rounded-3xl text-center border-b-4 border-heritage-terracotta">
-                                            <kpi.icon className="w-8 h-8 text-heritage-terracotta mx-auto mb-3" />
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">{kpi.kpi}</p>
-                                            <p className="text-xs font-bold text-heritage-navy/40 dark:text-white/40 uppercase tracking-wider mb-2">{kpi.meta}</p>
-                                            <Badge variant="outline" className="text-[10px]">{kpi.prazo}</Badge>
+                            <FadeIn triggerOnView direction="up">
+                                <div className="border border-heritage-navy/10 dark:border-white/10 grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-heritage-navy/10 dark:divide-white/10">
+                                    {funcionamentoDetails.modalidades.map((mod, i) => (
+                                        <div key={i} className="p-6">
+                                            <mod.icon className="w-8 h-8 text-heritage-ocean mb-4" />
+                                            <h3 className="font-serif text-xl mb-1">{mod.titulo}</h3>
+                                            <p className="text-[10px] uppercase tracking-widest text-heritage-ocean font-bold mb-3">{mod.duracao}</p>
+                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60">{mod.objetivo}</p>
                                         </div>
                                     ))}
                                 </div>
+                            </FadeIn>
 
-                                <div className="grid md:grid-cols-3 gap-6">
-                                    {propostas.map((prop, i) => (
-                                        <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                                            className={`glass-card p-8 rounded-[32px] text-center relative ${prop.destaque ? 'ring-2 ring-heritage-terracotta' : ''}`}>
-                                            {prop.destaque && (
-                                                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-heritage-terracotta text-white border-none font-bold">
-                                                    Recomendada
-                                                </Badge>
-                                            )}
-                                            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-heritage-navy/5 dark:bg-white/5 flex items-center justify-center text-3xl font-black text-heritage-navy dark:text-white">
-                                                {prop.opcao}
+                            <FadeIn triggerOnView direction="up">
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50 mt-12 mb-6">Componentes da Formação</p>
+                                <div className="grid sm:grid-cols-3 gap-6">
+                                    {funcionamentoDetails.componentes.map((c, i) => (
+                                        <div key={i} className="p-6 bg-white/50 dark:bg-zinc-900/50 border border-heritage-navy/10 dark:border-white/10">
+                                            <h4 className="font-serif text-lg text-heritage-navy dark:text-white mb-1">{c.label}</h4>
+                                            <p className="text-3xl font-serif text-heritage-ocean dark:text-heritage-gold mb-2">
+                                                <AnimatedCounter to={parseInt(c.percent, 10)} suffix="%" duration={1.2} />
+                                            </p>
+                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60">{c.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
+                        </section>
+
+                        {/* Section: Governança */}
+                        <section id="governanca" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Estrutura Social</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Governança e Transparência</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Uma estrutura sólida de pesos e contrapesos que envolve a família proprietária, a comunidade através das IPSS locais, e o IPNS como entidade coordenadora.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            <FadeIn triggerOnView direction="up">
+                                <div className="space-y-6">
+                                    {governancaDetails.niveis.map((nivel, i) => (
+                                        <div key={i} className="flex flex-col sm:flex-row gap-6 p-6 bg-white dark:bg-zinc-950 border border-heritage-navy/10 dark:border-white/10">
+                                            <div className="sm:w-1/3 border-b sm:border-b-0 sm:border-r border-heritage-navy/10 dark:border-white/10 pb-4 sm:pb-0 sm:pr-6">
+                                                <h3 className="font-serif text-xl">{nivel.pilar}</h3>
                                             </div>
-                                            <h3 className="text-xl font-black text-heritage-navy dark:text-white mb-2">{prop.projeto}</h3>
-                                            <p className="text-4xl font-black text-heritage-terracotta mb-2">{prop.honorarios}</p>
-                                            <div className="flex flex-col gap-2 mb-4">
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <span className="text-[10px] font-black uppercase text-heritage-navy/40 dark:text-white/40 tracking-widest">Taxa Gestão</span>
-                                                    <Badge variant="outline" className="text-xs font-black">{prop.taxaGestao}</Badge>
+                                            <div className="sm:w-2/3">
+                                                <p className="text-sm text-heritage-navy/60 dark:text-white/60 leading-relaxed">{nivel.papel}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </FadeIn>
+                        </section>
+
+                        {/* Section: Proposta */}
+                        <section id="proposta" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Acordo IPNS</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Proposta Financeira</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Modelos de assessoria desenhados para assegurar a sustentabilidade e viabilidade do restauro monumental.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+
+                            {/* KPIs com contador animado */}
+                            <FadeIn triggerOnView direction="up">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+                                    {kpiDetails.map((kpi, i) => {
+                                        const Icon = kpi.icon
+                                        return (
+                                            <div key={i} className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
+                                                <Icon className="w-6 h-6 text-heritage-terracotta mb-4" />
+                                                <div className="font-serif text-3xl md:text-4xl font-medium text-heritage-navy dark:text-white mb-2">
+                                                    {i === 0 && <AnimatedCounter to={14} suffix=" unidades" duration={1.5} />}
+                                                    {i === 1 && <AnimatedCounter to={1800000} prefix="€" format={(n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} duration={2} />}
+                                                    {i === 2 && <AnimatedCounter to={30} suffix="+ pessoas" duration={1.5} />}
+                                                    {i === 3 && <AnimatedCounter to={25} suffix=" postos" duration={1.5} />}
+                                                </div>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-heritage-navy/50 dark:text-white/50">{kpi.meta}</p>
+                                            <p className="text-xs text-heritage-navy/40 dark:text-white/40 mt-1">{kpi.prazo}</p>
+                                        </div>
+                                    );
+                                    })}
+                                </div>
+                            </FadeIn>
+
+                            <FadeIn triggerOnView direction="up">
+                                <div className="grid md:grid-cols-3 gap-6 mb-16">
+                                    {propostas.map((prop, i) => (
+                                        <div key={i} className={`p-8 border flex flex-col justify-between ${prop.destaque ? 'border-heritage-terracotta bg-[#f5f3ec] dark:bg-zinc-900 shadow-xl relative' : 'border-heritage-navy/10 dark:border-white/10'}`}>
+                                            {prop.destaque && (
+                                                <div className="absolute top-0 right-0 bg-heritage-terracotta text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 -mt-3 -mr-3 transform rotate-3">
+                                                    Recomendado
+                                                </div>
+                                            )}
+                                            <div>
+                                                <div className="text-sm font-bold uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 mb-4">Opção {prop.opcao}</div>
+                                                <h3 className="font-serif text-2xl mb-2">{prop.projeto}</h3>
+                                                <p className="text-xs text-heritage-navy/60 dark:text-white/60 min-h-[60px]">{prop.descricao}</p>
+                                            </div>
+                                            
+                                            <div className="mt-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10">
+                                                <div className="mb-4">
+                                                    <p className="text-[10px] uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 font-bold">Honorários Base</p>
+                                                    <p className={`font-serif text-3xl ${prop.destaque ? 'text-heritage-terracotta' : ''}`}>{prop.honorarios}</p>
+                                                </div>
+                                                <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2">
+                                                    <span className="text-heritage-navy/60 dark:text-white/60">Taxa de Gestão</span>
+                                                    <span className="font-bold">{prop.taxaGestao}</span>
                                                 </div>
                                                 {prop.economia && (
-                                                    <Badge className="bg-heritage-success/10 text-heritage-success border-none text-[10px] font-black uppercase tracking-wider mx-auto">
-                                                        Economia: {prop.economia}
-                                                    </Badge>
+                                                    <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2 mt-2">
+                                                        <span className="text-heritage-navy/60 dark:text-white/60">Economia</span>
+                                                        <span className="font-bold text-green-600 dark:text-green-400">{prop.economia}</span>
+                                                    </div>
                                                 )}
                                             </div>
-                                            <p className="text-sm text-heritage-navy/60 dark:text-white/50">{prop.descricao}</p>
-                                        </motion.div>
+                                        </div>
                                     ))}
                                 </div>
+                            </FadeIn>
+                        </section>
 
-                                {/* Estrutura de Honorários */}
-                                <div className="glass-card p-10 rounded-[40px] space-y-6">
-                                    <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Componentes de Assessoria</h3>
-                                    <div className="grid md:grid-cols-3 gap-6">
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
-                                            <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Taxa de Gestão</p>
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">8% <span className="text-sm font-normal text-heritage-navy/40 dark:text-white/40">(ou 6.8%)</span></p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Remuneração fixa pela gestão mensal e técnica do projeto.</p>
-                                        </div>
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
-                                            <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Taxa de Sucesso</p>
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">5% <span className="text-sm font-normal text-heritage-navy/40 dark:text-white/40">(ou 4.25%)</span></p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Remuneração variável indexada ao financiamento captado.</p>
-                                        </div>
-                                        <div className="p-6 bg-heritage-sand/30 dark:bg-white/5 rounded-2xl border-t-4 border-heritage-terracotta">
-                                            <p className="text-sm font-bold text-heritage-navy/60 dark:text-white/40 uppercase tracking-wider mb-2">Serviços Extra</p>
-                                            <p className="text-2xl font-black text-heritage-navy dark:text-white">Tabela</p>
-                                            <p className="text-sm text-heritage-navy/40 dark:text-white/30 mt-2">Honorários para estudos de arquitetura, candidaturas e relatórios.</p>
-                                        </div>
-                                    </div>
+                        {/* Section: Financiamento */}
+                        <section id="financiamento" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Capitais</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Fontes de Financiamento</h2>
+                                    </FadeIn>
                                 </div>
-
-                                {/* Próximos Passos */}
-                                <div className="glass-card p-10 rounded-[40px] bg-heritage-navy dark:bg-zinc-900 text-white">
-                                    <h3 className="text-2xl font-black mb-8">Próximos Passos</h3>
-                                    <div className="grid md:grid-cols-4 gap-6">
-                                        {[
-                                            { step: "1", label: "Seleção da opção pretendida" },
-                                            { step: "2", label: "Reunião de esclarecimento" },
-                                            { step: "3", label: "Assinatura do contrato" },
-                                            { step: "4", label: "Início dos trabalhos" }
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex items-start gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-heritage-terracotta flex items-center justify-center font-black shrink-0">
-                                                    {item.step}
-                                                </div>
-                                                <p className="font-medium text-white/80 pt-2">{item.label}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="mt-10 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-                                        <div>
-                                            <p className="text-white/60 font-medium">Validade da proposta</p>
-                                            <p className="text-2xl font-black">90 dias</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-white/60 font-medium">Contacto</p>
-                                            <p className="font-bold">Diego Rocha — dmrdiego@gmail.com</p>
-                                            <p className="font-bold">+351 931 721 901</p>
-                                        </div>
-                                    </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            Estratégia diversificada alavancando os fundos do PRR e PT2030 para reabilitação do património classificado.
+                                        </p>
+                                    </FadeIn>
                                 </div>
-                            </TabsContent>
-
-                            {/* TAB: Financiamento */}
-                            <TabsContent value="financiamento" className="space-y-12">
-                                <div className="text-center space-y-4 mb-12">
-                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Fontes de Financiamento</h2>
-                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                        Estratégia diversificada para garantir a sustentabilidade dos projetos.
-                                    </p>
-                                </div>
-
-                                <div className="space-y-8 mb-12">
-                                    <div className="flex items-center gap-3">
-                                        <LucideEuro className="w-8 h-8 text-heritage-terracotta" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Arquitetura Financeira</h3>
-                                    </div>
+                            </div>
+                            
+                            <FadeIn triggerOnView direction="up">
+                                <div className="mb-16">
                                     <FinanciamentoVisual />
                                 </div>
-
-                                <div className="grid md:grid-cols-3 gap-8">
-                                    {financiamento.map((grupo, i) => (
-                                        <div key={i} className="space-y-4">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="text-lg font-black text-heritage-navy dark:text-white uppercase tracking-wider">{grupo.fonte}</h3>
-                                                <Badge className="bg-heritage-terracotta/10 text-heritage-terracotta border-none font-bold">{grupo.total}</Badge>
-                                            </div>
-                                            {grupo.items.map((item, j) => (
-                                                <div key={j} className="glass-card p-5 rounded-2xl">
-                                                    <div className="flex items-center justify-between mb-1">
-                                                        <p className="font-bold text-heritage-navy dark:text-white">{item.nome}</p>
-                                                        <p className="font-black text-heritage-terracotta">{item.valor}</p>
-                                                    </div>
-                                                    <p className="text-xs text-heritage-navy/50 dark:text-white/40">{item.descricao}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Cronograma */}
-                                <div className="space-y-8 mt-12">
-                                    <div className="flex items-center gap-3">
-                                        <LucideCalendarClock className="w-8 h-8 text-heritage-ocean" />
-                                        <h3 className="text-2xl font-black text-heritage-navy dark:text-white">Cronograma Integrado de Operação</h3>
-                                    </div>
+                            </FadeIn>
+                            
+                            <FadeIn triggerOnView direction="up">
+                                <div className="mb-8">
                                     <CronogramaVisual />
                                 </div>
-                            </TabsContent>
+                            </FadeIn>
+                        </section>
 
-                            {/* TAB: Próximos Passos */}
-                            <TabsContent value="passos" className="space-y-12">
-                                <div className="text-center space-y-4 mb-12">
-                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Próximos Passos</h2>
-                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                        Ações estruturadas para o avanço das assessorias, orçamentação final e formalização jurídica.
-                                    </p>
+                        {/* Section: Próximos Passos */}
+                        <section id="passos" className="p-8 md:p-16 lg:p-24 relative overflow-hidden bg-heritage-navy dark:bg-zinc-950 text-white group/section">
+                            {/* Background Image with Overlay */}
+                            <div className="absolute inset-0 z-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1555819206-8949f38ea96c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+                                    alt="Portuguese Heritage"
+                                    className="w-full h-full object-cover opacity-10 grayscale group-hover/section:scale-105 transition-transform duration-[10s] ease-out"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-heritage-navy via-heritage-navy/95 to-transparent dark:from-zinc-950 dark:via-zinc-950/95" />
+                            </div>
+
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 relative z-10">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-white/50 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Ação</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-white">Próximos Passos</h2>
+                                    </FadeIn>
                                 </div>
-
-                                <div className="glass-card p-10 rounded-[40px]">
-                                    <div className="space-y-6">
-                                        {passosDetails.map((passo, i) => (
-                                            <div key={i} className="flex gap-6 items-start">
-                                                <div className="w-16 h-16 rounded-3xl bg-heritage-navy text-white flex items-center justify-center font-black text-xl shrink-0 shadow-lg">
-                                                    {passo.num}
-                                                </div>
-                                                <div className="pt-3">
-                                                    <h4 className="font-black text-heritage-navy dark:text-white text-xl mb-2">{passo.titulo}</h4>
-                                                    <p className="text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                        {passo.desc}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </TabsContent>
-
-                            {/* TAB: Fontes */}
-                            <TabsContent value="fontes" className="space-y-12">
-                                <div className="text-center space-y-4 mb-12">
-                                    <h2 className="text-4xl font-black text-heritage-navy dark:text-white">Fontes e Referências</h2>
-                                    <p className="text-heritage-navy/60 dark:text-white/40 max-w-2xl mx-auto">
-                                        Documentação cruzada e transcrições que embasam os dados orçamentários e estratégicos.
-                                    </p>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    {fontesDetails.map((fonte, i) => (
-                                        <div key={i} className="glass-card p-8 rounded-3xl border-t-4 border-heritage-terracotta">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <LucideBookOpen className="w-6 h-6 text-heritage-terracotta" />
-                                                <h4 className="font-black text-heritage-navy dark:text-white text-lg leading-tight uppercase tracking-tight">{fonte.titulo}</h4>
-                                            </div>
-                                            <p className="text-sm text-heritage-navy/60 dark:text-white/50 leading-relaxed">
-                                                {fonte.desc}
-                                            </p>
+                                <div className="md:col-span-8">
+                                    <FadeIn triggerOnView direction="up">
+                                        <div className="-mt-8">
+                                            <ProximosPassosVisual />
                                         </div>
-                                    ))}
+                                    </FadeIn>
+
+                                    <FadeIn triggerOnView direction="up">
+                                        <div className="mt-16 pt-8 border-t border-white/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                                            <div>
+                                                <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-1">Contato do Assessor</p>
+                                                <p className="font-serif text-xl">Diego Rocha</p>
+                                                <p className="text-white/60 text-sm">dmrdiego@gmail.com</p>
+                                            </div>
+                                            <div className="sm:text-right">
+                                                <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-1">Validade da Proposta</p>
+                                                <p className="font-serif text-3xl text-heritage-terracotta">90 Dias</p>
+                                            </div>
+                                        </div>
+                                    </FadeIn>
                                 </div>
-                            </TabsContent>
-                        </Tabs>
+                            </div>
+                        </section>
+                        
                     </div>
-                </section>
+                </div>
             </div>
         </PasswordGate>
     )

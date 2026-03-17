@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { logSystemError } from "@/lib/errorLogger"
-import { LucideArrowLeft, LucideUser, LucideHome, LucideHammer, LucideCheckCircle, LucideXCircle, LucideDownload, LucideLoader2, LucideFileCheck } from "lucide-react"
+import { LucideArrowLeft, LucideUser, LucideHome, LucideHammer, LucideCheckCircle, LucideXCircle, LucideDownload, LucideLoader2, LucideFileCheck, LucideFileText, LucideHash, LucideInfo } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { jsPDF } from "jspdf"
 import { emailService } from "@/lib/emailService"
-
+import { Grain } from "@/components/ui/Grain"
 
 export default function CandidaturaDetails() {
     const { id } = useParams<{ id: string }>()
@@ -45,7 +45,7 @@ export default function CandidaturaDetails() {
                 const isAdmin = profile?.role === 'admin'
 
                 if (!isOwner && !isAdmin) {
-                    toast.error("Acesso Negado", { description: "Você não tem permissão para visualizar esta candidatura." })
+                    toast.error("Acesso Negado")
                     navigate('/dashboard')
                     return
                 }
@@ -53,7 +53,7 @@ export default function CandidaturaDetails() {
                 setCandidatura(candData)
 
             } catch (err: any) {
-                toast.error("Erro ao carregar detalhes", { description: err.message })
+                toast.error("Erro ao carregar detalhes")
                 navigate('/dashboard')
             } finally {
                 setLoading(false)
@@ -82,7 +82,7 @@ export default function CandidaturaDetails() {
             const randomCode = Math.floor(Math.random() * 1000).toString().padStart(4, '0')
 
             let defaultCategory = 'efetivo'
-            if (candidatura.type === 'voluntario') defaultCategory = 'auxiliar' // or similar
+            if (candidatura.type === 'voluntario') defaultCategory = 'auxiliar'
             if (candidatura.type === 'profissional') defaultCategory = 'institucional'
             if (candidatura.type === 'associado') defaultCategory = 'contribuinte'
 
@@ -112,42 +112,33 @@ export default function CandidaturaDetails() {
                 format: 'a4'
             })
 
-            // -- Background & Styling (Visual Mockup of a Certificate)
-            doc.setFillColor(250, 248, 245) // heritage-paper
+            doc.setFillColor(250, 248, 245)
             doc.rect(0, 0, 297, 210, 'F')
-
-            doc.setDrawColor(20, 30, 70) // heritage-navy
+            doc.setDrawColor(20, 30, 70)
             doc.setLineWidth(2)
-            doc.rect(10, 10, 277, 190, 'S') // Border
-
+            doc.rect(10, 10, 277, 190, 'S')
             doc.setFont("times", "bold")
             doc.setFontSize(40)
             doc.setTextColor(20, 30, 70)
             doc.text("Certificado de Admissão", 148.5, 50, { align: "center" })
-
             doc.setFont("helvetica", "normal")
             doc.setFontSize(14)
             doc.setTextColor(100, 100, 100)
             doc.text("A Direção do Bureau Social Hub certifica que", 148.5, 70, { align: "center" })
-
             doc.setFont("times", "bold")
             doc.setFontSize(32)
-            doc.setTextColor(212, 163, 115) // heritage-gold
+            doc.setTextColor(212, 163, 115)
             doc.text(approvalData.nome, 148.5, 90, { align: "center" })
-
             doc.setFont("helvetica", "normal")
             doc.setFontSize(16)
             doc.setTextColor(20, 30, 70)
             doc.text(`Foi admitido como Membro ${approvalData.member_category.charAt(0).toUpperCase() + approvalData.member_category.slice(1)}`, 148.5, 110, { align: "center" })
-
             doc.text(`Ofício: ${approvalData.oficio}`, 148.5, 125, { align: "center" })
             doc.text(`NIF: ${approvalData.nif}`, 148.5, 135, { align: "center" })
-
             doc.setFontSize(12)
             doc.text(`Número de Associado: ${approvalData.member_number}`, 148.5, 160, { align: "center" })
             doc.text(`Data de Emissão: ${new Date().toLocaleDateString('pt-PT')}`, 148.5, 168, { align: "center" })
 
-            // Save PDF (Simulate sending)
             doc.save(`Certificado_${approvalData.nome.replace(/\s+/g, '_')}.pdf`)
 
             // 2. Update DB
@@ -166,45 +157,33 @@ export default function CandidaturaDetails() {
                     member_category: approvalData.member_category,
                     member_number: approvalData.member_number,
                     quota_status: approvalData.is_exempt ? 'active' : 'pending',
-                    can_vote: isVotingCategory && approvalData.is_exempt, // Only vote if category matches AND status is active
+                    can_vote: isVotingCategory && approvalData.is_exempt,
                     full_name: approvalData.nome
                 })
                 .eq('id', candidatura.user_id)
             if (profileError) throw profileError
 
-            // 3. Send Email & Log Activity
             await emailService.sendEmail({
                 to: approvalData.email,
                 subject: `Bem-vindo ao Bureau Social, ${approvalData.nome}!`,
-                body: `Olá ${approvalData.nome},\n\nÉ com grande prazer que informamos que sua candidatura foi aprovada!\n\nSeu número de associado é: ${approvalData.member_number}\nCategoria: ${approvalData.member_category}\n\nJá pode aceder ao seu portal em: https://bureau-social.vercel.app/dashboard\n\nAtenciosamente,\nA Direção do Bureau Social Hub`,
+                body: `Olá ${approvalData.nome},\n\nÉ com grande prazer que informamos que sua candidatura foi aprovada!\n\nNúmero: ${approvalData.member_number}\n\nAtenciosamente,\nA Direção`,
                 templateId: 'candidature_approved'
             });
 
             await supabase.from('activity_logs').insert({
                 user_id: user.id,
                 action_type: 'candidatura_approved',
-                details: {
-                    candidate_id: candidatura.user_id,
-                    member_number: approvalData.member_number,
-                    sent_to_email: approvalData.email,
-                    category: approvalData.member_category
-                }
+                details: { candidate_id: candidatura.user_id, member_number: approvalData.member_number }
             })
 
-
-            // 4. Update local state
             setCandidatura({ ...candidatura, status: 'approved' })
             setIsApprovalOpen(false)
-
             toast.dismiss(loadingToast)
-            toast.success("Aprovação Concluída!", {
-                description: `Certificado gerado e enviado para ${approvalData.email}.`
-            })
+            toast.success("Aprovação Concluída")
 
         } catch (err: any) {
-            console.error(err)
             toast.dismiss(loadingToast)
-            toast.error("Erro na aprovação", { description: err.message })
+            toast.error("Erro na aprovação")
             logSystemError(err, 'CandidaturaDetails.handleConfirmApproval', profile?.id)
         } finally {
             setIsProcessing(false)
@@ -213,7 +192,6 @@ export default function CandidaturaDetails() {
 
     const handleReject = async () => {
         if (!candidatura || !profile || profile.role !== 'admin' || !user) return
-
         if (!confirm("Tem a certeza que deseja rejeitar esta candidatura?")) return
 
         try {
@@ -221,42 +199,18 @@ export default function CandidaturaDetails() {
                 .from('candidaturas')
                 .update({ status: 'rejected' })
                 .eq('id', candidatura.id)
-
             if (error) throw error
-
-            await supabase.from('activity_logs').insert({
-                user_id: user.id,
-                action_type: 'candidatura_rejected',
-                details: { candidate_id: candidatura.user_id }
-            })
-
             setCandidatura({ ...candidatura, status: 'rejected' })
             toast.success("Candidatura Rejeitada")
         } catch (err: any) {
-            console.error(err)
             toast.error("Erro ao rejeitar")
-            logSystemError(err, 'CandidaturaDetails.handleReject', profile?.id)
         }
-    }
-
-    const handleGenerateCertificate = () => {
-        toast.success("Download Iniciado", {
-            description: "Certificado de Aprovação (PDF) a ser gerado..."
-        })
-        const safeName = candidatura?.form_data?.nome || 'Candidato'
-        // Mock download logic
-        setTimeout(() => {
-            const link = document.createElement('a');
-            link.href = '/docs/Certificado_Admissao_Mock.pdf';
-            link.download = `Certificado_${safeName.replace(/\s+/g, '_')}.pdf`;
-            // link.click(); 
-        }, 1000)
     }
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-heritage-terracotta border-t-transparent rounded-full animate-spin" />
+            <div className="min-h-screen bg-[#f8f6f0] flex items-center justify-center">
+                <LucideLoader2 className="w-8 h-8 animate-spin text-heritage-navy" />
             </div>
         )
     }
@@ -268,298 +222,208 @@ export default function CandidaturaDetails() {
     const status = candidatura.status
 
     return (
-        <div className="min-h-screen bg-background transition-apple pt-32 p-6 md:pt-40 md:p-12 pb-32">
-            <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="space-y-2">
-                        <Button
-                            variant="ghost"
-                            className="pl-0 hover:bg-transparent hover:text-heritage-terracotta transition-colors mb-2"
-                            onClick={() => navigate(isAdmin ? '/admin' : '/dashboard')}
-                        >
-                            <LucideArrowLeft className="w-4 h-4 mr-2" />
-                            Voltar
-                        </Button>
-                        <h1 className="text-3xl md:text-4xl font-black text-heritage-navy dark:text-white">
-                            Detalhes da Candidatura
-                        </h1>
-                        <div className="flex items-center gap-3">
-                            <span className="text-heritage-navy/40 dark:text-white/40 font-mono text-sm">#{candidatura.id.substring(0, 8).toUpperCase()}</span>
-                            <Badge className={`uppercase text-[10px] tracking-wider
-                                ${status === 'approved' ? 'bg-heritage-success' :
-                                    status === 'rejected' ? 'bg-red-500' :
-                                        'bg-heritage-ocean'} text-white`
-                            }>
-                                {status === 'approved' ? 'Aprovada' : status === 'rejected' ? 'Rejeitada' : 'Em Análise'}
-                            </Badge>
-                            {candidatura.type && (
-                                <Badge variant="outline" className="text-[10px] uppercase font-bold border-heritage-navy/20 text-heritage-navy/60">
-                                    {candidatura.type}
+        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 transition-apple relative overflow-hidden font-sans pb-32">
+            <Grain opacity={0.05} />
+            
+            <div className="container mx-auto px-6 py-20 max-w-5xl relative z-10">
+                {/* Dossier Header */}
+                <header className="mb-20 space-y-8 border-b-2 border-heritage-navy dark:border-white pb-12">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div className="space-y-4">
+                            <button
+                                onClick={() => navigate(isAdmin ? '/admin' : '/dashboard')}
+                                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-heritage-navy/40 hover:text-heritage-terracotta transition-colors"
+                            >
+                                <LucideArrowLeft className="w-3 h-3" /> Regressar ao Arquivo
+                            </button>
+                            <h1 className="text-5xl md:text-7xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.9] tracking-tighter">
+                                Dossier <span className="italic text-heritage-terracotta">Individual</span>.
+                            </h1>
+                            <div className="flex items-center gap-4">
+                                <span className="text-xs font-mono font-bold text-heritage-navy/20">REF: {candidatura.id.substring(0, 12).toUpperCase()}</span>
+                                <div className="h-4 w-px bg-heritage-navy/10" />
+                                <Badge className={`rounded-none border-2 px-4 py-1 text-[10px] font-black uppercase tracking-widest ${status === 'approved' ? 'bg-heritage-success/10 border-heritage-success text-heritage-success' : status === 'rejected' ? 'bg-red-50 border-red-500 text-red-500' : 'bg-heritage-navy/5 border-heritage-navy text-heritage-navy'}`}>
+                                    {status === 'approved' ? 'Arquivado / Aprovado' : status === 'rejected' ? 'Rejeitado' : 'Em Análise'}
                                 </Badge>
+                                {candidatura.type && (
+                                    <Badge variant="outline" className="rounded-none border-heritage-navy/20 text-heritage-navy/50 text-[10px] uppercase font-bold px-4 py-1">
+                                        Modalidade: {candidatura.type}
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                            {status === 'approved' && (
+                                <button className="h-14 px-8 bg-heritage-gold text-heritage-navy text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all hover:bg-heritage-navy hover:text-white">
+                                    <LucideDownload className="w-4 h-4" /> Descarregar Certificado
+                                </button>
+                            )}
+
+                            {isAdmin && status === 'submitted' && (
+                                <>
+                                    <button onClick={handleReject} className="h-14 px-8 border-2 border-red-500 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-red-500 hover:text-white transition-all">
+                                        <LucideXCircle className="w-4 h-4" /> Rejeitar
+                                    </button>
+                                    
+                                    <Dialog open={isApprovalOpen} onOpenChange={setIsApprovalOpen}>
+                                        <DialogTrigger asChild>
+                                            <button className="h-14 px-8 bg-heritage-success text-white text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-heritage-navy transition-all">
+                                                <LucideCheckCircle className="w-4 h-4" /> Validar & Aprovar
+                                            </button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-xl bg-white rounded-none border-4 border-heritage-navy p-0 overflow-hidden shadow-2xl">
+                                            <div className="bg-heritage-navy text-white p-8">
+                                                <DialogTitle className="text-3xl font-serif font-medium">Auto de Admissão</DialogTitle>
+                                                <DialogDescription className="text-white/60 font-serif italic">Preencha os dados institucionais para emissão do certificado.</DialogDescription>
+                                            </div>
+                                            <div className="p-10 space-y-8">
+                                                <div className="grid grid-cols-2 gap-8">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Nome de Registo</Label>
+                                                        <Input value={approvalData.nome} onChange={(e) => setApprovalData({ ...approvalData, nome: e.target.value })} className="rounded-none border-b border-heritage-navy/20 border-t-0 border-x-0 bg-transparent px-0 font-serif italic" />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Categoria</Label>
+                                                        <Select value={approvalData.member_category} onValueChange={(val) => setApprovalData({ ...approvalData, member_category: val })}>
+                                                            <SelectTrigger className="rounded-none border-b border-heritage-navy/20 border-t-0 border-x-0 bg-transparent px-0 font-serif">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-none border-2 border-heritage-navy">
+                                                                <SelectItem value="fundador">Fundador</SelectItem>
+                                                                <SelectItem value="efetivo">Efetivo</SelectItem>
+                                                                <SelectItem value="contribuinte">Contribuinte</SelectItem>
+                                                                <SelectItem value="honorario">Honorário</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                </div>
+                                                <button onClick={handleConfirmApproval} className="w-full h-16 bg-heritage-success text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-navy transition-all">Finalizar Submissão</button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+                                </>
                             )}
                         </div>
                     </div>
+                </header>
 
-                    {status === 'approved' && (
-                        <Button onClick={handleGenerateCertificate} className="bg-heritage-gold hover:bg-heritage-gold/90 text-heritage-navy font-bold rounded-xl shadow-lg">
-                            <LucideDownload className="w-4 h-4 mr-2" />
-                            Certificado de Admissão
-                        </Button>
-                    )}
-
-                    {isAdmin && status !== 'approved' && status !== 'rejected' && (
-                        <div className="flex gap-3">
-                            <Button onClick={handleReject} variant="outline" className="border-red-200 text-red-500 hover:bg-red-50 rounded-xl">
-                                <LucideXCircle className="w-4 h-4 mr-2" />
-                                Rejeitar
-                            </Button>
-
-                            <Dialog open={isApprovalOpen} onOpenChange={setIsApprovalOpen}>
-                                <DialogTrigger asChild>
-                                    <Button className="bg-heritage-success hover:bg-heritage-success/90 text-white rounded-xl shadow-lg shadow-heritage-success/20">
-                                        <LucideCheckCircle className="w-4 h-4 mr-2" />
-                                        Revisar e Aprovar
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-2xl bg-white dark:bg-zinc-900 rounded-[32px] p-0 overflow-hidden border-none shadow-2xl">
-                                    <div className="bg-heritage-success/10 p-8 border-b border-heritage-success/20">
-                                        <DialogHeader>
-                                            <DialogTitle className="text-2xl font-black text-heritage-navy dark:text-white flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-heritage-success/20 flex items-center justify-center text-heritage-success">
-                                                    <LucideCheckCircle className="w-6 h-6" />
-                                                </div>
-                                                Aprovação de Membro
-                                            </DialogTitle>
-                                            <DialogDescription className="text-heritage-navy/60 dark:text-white/60">
-                                                Revise os dados que constarão no <strong>Certificado de Admissão</strong> antes de finalizar.
-                                            </DialogDescription>
-                                        </DialogHeader>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    {/* Main Content Column */}
+                    <div className="lg:col-span-8 space-y-16">
+                        {/* Section: Identificação */}
+                        <section className="space-y-8">
+                            <div className="flex items-center gap-4">
+                                <LucideUser className="w-5 h-5 text-heritage-terracotta" />
+                                <h3 className="text-2xl font-serif font-medium text-heritage-navy">I. Identificação Pessoal</h3>
+                            </div>
+                            <div className="bg-white dark:bg-zinc-900 border border-heritage-navy/10 p-12 shadow-sm space-y-8">
+                                <div className="grid md:grid-cols-2 gap-12">
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Nome Completo</span>
+                                        <p className="text-xl font-serif italic text-heritage-navy dark:text-white leading-tight">{data.nome || "Não informado"}</p>
                                     </div>
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Identificação Fiscal (NIF)</span>
+                                        <p className="text-xl font-serif text-heritage-navy dark:text-white">{data.nif || "--- --- ---"}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Correio Eletrónico</span>
+                                        <p className="text-lg font-serif italic text-heritage-navy/60 dark:text-white/60">{data.email || "Sem endereço"}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Terminal Telefónico</span>
+                                        <p className="text-lg font-serif text-heritage-navy/60 dark:text-white/60">{data.telefone || "Sem contacto"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-                                    <div className="p-8 space-y-6">
-                                        <div className="grid grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">Nome no Certificado</label>
-                                                <Input
-                                                    value={approvalData.nome}
-                                                    onChange={(e) => setApprovalData({ ...approvalData, nome: e.target.value })}
-                                                    className="rounded-xl border-heritage-navy/10 h-12 font-medium"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">NIF</label>
-                                                <Input
-                                                    value={approvalData.nif}
-                                                    onChange={(e) => setApprovalData({ ...approvalData, nif: e.target.value })}
-                                                    className="rounded-xl border-heritage-navy/10 h-12 font-medium"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">Email (Para envio)</label>
-                                                <Input
-                                                    value={approvalData.email}
-                                                    onChange={(e) => setApprovalData({ ...approvalData, email: e.target.value })}
-                                                    className="rounded-xl border-heritage-navy/10 h-12 font-medium"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">Cargo/Ofício</label>
-                                                <Input
-                                                    value={approvalData.oficio}
-                                                    onChange={(e) => setApprovalData({ ...approvalData, oficio: e.target.value })}
-                                                    className="rounded-xl border-heritage-navy/10 h-12 font-medium"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">Categoria de Membro</label>
-                                                <Select
-                                                    value={approvalData.member_category}
-                                                    onValueChange={(val) => setApprovalData({ ...approvalData, member_category: val })}
-                                                >
-                                                    <SelectTrigger className="rounded-xl border-heritage-navy/10 h-12 font-medium">
-                                                        <SelectValue placeholder="Selecione a categoria" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="fundador">Fundador</SelectItem>
-                                                        <SelectItem value="efetivo">Efetivo</SelectItem>
-                                                        <SelectItem value="contribuinte">Contribuinte</SelectItem>
-                                                        <SelectItem value="honorario">Honorário</SelectItem>
-                                                        <SelectItem value="institucional">Institucional</SelectItem>
-                                                        <SelectItem value="auxiliar">Voluntário/Auxiliar</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="col-span-2 space-y-2">
-                                                <label className="text-xs font-bold uppercase text-heritage-navy/40 dark:text-white/40 tracking-wider">Número de Membro Gerado</label>
-                                                <div className="h-12 rounded-xl bg-heritage-navy/5 dark:bg-white/5 flex items-center px-4 font-mono font-bold text-heritage-navy dark:text-white">
-                                                    {approvalData.member_number}
-                                                </div>
-                                            </div>
-
-                                            <div className="col-span-2 p-4 bg-heritage-sand/20 dark:bg-zinc-800/50 rounded-2xl flex items-center justify-between">
-                                                <div className="space-y-0.5">
-                                                    <Label className="text-sm font-bold text-heritage-navy dark:text-white">Ativação Imediata</Label>
-                                                    <p className="text-xs text-heritage-navy/60 dark:text-white/40">Definir como "Ativo" (Isento ou já pago) e conceder direito a voto se aplicável.</p>
-                                                </div>
-                                                <Switch
-                                                    checked={approvalData.is_exempt}
-                                                    onCheckedChange={(val) => setApprovalData({ ...approvalData, is_exempt: val })}
-                                                />
-                                            </div>
+                        {/* Section: Perfil Técnico */}
+                        {(candidatura.type === 'moradia' || candidatura.type === 'profissional') && (
+                            <section className="space-y-8">
+                                <div className="flex items-center gap-4">
+                                    <LucideHammer className="w-5 h-5 text-heritage-gold" />
+                                    <h3 className="text-2xl font-serif font-medium text-heritage-navy">II. Perfil de Especialidade</h3>
+                                </div>
+                                <div className="bg-white dark:bg-zinc-900 border border-heritage-navy/10 p-12 shadow-sm space-y-10">
+                                    <div className="grid md:grid-cols-2 gap-12">
+                                        <div className="space-y-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Ofício de Referência</span>
+                                            <p className="text-2xl font-serif font-medium text-heritage-navy dark:text-white italic">{data.oficio}</p>
                                         </div>
-
-                                        <DialogFooter className="gap-2 sm:gap-0">
-                                            <Button variant="ghost" onClick={() => setIsApprovalOpen(false)} className="rounded-xl h-12 px-6">Cancelar</Button>
-                                            <Button onClick={handleConfirmApproval} disabled={isProcessing} className="bg-heritage-success hover:bg-heritage-success/90 text-white rounded-xl h-12 px-8 font-bold shadow-lg shadow-heritage-success/20">
-                                                {isProcessing ? (
-                                                    <>
-                                                        <LucideLoader2 className="w-5 h-5 mr-2 animate-spin" />
-                                                        Processando...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <LucideFileCheck className="w-5 h-5 mr-2" />
-                                                        Aprovar e Emitir Certificado
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </DialogFooter>
+                                        <div className="space-y-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Anos de Prática</span>
+                                            <p className="text-2xl font-serif text-heritage-navy dark:text-white">{data.anosExperiencia} Anos</p>
+                                        </div>
                                     </div>
-                                </DialogContent>
-                            </Dialog>
+                                    <div className="space-y-4 border-t border-heritage-navy/5 pt-8">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Memorial de Experiência</span>
+                                        <p className="text-lg font-serif italic text-heritage-navy/70 dark:text-white/70 leading-relaxed whitespace-pre-wrap">{data.descricaoOficio || "Sem memorial descritivo."}</p>
+                                    </div>
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Section: Manifesto */}
+                        <section className="space-y-8">
+                            <div className="flex items-center gap-4">
+                                <LucideFileText className="w-5 h-5 text-heritage-ocean" />
+                                <h3 className="text-2xl font-serif font-medium text-heritage-navy">III. Memorial de Motivação</h3>
+                            </div>
+                            <div className="bg-heritage-sand/10 dark:bg-zinc-900/40 border border-heritage-navy/10 p-12 shadow-inner">
+                                <p className="text-xl font-serif italic text-heritage-navy/80 dark:text-white/80 leading-relaxed whitespace-pre-wrap">
+                                    {data.motivacao}
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Sidebar / Stats */}
+                    <div className="lg:col-span-4 space-y-12">
+                        <div className="border-2 border-heritage-navy p-10 bg-white dark:bg-zinc-900 space-y-8">
+                            <div className="flex items-center gap-3 border-b border-heritage-navy/10 pb-4">
+                                <LucideInfo className="w-4 h-4 text-heritage-terracotta" />
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-heritage-navy">Sumário do Processo</h4>
+                            </div>
+                            
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-baseline border-b border-heritage-navy/5 pb-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Data de Entrada</span>
+                                    <span className="text-lg font-serif italic text-heritage-navy dark:text-white">{new Date(candidatura.created_at).toLocaleDateString('pt-PT')}</span>
+                                </div>
+                                <div className="flex justify-between items-baseline border-b border-heritage-navy/5 pb-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Candidatura nº</span>
+                                    <span className="text-lg font-serif text-heritage-navy dark:text-white">{candidatura.id.split('-')[0].toUpperCase()}</span>
+                                </div>
+                                <div className="flex justify-between items-baseline border-b border-heritage-navy/5 pb-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">Votos Favoráveis</span>
+                                    <span className="text-lg font-serif text-heritage-navy dark:text-white">---</span>
+                                </div>
+                            </div>
+
+                            <div className="pt-4">
+                                <div className="p-6 bg-heritage-sand/20 border border-heritage-navy/5 space-y-2">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Parecer Técnico</p>
+                                    <p className="text-xs font-serif italic text-heritage-navy/70 uppercase tracking-widest">Aguardando Revisão da Direção</p>
+                                </div>
+                            </div>
                         </div>
-                    )}
-                </div>
 
-                {/* Content Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    {/* Dados Pessoais */}
-                    <Card className="rounded-[32px] border-none shadow-sm glass-card">
-                        <CardHeader className="flex flex-row items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-heritage-terracotta/10 flex items-center justify-center text-heritage-terracotta">
-                                <LucideUser className="w-6 h-6" />
-                            </div>
-                            <div>
-                                <CardTitle className="text-lg font-bold">Dados Pessoais</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">Nome</label>
-                                    <p className="font-semibold text-heritage-navy dark:text-white">{data.nome}</p>
+                        {candidatura.type === 'moradia' && (
+                            <div className="border border-heritage-navy/10 p-10 space-y-6">
+                                <div className="flex items-center gap-4">
+                                    <LucideHome className="w-4 h-4 text-heritage-ocean" />
+                                    <h4 className="text-xs font-black uppercase tracking-widest text-heritage-navy">Dossier Habitacional</h4>
                                 </div>
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">NIF</label>
-                                    <p className="font-semibold text-heritage-navy dark:text-white">{data.nif}</p>
-                                </div>
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">Email</label>
-                                    <p className="font-semibold text-heritage-navy dark:text-white truncate">{data.email}</p>
-                                </div>
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">Telefone</label>
-                                    <p className="font-semibold text-heritage-navy dark:text-white">{data.telefone}</p>
+                                <div className="space-y-4 text-sm font-serif italic text-heritage-navy/60">
+                                    <p>Agregado: {data.agregadoTotal} Pessoas</p>
+                                    <p>Situação: {data.condicoesAlojamento}</p>
+                                    <p>Rendimentos: {data.rendimentosTrabalho}€</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Dados de Habitação */}
-                    {candidatura.type === 'moradia' && (
-                        <Card className="rounded-[32px] border-none shadow-sm glass-card">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-heritage-ocean/10 flex items-center justify-center text-heritage-ocean">
-                                    <LucideHome className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-lg font-bold">Habitação</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">Morada Atual</label>
-                                    <p className="font-semibold text-heritage-navy dark:text-white">{data.moradaAtual}, {data.codigoPostal} {data.localidade}</p>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Agregado</label>
-                                        <p className="font-semibold text-heritage-navy dark:text-white">{data.agregadoTotal} Pessoas</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Tipo Alojamento</label>
-                                        <p className="font-semibold text-heritage-navy dark:text-white">{data.tipoAlojamento}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-xs uppercase text-heritage-navy/40 font-bold">Condições Atuais</label>
-                                    <p className="text-sm text-heritage-navy/80 dark:text-white/80 leading-relaxed mt-1">{data.condicoesAlojamento}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Ofício e Artesanato */}
-                    {(candidatura.type === 'moradia' || candidatura.type === 'profissional') && (
-                        <Card className="rounded-[32px] border-none shadow-sm glass-card md:col-span-2">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-heritage-gold/10 flex items-center justify-center text-heritage-gold">
-                                    <LucideHammer className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-lg font-bold">Ofício & Tradição</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="grid md:grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Ofício Principal</label>
-                                        <p className="font-semibold text-xl text-heritage-navy dark:text-white">{data.oficio}</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Experiência</label>
-                                        <p className="font-semibold text-heritage-navy dark:text-white">{data.anosExperiencia} Anos</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Como Aprendeu?</label>
-                                        <p className="text-sm text-heritage-navy/80 dark:text-white/80 leading-relaxed">{data.comoAprendeu}</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold">Projeto de Atividade</label>
-                                        <p className="text-sm text-heritage-navy/80 dark:text-white/80 leading-relaxed mt-1">{data.planoTrabalho}</p>
-                                    </div>
-                                    <div className="p-4 bg-heritage-sand/20 dark:bg-white/5 rounded-2xl">
-                                        <label className="text-xs uppercase text-heritage-navy/40 font-bold mb-2 block">Ensino & Transmissão</label>
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-3 h-3 rounded-full ${data.disponivelEnsinar === 'sim' ? 'bg-heritage-success' : 'bg-heritage-navy/20'}`} />
-                                            <span className="font-bold text-sm">
-                                                {data.disponivelEnsinar === 'sim'
-                                                    ? `Disponível para ensinar (${data.horasEnsino}h/semana)`
-                                                    : 'Indisponível para ensino no momento'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Candidatura Description */}
-                    <Card className="rounded-[32px] border-none shadow-sm glass-card md:col-span-2">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-bold">Motivação</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-heritage-navy/80 dark:text-white/80 leading-relaxed whitespace-pre-wrap">
-                                {data.motivacao}
-                            </p>
-                        </CardContent>
-                    </Card>
-
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,14 +2,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { LucideUser, LucideMail, LucidePhone, LucideMapPin, LucideShield, LucideEdit, LucideSave, LucideX, LucideCamera } from "lucide-react"
+import { LucideUser, LucideMail, LucidePhone, LucideMapPin, LucideShield, LucideEdit, LucideSave, LucideX, LucideCamera, LucideArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { toast } from "sonner"
-
 import { useAuth } from "@/context/AuthContext"
 import { supabase } from "@/lib/supabase"
 import { logSystemError } from "@/lib/errorLogger"
+import { Grain } from "@/components/ui/Grain"
 
 export default function Profile() {
     const { user, profile, refreshProfile } = useAuth()
@@ -71,204 +71,202 @@ export default function Profile() {
     }
 
     return (
-        <div className="space-y-16 transition-apple animate-in fade-in duration-700">
-            {/* Header - Apple Style */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div className="space-y-3">
-                    <Badge variant="outline" className="border-heritage-navy/10 dark:border-white/10 text-heritage-navy dark:text-white/60 px-4 py-1 rounded-full uppercase text-[9px] font-black tracking-[0.2em] backdrop-blur-xl">
-                        Perfil de Associado
-                    </Badge>
-                    <h1 className="text-4xl md:text-5xl font-black text-heritage-navy dark:text-white tracking-tighter transition-apple">
-                        Meus <span className="text-heritage-ocean">Dados</span>.
-                    </h1>
-                </div>
-                <div className="flex gap-4">
-                    {isEditing ? (
-                        <>
-                            <Button
-                                variant="outline"
-                                onClick={handleCancel}
-                                className="rounded-2xl h-12 px-6 font-black uppercase tracking-widest text-[10px] border-heritage-navy/10"
-                            >
-                                <LucideX className="w-4 h-4 mr-2" /> Cancelar
-                            </Button>
-                            <Button
-                                onClick={handleSave}
-                                disabled={isSaving}
-                                className="rounded-2xl h-12 px-6 font-black uppercase tracking-widest text-[10px] bg-heritage-success hover:bg-heritage-success/90"
-                            >
-                                <LucideSave className="w-4 h-4 mr-2" /> {isSaving ? 'Salvando...' : 'Salvar'}
-                            </Button>
-                        </>
-                    ) : (
-                        <Button
-                            onClick={handleEdit}
-                            className="rounded-2xl h-12 px-6 font-black uppercase tracking-widest text-[10px] bg-heritage-terracotta hover:bg-heritage-terracotta/90"
-                        >
-                            <LucideEdit className="w-4 h-4 mr-2" /> Editar Perfil
-                        </Button>
-                    )}
-                </div>
-            </div>
+        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 relative overflow-hidden font-sans pb-24">
+            <Grain opacity={0.04} />
+            
+            <div className="max-w-7xl mx-auto px-6 pt-12 relative z-10 space-y-12">
+                {/* Header - Editorial Style */}
+                <header className="border-b-2 border-heritage-navy dark:border-white pb-10">
+                    <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+                        <div className="max-w-3xl space-y-6">
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-terracotta">Registo Institucional</span>
+                                <div className="h-px flex-1 bg-heritage-navy/10 dark:bg-white/10" />
+                            </div>
+                            <h1 className="text-6xl md:text-8xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.85] tracking-tighter">
+                                Meus <span className="italic text-heritage-ocean">Dados</span>.
+                            </h1>
+                        </div>
+                        <div className="flex gap-4">
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        onClick={handleCancel}
+                                        className="h-12 px-8 text-[10px] font-black uppercase tracking-widest border border-heritage-navy/20 text-heritage-navy/60 hover:bg-heritage-navy/5 transition-all"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={isSaving}
+                                        className="h-12 px-8 text-[10px] font-black uppercase tracking-widest bg-heritage-success text-white hover:bg-heritage-navy transition-all"
+                                    >
+                                        {isSaving ? 'Gravando...' : 'Gravar Alterações'}
+                                    </button>
+                                </>
+                            ) : (
+                                <button
+                                    onClick={handleEdit}
+                                    className="h-12 px-8 text-[10px] font-black uppercase tracking-widest bg-heritage-navy text-white hover:bg-heritage-terracotta transition-all"
+                                >
+                                    Editar Dossier
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 space-y-10">
-                    {/* Main Profile Card - Apple Glass */}
-                    <div className="glass-card rounded-[56px] border-none shadow-sm p-12 lg:p-16 transition-apple">
-                        <div className="flex flex-col md:flex-row gap-16 items-center md:items-start">
-                            <motion.div
-                                whileHover={{ scale: 1.05, rotate: 2 }}
-                                className="w-40 h-40 bg-heritage-sand dark:bg-zinc-900 rounded-[48px] flex items-center justify-center text-heritage-navy dark:text-white shrink-0 transition-apple border-8 border-white dark:border-white/5 shadow-2xl relative overflow-hidden group cursor-pointer"
-                            >
-                                <LucideUser className="w-20 h-20" />
-                                <div className="absolute inset-0 bg-heritage-terracotta/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <LucideCamera className="w-8 h-8 text-white" />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    {/* Main Dossier Content */}
+                    <div className="lg:col-span-8 space-y-12">
+                        <div className="border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-900 p-10 md:p-16">
+                            <div className="flex flex-col md:flex-row gap-12 items-center md:items-start mb-16">
+                                <div className="w-48 h-64 bg-heritage-sand dark:bg-zinc-800 border-2 border-heritage-navy/5 grayscale flex items-center justify-center relative group overflow-hidden shrink-0">
+                                    <LucideUser className="w-24 h-24 text-heritage-navy/20" />
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-heritage-navy/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 cursor-pointer">
+                                        <LucideCamera className="w-4 h-4 text-white" />
+                                        <span className="text-[10px] font-black uppercase text-white">Alterar Foto</span>
+                                    </div>
                                 </div>
-                            </motion.div>
-                            <div className="space-y-10 flex-1 text-center md:text-left">
-                                <div className="space-y-4">
-                                    {isEditing ? (
-                                        <div className="space-y-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Nome Completo</Label>
+                                
+                                <div className="space-y-8 flex-1 text-center md:text-left pt-2">
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-heritage-navy/30">Identificação No Sistema</p>
+                                        {isEditing ? (
                                             <Input
                                                 value={formData.full_name}
                                                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                                className="text-2xl font-black rounded-xl h-14"
+                                                className="text-4xl font-serif italic bg-transparent border-0 border-b-2 border-heritage-navy/10 rounded-none h-16 px-0 focus-visible:ring-0 focus-visible:border-heritage-terracotta"
                                             />
-                                        </div>
-                                    ) : (
-                                        <h2 className="text-4xl font-black text-heritage-navy dark:text-white tracking-tight transition-apple">{displayName}</h2>
-                                    )}
-                                    <div className="flex items-center gap-4 justify-center md:justify-start flex-wrap">
-                                        <Badge className="bg-heritage-gold dark:bg-heritage-gold/20 text-heritage-navy dark:text-heritage-gold font-black text-[10px] uppercase tracking-widest px-6 py-1.5 rounded-full border border-heritage-gold/30">{displayRole}</Badge>
-                                        {displayMemberNumber !== "Não atribuído" && (
-                                            <Badge variant="outline" className="font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-full">
-                                                Nº {displayMemberNumber}
-                                            </Badge>
-                                        )}
-                                        {displayCategory !== "Não definido" && (
-                                            <Badge className="bg-heritage-ocean/10 text-heritage-ocean font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-full border-none">
-                                                {displayCategory}
-                                            </Badge>
+                                        ) : (
+                                            <h2 className="text-5xl font-serif text-heritage-navy dark:text-white transition-all">{displayName}</h2>
                                         )}
                                     </div>
-                                </div>
 
-                                <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 pt-4">
-                                    {isEditing ? (
-                                        <>
-                                            <div className="space-y-2">
-                                                <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">E-mail</Label>
-                                                <Input value={displayEmail} disabled className="rounded-xl h-12 bg-heritage-sand/50" />
-                                                <p className="text-[9px] text-heritage-navy/30">E-mail não pode ser alterado</p>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Telemóvel</Label>
-                                                <Input
-                                                    value={formData.phone}
-                                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                                    placeholder="+351 900 000 000"
-                                                    className="rounded-xl h-12"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">NIF Fiscal</Label>
-                                                <Input
-                                                    value={formData.nif}
-                                                    onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
-                                                    placeholder="123456789"
-                                                    className="rounded-xl h-12"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Localização</Label>
-                                                <Input value="Lisboa, Portugal" disabled className="rounded-xl h-12 bg-heritage-sand/50" />
-                                            </div>
-                                        </>
-                                    ) : (
-                                        [
-                                            { label: "E-mail", val: displayEmail, icon: LucideMail, color: "text-heritage-terracotta" },
-                                            { label: "Telemóvel", val: displayPhone, icon: LucidePhone, color: "text-heritage-ocean" },
-                                            { label: "Localização", val: "Lisboa, Portugal", icon: LucideMapPin, color: "text-heritage-success" },
-                                            { label: "NIF Fiscal", val: displayNif, icon: LucideShield, color: "text-heritage-gold" }
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex items-center gap-4 lg:gap-6 group overflow-hidden">
-                                                <div className={`w-12 h-12 bg-heritage-sand dark:bg-zinc-900 rounded-2xl flex items-center justify-center transition-apple group-hover:bg-heritage-navy dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-heritage-navy shrink-0`}>
-                                                    <item.icon className={`w-5 h-5 ${item.color} group-hover:text-current`} />
+                                    <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                                        <Badge variant="outline" className="rounded-none border-heritage-navy text-heritage-navy font-black text-[9px] uppercase tracking-widest px-4 py-1">{displayRole}</Badge>
+                                        <div className="h-4 w-px bg-heritage-navy/10" />
+                                        <span className="text-xs font-serif italic text-heritage-navy/60">Associado Nº {displayMemberNumber}</span>
+                                    </div>
+
+                                    {!isEditing && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-8 border-t border-heritage-navy/5">
+                                            {[
+                                                { label: "Canal de Contacto", val: displayEmail, icon: LucideMail },
+                                                { label: "Terminal Telefónico", val: displayPhone, icon: LucidePhone },
+                                                { label: "Sede de Residência", val: "Lisboa, Portugal", icon: LucideMapPin },
+                                                { label: "NIF Institucional", val: displayNif, icon: LucideShield }
+                                            ].map((item, i) => (
+                                                <div key={i} className="space-y-1">
+                                                    <p className="text-[9px] font-black uppercase text-heritage-navy/30 tracking-widest flex items-center gap-2">
+                                                        <item.icon className="w-3 h-3" /> {item.label}
+                                                    </p>
+                                                    <p className="text-sm font-serif italic text-heritage-navy/70 truncate">{item.val}</p>
                                                 </div>
-                                                <div className="space-y-1 min-w-0 flex-1">
-                                                    <div className="text-[8px] font-black uppercase text-heritage-navy/20 dark:text-white/20 tracking-[0.2em]">{item.label}</div>
-                                                    <div className="text-sm font-bold text-heritage-navy/60 dark:text-white/60 transition-apple truncate" title={item.val}>{item.val}</div>
-                                                </div>
-                                            </div>
-                                        ))
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div className="grid md:grid-cols-2 gap-10">
-                        <div className="glass-card rounded-[48px] border-none shadow-sm p-12 space-y-8 hover:bg-heritage-sand/20 dark:hover:bg-zinc-900/50 transition-apple">
-                            <h3 className="text-2xl font-black text-heritage-navy dark:text-white transition-apple">Segurança</h3>
-                            <p className="text-base text-heritage-navy/40 dark:text-white/30 font-medium leading-relaxed transition-apple">Mantenha sua chave de acesso atualizada para garantir o sigilo dos seus dados.</p>
-                            <Button variant="outline" className="w-full rounded-[20px] h-14 border-heritage-navy/10 dark:border-white/10 font-black uppercase tracking-widest text-[10px] text-heritage-navy dark:text-white hover:bg-heritage-navy hover:text-white transition-apple">Alterar Password</Button>
-                        </div>
-                        <div className="glass-card rounded-[48px] border-none shadow-sm p-12 space-y-8 hover:bg-heritage-sand/20 dark:hover:bg-zinc-900/50 transition-apple">
-                            <h3 className="text-2xl font-black text-heritage-navy dark:text-white transition-apple">Comunicações</h3>
-                            <p className="text-base text-heritage-navy/40 dark:text-white/30 font-medium leading-relaxed transition-apple">Configure suas preferências de recepção de editais e convites de assembleia.</p>
-                            <Button variant="outline" className="w-full rounded-[20px] h-14 border-heritage-navy/10 dark:border-white/10 font-black uppercase tracking-widest text-[10px] text-heritage-navy dark:text-white hover:bg-heritage-navy hover:text-white transition-apple">Preferências</Button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="space-y-10">
-                    {/* Status Card - Heritage Theme */}
-                    <div className="rounded-[56px] border-none shadow-2xl bg-heritage-navy dark:bg-zinc-900 p-12 text-white space-y-10 relative overflow-hidden group transition-apple">
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-heritage-terracotta/20 rounded-full blur-[80px] -mr-16 -mt-16 group-hover:bg-heritage-terracotta/30 transition-all" />
-
-                        <div className="relative z-10 space-y-8">
-                            <div className="space-y-3">
-                                <h3 className="text-3xl font-black tracking-tight leading-tight">Estado das <br /> Quotas</h3>
-                                <div className="flex items-center gap-4">
-                                    <span className="text-white/30 font-black uppercase tracking-widest text-[9px]">Ciclo 2026</span>
-                                    <Badge className={`${profile?.quota_status === 'active' ? 'bg-heritage-success' : 'bg-heritage-gold'} text-white border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-full`}>
-                                        {profile?.quota_status === 'active' ? 'Liquidado' : (profile?.quota_status === 'late' ? 'Em Atraso' : 'Pendente')}
-                                    </Badge>
+                            {isEditing && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8 border-t border-heritage-navy/5">
+                                    <div className="space-y-4">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Terminal Móvel</Label>
+                                        <Input
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            placeholder="+351 900 000 000"
+                                            className="rounded-none border-heritage-navy/10 h-12 focus-visible:ring-heritage-terracotta"
+                                        />
+                                    </div>
+                                    <div className="space-y-4">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Contribuinte Fiscal (NIF)</Label>
+                                        <Input
+                                            value={formData.nif}
+                                            onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
+                                            placeholder="123456789"
+                                            className="rounded-none border-heritage-navy/10 h-12 focus-visible:ring-heritage-terracotta"
+                                        />
+                                    </div>
+                                    <div className="space-y-4 lg:col-span-2">
+                                        <p className="text-[10px] font-serif italic text-heritage-navy/40">* Outros dados sensíveis como morada e e-mail institucional devem ser alterados via requerimento à secretaria.</p>
+                                    </div>
                                 </div>
+                            )}
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-12">
+                            <div className="p-10 border border-heritage-navy/10 space-y-6 hover:bg-white transition-colors duration-500">
+                                <h3 className="text-2xl font-serif text-heritage-navy italic">Segurança do Dossier</h3>
+                                <p className="text-sm font-serif text-heritage-navy/50 leading-relaxed">Assegure a integridade da sua conta através da renovação periódica da sua chave de acesso encriptada.</p>
+                                <button className="w-full py-4 border border-heritage-navy/10 text-[10px] font-black uppercase tracking-widest text-heritage-navy hover:bg-heritage-navy hover:text-white transition-all">Redefinir Password</button>
                             </div>
-
-                            <p className="text-lg font-medium leading-relaxed text-white/90 pt-4">Sua contribuição é o motor que permite ao <span className="font-black text-heritage-terracotta">Bureau Social</span> reabilitar o património de Lisboa.</p>
-
-                            <Button className="w-full bg-white text-black hover:bg-gray-100 rounded-[24px] h-16 font-black uppercase tracking-widest text-[11px] shadow-xl hover:shadow-2xl transition-apple">Ver Histórico de Apoios</Button>
-
-                            <div className="pt-4 text-center">
-                                <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Emitido: IPSS #2026-X12</span>
+                            <div className="p-10 border border-heritage-navy/10 space-y-6 hover:bg-white transition-colors duration-500">
+                                <h3 className="text-2xl font-serif text-heritage-navy italic">Comunicações</h3>
+                                <p className="text-sm font-serif text-heritage-navy/50 leading-relaxed">Configure a recepção física ou digital de editais, convites para assembleia e newsletters culturais.</p>
+                                <button className="w-full py-4 border border-heritage-navy/10 text-[10px] font-black uppercase tracking-widest text-heritage-navy hover:bg-heritage-navy hover:text-white transition-all">Preferências de Envio</button>
                             </div>
                         </div>
                     </div>
 
-                    {/* Member Card */}
-                    {profile?.member_number && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="rounded-[48px] bg-gradient-to-br from-heritage-terracotta to-heritage-terracotta/80 p-10 text-white space-y-6"
-                        >
-                            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60">Cartão de Associado</div>
-                            <div className="text-2xl font-black">{displayName}</div>
-                            <div className="flex justify-between items-end">
+                    {/* Side Column - Status & Cards */}
+                    <div className="lg:col-span-4 space-y-12">
+                        {/* Membership Card Visual */}
+                        <div className="aspect-[1.586/1] w-full bg-heritage-navy p-10 text-white relative flex flex-col justify-between overflow-hidden shadow-2xl">
+                             <div className="absolute top-0 right-0 opacity-10 scale-150 -mr-12 -mt-12">
+                                <LucideShield className="w-48 h-48" />
+                             </div>
+                             
+                             <div className="relative z-10 flex justify-between items-start">
                                 <div>
-                                    <div className="text-[9px] uppercase tracking-widest text-white/50">Nº Sócio</div>
-                                    <div className="text-xl font-black">{displayMemberNumber}</div>
+                                    <p className="text-[8px] font-black uppercase tracking-[0.4em] text-heritage-gold mb-1">Bureau Social</p>
+                                    <p className="text-[8px] font-serif italic opacity-50">Lisboa, Portugal</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-[9px] uppercase tracking-widest text-white/50">Categoria</div>
-                                    <div className="text-lg font-bold capitalize">{displayCategory}</div>
+                                    <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-50">Cartão de Sócio</p>
                                 </div>
-                            </div>
-                        </motion.div>
-                    )}
+                             </div>
+
+                             <div className="relative z-10">
+                                <p className="text-lg font-serif italic mb-1">{displayName}</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-40">NIF {displayNif}</p>
+                             </div>
+
+                             <div className="relative z-10 flex justify-between items-end border-t border-white/10 pt-4">
+                                <div>
+                                    <p className="text-[7px] font-black uppercase tracking-widest opacity-30 mb-1">Nº Identificador</p>
+                                    <p className="text-xs font-black tracking-widest">{displayMemberNumber}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[7px] font-black uppercase tracking-widest opacity-30 mb-1">Validade</p>
+                                    <p className="text-xs font-black tracking-widest">12 / 2026</p>
+                                </div>
+                             </div>
+                        </div>
+
+                        {/* Status Ledger */}
+                        <div className="p-10 border border-heritage-navy bg-heritage-navy text-white space-y-8">
+                             <div>
+                                <h3 className="text-3xl font-serif italic text-heritage-gold leading-tight mb-2">Estado de <br /> Quotas</h3>
+                                <Badge className={`${profile?.quota_status === 'active' ? 'bg-heritage-success' : 'bg-heritage-gold'} text-heritage-navy border-none font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-none`}>
+                                    {profile?.quota_status === 'active' ? 'Situação Regular' : 'Ações Pendentes'}
+                                </Badge>
+                             </div>
+                             
+                             <p className="text-sm font-serif italic text-white/60 leading-relaxed">
+                                A sua contribuição permite ao Bureau Social manter o apoio jurídico e técnico às comunidades históricas de Lisboa.
+                             </p>
+
+                             <button className="w-full py-4 bg-white text-heritage-navy text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-4 hover:bg-heritage-gold transition-colors">
+                                Liquidar Pendências <LucideArrowRight className="w-4 h-4" />
+                             </button>
+                             
+                             <div className="pt-4 text-center border-t border-white/10">
+                                <p className="text-[8px] font-black uppercase tracking-widest opacity-20">Certificado IPSS #2026-X12</p>
+                             </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

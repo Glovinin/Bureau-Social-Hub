@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { LucideTrendingUp, LucideCreditCard, LucideCalendar, LucideVote } from "lucide-react"
-import { AreaChart, Area, XAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { LucideTrendingUp, LucideCreditCard, LucideCalendar, LucideVote, LucideArrowRight } from "lucide-react"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { motion } from "framer-motion"
 import { useTheme } from "@/components/theme-provider"
 import { useAuth } from "@/context/AuthContext"
@@ -11,6 +11,7 @@ import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import { Grain } from "@/components/ui/Grain"
 
 const data = [
     { name: 'Jan', value: 400 },
@@ -31,7 +32,6 @@ export default function Dashboard() {
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            // Fetch Active Assembly
             const { data: assemblyData } = await supabase
                 .from('assemblies')
                 .select('id, title')
@@ -39,13 +39,12 @@ export default function Dashboard() {
                 .single()
             if (assemblyData) setActiveAssembly(assemblyData)
 
-            // Fetch Candidatura Status
             if (user) {
                 const { data: appData } = await supabase
                     .from('candidaturas')
                     .select('*')
                     .eq('user_id', user.id)
-                    .single() // Assuming one active application per user
+                    .single()
 
                 if (appData) setCandidatura(appData)
             }
@@ -56,12 +55,10 @@ export default function Dashboard() {
     const displayName = profile?.full_name || user?.email?.split('@')[0] || "Visitante";
     const displayRole = profile?.role === 'admin' ? 'Administrador' : (profile?.role === 'member' ? 'Membro Confirmado' : 'Visitante / Pendente');
 
-    // Dynamic Quota Logic
     const quotaStatus = profile?.quota_status === 'active' ? 'Em dia' : (profile?.quota_status === 'late' ? 'Em atraso' : 'Pendente')
     const quotaColor = profile?.quota_status === 'active' ? 'text-heritage-success' : (profile?.quota_status === 'late' ? 'text-red-500' : 'text-heritage-gold')
     const quotaNext = profile?.quota_next_due ? new Date(profile.quota_next_due).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }) : 'Indefinido'
 
-    // Member Category Label
     const getCategoryLabel = (cat: string) => {
         const categories: Record<string, string> = {
             'fundador': 'Sócio Fundador',
@@ -74,209 +71,204 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="space-y-10 transition-apple animate-in fade-in duration-700">
-            {/* Header - Apple Style */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div className="space-y-2">
-                    <h1 className="text-4xl md:text-5xl font-black text-heritage-navy dark:text-white tracking-tighter transition-apple">
-                        Bem-vindo, <span className="text-heritage-terracotta">{displayName}</span>
-                    </h1>
-                    <div className="flex items-center gap-3">
-                        <Badge className="bg-heritage-success/20 text-heritage-success border-heritage-success/30 px-3 py-0.5 rounded-full font-bold text-[10px] tracking-wider uppercase">
-                            {displayRole}
-                        </Badge>
-                        {profile?.member_category && (
-                            <Badge variant="outline" className="border-heritage-gold/30 text-heritage-gold px-3 py-0.5 rounded-full font-bold text-[10px] tracking-wider uppercase">
-                                {getCategoryLabel(profile.member_category)}
-                            </Badge>
-                        )}
-                        <span className="text-heritage-navy/30 dark:text-white/20 text-xs font-black uppercase tracking-widest">• Status: {profile?.quota_status === 'active' ? 'Ativo' : 'Pendente'}</span>
-                    </div>
-                </div>
-                <div className="glass-card px-6 py-3 rounded-2xl border-none shadow-sm flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-heritage-gold animate-pulse" />
-                    <span className="text-xs font-black text-heritage-navy/60 dark:text-white/60 uppercase tracking-widest">Desde Janeiro 2025</span>
-                </div>
-            </div>
-
-            {/* Active Assembly Alert Widget */}
-            {activeAssembly && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-1 rounded-[32px] bg-gradient-to-r from-heritage-terracotta via-heritage-gold to-heritage-terracotta animate-gradient-xy"
-                >
-                    <div className="bg-white dark:bg-zinc-900 rounded-[28px] p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 rounded-full bg-heritage-terracotta/10 flex items-center justify-center shrink-0">
-                                <div className="w-3 h-3 bg-heritage-terracotta rounded-full animate-ping" />
-                            </div>
-                            <div>
-                                <h3 className="text-xl md:text-2xl font-black text-heritage-navy dark:text-white flex items-center gap-3">
-                                    Assembleia a Decorrer
-                                    <Badge variant="destructive" className="uppercase text-[10px]">Ao Vivo</Badge>
-                                </h3>
-                                <p className="text-heritage-navy/60 dark:text-white/60 font-medium">
-                                    {activeAssembly.title} - A votação está aberta.
-                                </p>
-                            </div>
-                        </div>
-                        <Button
-                            onClick={() => navigate('/assembleia/live')}
-                            className="w-full md:w-auto px-8 h-14 rounded-2xl bg-heritage-terracotta hover:bg-heritage-terracotta/90 text-white font-black text-lg shadow-lg hover:shadow-xl hover:shadow-heritage-terracotta/20 transition-all"
-                        >
-                            Entrar na Sala de Votação
-                        </Button>
-                    </div>
-                </motion.div>
-            )}
-
-            {/* Candidatura Status Widget */}
-            {candidatura && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-1 rounded-[32px] bg-gradient-to-r from-heritage-ocean via-heritage-success to-heritage-ocean animate-gradient-xy mb-8"
-                >
-                    <div className="bg-white dark:bg-zinc-900 rounded-[28px] p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 rounded-full bg-heritage-ocean/10 flex items-center justify-center shrink-0">
-                                <LucideCreditCard className="w-8 h-8 text-heritage-ocean" />
-                            </div>
-                            <div>
-                                <h3 className="text-xl md:text-2xl font-black text-heritage-navy dark:text-white flex items-center gap-3">
-                                    Candidatura Recebida
-                                    <Badge className="bg-heritage-ocean text-white uppercase text-[10px]">Em Análise</Badge>
-                                </h3>
-                                <p className="text-heritage-navy/60 dark:text-white/60 font-medium">
-                                    Processo #{candidatura.id.substring(0, 8).toUpperCase()} • Submetido em {new Date(candidatura.created_at).toLocaleDateString()}.
-                                </p>
-                            </div>
-                        </div>
-                        <Button
-                            onClick={() => navigate(`/candidatura/${candidatura.id}`)}
-                            variant="outline"
-                            className="w-full md:w-auto px-8 h-14 rounded-2xl border-heritage-ocean/20 text-heritage-ocean font-black text-lg hover:bg-heritage-ocean/10 transition-all"
-                        >
-                            Ver Detalhes
-                        </Button>
-                    </div>
-                </motion.div>
-            )}
-
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { title: "Quotas", val: quotaStatus, sub: `Próximo: ${quotaNext}`, icon: LucideCreditCard, color: quotaColor },
-                    { title: "Impacto CO2", val: "120kg", sub: "+12% este mês", icon: LucideTrendingUp, color: "text-heritage-success" },
-                    { title: "Eventos", val: "02 Ativos", sub: "Azulejaria & Cal", icon: LucideCalendar, color: "text-heritage-ocean" },
-                    { title: "Votações", val: "01 Disp.", sub: "Novo Projeto", icon: LucideVote, color: "text-heritage-gold" },
-                ].map((stat, i) => (
-                    <motion.div
-                        key={i}
-                        whileHover={{ y: -5 }}
-                        className="glass-card p-8 rounded-[32px] border-none shadow-sm space-y-4 group transition-apple"
-                    >
-                        <div className="flex justify-between items-start">
-                            <stat.icon className={`w-6 h-6 ${stat.color} transition-apple group-hover:scale-110`} />
-                            <Badge variant="outline" className="text-[9px] border-heritage-navy/5 dark:border-white/5 opacity-50">{stat.title}</Badge>
-                        </div>
+        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 relative overflow-hidden font-sans pb-20">
+            <Grain opacity={0.04} />
+            
+            <div className="max-w-7xl mx-auto space-y-12 px-6 pt-12 relative z-10">
+                {/* Header - Editorial Style */}
+                <header className="border-b-2 border-heritage-navy dark:border-white pb-8">
+                    <div className="flex flex-col md:flex-row justify-between items-baseline gap-4 mb-8">
                         <div>
-                            <div className="text-2xl font-black text-heritage-navy dark:text-white transition-apple">{stat.val}</div>
-                            <p className="text-xs text-heritage-navy/40 dark:text-white/30 font-medium transition-apple mb-4">{stat.sub}</p>
-                            {stat.title === "Quotas" && profile?.quota_status !== 'active' && (
-                                <Button
-                                    size="sm"
-                                    className="w-full bg-heritage-gold text-heritage-navy font-bold rounded-xl h-8 hover:bg-heritage-gold/80"
-                                    onClick={() => toast.info("Direcionando para o Stripe...", { description: "Poderá pagar o seu joio ou quota em modo de teste." })}
+                           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-terracotta mb-4">Painel de Associado • Edição {new Date().getFullYear()}</p>
+                           <h1 className="text-5xl md:text-7xl font-serif font-medium text-heritage-navy dark:text-white leading-none tracking-tighter">
+                                Bem-vindo, <span className="italic">{displayName}</span>.
+                           </h1>
+                        </div>
+                        <div className="text-right hidden md:block">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/30">Data de Acesso</p>
+                           <p className="text-xl font-serif italic text-heritage-navy dark:text-white">
+                              {new Date().toLocaleDateString('pt-PT', { day: '2-digit', month: 'long', year: 'numeric' })}
+                           </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-heritage-navy/10 dark:border-white/10">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/30">Nível</span>
+                            <Badge variant="outline" className="rounded-none border-heritage-navy text-heritage-navy dark:border-white dark:text-white font-black text-[9px] px-3 py-0.5 uppercase tracking-wider">
+                                {displayRole}
+                            </Badge>
+                        </div>
+                        {profile?.member_category && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/30">Categoria</span>
+                                <span className="text-xs font-serif italic text-heritage-navy dark:text-white">{getCategoryLabel(profile.member_category)}</span>
+                            </div>
+                        )}
+                        <div className="h-4 w-px bg-heritage-navy/10 dark:bg-white/10 hidden sm:block" />
+                        <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${profile?.quota_status === 'active' ? 'bg-heritage-success' : 'bg-heritage-gold'}`} />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/30">Status: {profile?.quota_status === 'active' ? 'Associado Ativo' : 'Pendente'}</span>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Urgent Alerts Section */}
+                {(activeAssembly || candidatura) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {activeAssembly && (
+                            <div className="p-8 border-2 border-heritage-terracotta bg-heritage-terracotta/[0.03] flex flex-col justify-between group cursor-pointer" onClick={() => navigate('/assembleia/live')}>
+                                <div>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <Badge className="bg-heritage-terracotta text-white rounded-none uppercase text-[9px] font-black px-3 py-1 tracking-widest">Assembleia ao Vivo</Badge>
+                                        <div className="w-2 h-2 bg-heritage-terracotta rounded-full animate-pulse" />
+                                    </div>
+                                    <h3 className="text-3xl font-serif text-heritage-navy dark:text-white leading-tight mb-4">{activeAssembly.title}</h3>
+                                    <p className="text-sm font-serif italic text-heritage-navy/60 dark:text-white/50 leading-relaxed">Sua participação é fundamental para a governança do Bureau. A votação encontra-se aberta aos associados.</p>
+                                </div>
+                                <div className="mt-8 flex items-center justify-between group-hover:translate-x-2 transition-transform duration-500">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-terracotta">Entrar na Sala de Votação</span>
+                                    <LucideArrowRight className="w-5 h-5 text-heritage-terracotta" />
+                                </div>
+                            </div>
+                        )}
+
+                        {candidatura && (
+                            <div className="p-8 border border-heritage-navy/20 dark:border-white/20 bg-white dark:bg-zinc-900/50 flex flex-col justify-between group cursor-pointer" onClick={() => navigate(`/candidatura/${candidatura.id}`)}>
+                                <div>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <Badge variant="outline" className="border-heritage-navy/20 text-heritage-navy/60 dark:text-white/40 rounded-none uppercase text-[9px] font-black px-3 py-1 tracking-widest">Estado da Candidatura</Badge>
+                                        <span className="text-[10px] font-black text-heritage-navy/40 dark:text-white/30 uppercase tracking-widest">#{candidatura.id.substring(0, 8).toUpperCase()}</span>
+                                    </div>
+                                    <h3 className="text-3xl font-serif text-heritage-navy dark:text-white leading-tight mb-4">Processo em Análise Técnica</h3>
+                                    <p className="text-sm font-serif italic text-heritage-navy/60 dark:text-white/50 leading-relaxed">
+                                        Submetido em {new Date(candidatura.created_at).toLocaleDateString()}. Aguarde validação pela assembleia de sócios.
+                                    </p>
+                                </div>
+                                <div className="mt-8 flex items-center justify-between group-hover:translate-x-2 transition-transform duration-500">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Ver Detalhes do Dossier</span>
+                                    <LucideArrowRight className="w-5 h-5 text-heritage-navy/40" />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Performance & Metrics ledger */}
+                <section className="border-y border-heritage-navy/10 dark:border-white/10 divide-y md:divide-y-0 md:divide-x divide-heritage-navy/10 dark:divide-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                    {[
+                        { title: "Gestão de Quotas", val: quotaStatus, sub: `Vencimento: ${quotaNext}`, icon: LucideCreditCard, color: quotaColor },
+                        { title: "Reforestação CO2", val: "120kg", sub: "+12% incremento mensal", icon: LucideTrendingUp, color: "text-heritage-success" },
+                        { title: "Agenda Cultural", val: "02 Ativos", sub: "Azulejaria & Cal viva", icon: LucideCalendar, color: "text-heritage-ocean" },
+                        { title: "Votação em Curso", val: "01 Disp.", sub: "Projetos de Reabilitação", icon: LucideVote, color: "text-heritage-gold" },
+                    ].map((stat, i) => (
+                        <div key={i} className="p-8 space-y-4 hover:bg-white dark:hover:bg-zinc-900 transition-colors duration-500">
+                            <div className="flex justify-between items-start">
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-heritage-navy/40 dark:text-white/30">{stat.title}</span>
+                                <stat.icon className={`w-4 h-4 ${stat.color} opacity-40`} />
+                            </div>
+                            <div>
+                                <div className="text-3xl font-serif text-heritage-navy dark:text-white">{stat.val}</div>
+                                <p className="text-[10px] font-serif italic text-heritage-navy/40 dark:text-white/30">{stat.sub}</p>
+                            </div>
+                            {stat.title === "Gestão de Quotas" && profile?.quota_status !== 'active' && (
+                                <button
+                                    className="w-full mt-4 border border-heritage-gold text-heritage-gold font-black py-2 uppercase text-[9px] tracking-widest hover:bg-heritage-gold hover:text-heritage-navy transition-all"
+                                    onClick={() => toast.info("Direcionando para o Stripe...")}
                                 >
-                                    Pagar Agora
-                                </Button>
+                                    Regularizar Situação
+                                </button>
                             )}
                         </div>
-                    </motion.div>
-                ))}
-            </div>
+                    ))}
+                </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Stats Chart */}
-                <Card className="lg:col-span-2 rounded-[48px] shadow-sm border-none glass-card p-10 transition-apple">
-                    <CardHeader className="px-0 pt-0 pb-10">
-                        <CardTitle className="text-xl font-black text-heritage-navy dark:text-white transition-apple">Impacto Social Acumulado</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-0 h-[350px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data}>
-                                <defs>
-                                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={isDark ? "#D4AF37" : "#0A1F30"} stopOpacity={0.2} />
-                                        <stop offset="95%" stopColor={isDark ? "#D4AF37" : "#0A1F30"} stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff10" : "#00000005"} />
-                                <XAxis
-                                    dataKey="name"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    tick={{ fill: isDark ? '#ffffff40' : '#00000040', fontSize: 10, fontWeight: 800 }}
-                                />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: isDark ? '#18181b' : '#ffffff',
-                                        borderRadius: '16px',
-                                        border: 'none',
-                                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                                    }}
-                                    itemStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold' }}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke={isDark ? "#D4AF37" : "#0A1F30"}
-                                    strokeWidth={4}
-                                    fillOpacity={1}
-                                    fill="url(#colorValue)"
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                {/* Info Card / Active Project */}
-                <Card className="rounded-[40px] shadow-sm border-none bg-heritage-navy dark:bg-zinc-900 p-8 relative overflow-hidden transition-apple group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-heritage-terracotta/20 rounded-full blur-3xl -mr-10 -mt-10" />
-
-                    <div className="relative z-10 h-full flex flex-col justify-between">
-                        <div className="space-y-6">
-                            <Badge className="bg-white/10 text-white border-white/20 backdrop-blur-md px-4 py-1.5 rounded-full font-black uppercase text-[9px] tracking-widest">
-                                Projeto Piloto Ativo
-                            </Badge>
-                            <div className="space-y-2">
-                                <h3 className="text-2xl font-black text-white leading-tight">Rua dos <br /> Froios</h3>
-                                <p className="text-white/40 text-sm font-medium">Lisboa, Portugal</p>
-                            </div>
-
-                            <img
-                                src="https://images.unsplash.com/photo-1549492423-40026e6f4770?auto=format&fit=crop&q=80&w=800"
-                                className="w-full h-32 object-cover rounded-[24px] saturate-50 transition-apple group-hover:saturate-100"
-                                alt="Obra"
-                            />
-
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-end">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Progresso</span>
-                                    <span className="text-sm font-black text-heritage-gold">45%</span>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Main Infographic Column */}
+                    <div className="lg:col-span-8 space-y-12">
+                        <div className="p-10 border border-heritage-navy/10 dark:border-white/10 bg-white/50 dark:bg-zinc-900/30 backdrop-blur-sm">
+                            <div className="flex justify-between items-center mb-10">
+                                <div>
+                                    <h3 className="text-2xl font-serif text-heritage-navy dark:text-white italic">Métricas de Impacto Social</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 mt-1">Acumulado Semestral 2026</p>
                                 </div>
-                                <Progress value={45} className="h-1.5 bg-white/10 transition-apple" />
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-heritage-navy dark:bg-heritage-gold" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Projeção</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="mt-8 grid grid-cols-2 gap-3">
-                            <Button className="bg-heritage-gold hover:bg-heritage-gold/80 text-heritage-navy font-black rounded-2xl h-12">Detalhamento</Button>
-                            <Button variant="outline" className="border-white/20 text-white hover:bg-white/5 rounded-2xl h-12">Galeria</Button>
+                            <div className="h-[300px] w-full mt-8 grayscale hover:grayscale-0 transition-all duration-700">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={data}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff10" : "#0A1F3010"} />
+                                        <XAxis
+                                            dataKey="name"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: isDark ? '#ffffff40' : '#0A1F3040', fontSize: 10, fontWeight: 900 }}
+                                        />
+                                        <YAxis hide />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: isDark ? '#18181b' : '#ffffff',
+                                                borderRadius: '0',
+                                                border: '1px solid #0A1F3020',
+                                                fontFamily: 'serif'
+                                            }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke={isDark ? "#D4AF37" : "#0A1F30"}
+                                            strokeWidth={2}
+                                            fillOpacity={0.1}
+                                            fill={isDark ? "#D4AF37" : "#0A1F30"}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
-                </Card>
+
+                    {/* Side Column - Editorial Card */}
+                    <div className="lg:col-span-4">
+                        <div className="h-full border border-heritage-navy/10 dark:border-white/10 flex flex-col">
+                            <div className="aspect-[4/3] overflow-hidden grayscale">
+                                <img
+                                    src="https://images.unsplash.com/photo-1549492423-40026e6f4770?auto=format&fit=crop&q=80&w=800"
+                                    className="w-full h-full object-cover"
+                                    alt="Projeto ativo"
+                                />
+                            </div>
+                            <div className="p-8 flex-1 flex flex-col justify-between bg-heritage-navy text-white">
+                                <div className="space-y-6">
+                                    <Badge className="bg-heritage-terracotta text-white rounded-none border-none px-3 py-1 font-black uppercase text-[9px] tracking-widest">
+                                        Obra em Curso
+                                    </Badge>
+                                    <h3 className="text-4xl font-serif italic leading-none tracking-tight">Rua dos <br /> Fróis.</h3>
+                                    <p className="text-white/50 font-serif text-sm leading-relaxed">
+                                        A intervenção de reabilitação tradicional portuguesa segue o cronograma aprovado pela Direção Geral do Património.
+                                    </p>
+                                </div>
+
+                                <div className="pt-12 space-y-6">
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-end">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Estado da Reabilitação</span>
+                                            <span className="text-sm font-serif italic text-heritage-gold">45%</span>
+                                        </div>
+                                        <Progress value={45} className="h-0.5 bg-white/10" />
+                                    </div>
+                                    <button className="w-full py-4 border border-white/20 text-white font-black uppercase text-[10px] tracking-[0.3em] hover:bg-white hover:text-heritage-navy transition-all duration-500">
+                                        Consultar Dossier
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

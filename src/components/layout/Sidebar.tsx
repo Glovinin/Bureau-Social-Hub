@@ -29,8 +29,9 @@ export default function Sidebar() {
         : baseMenuItems
 
     return (
-        <aside className="w-80 hidden lg:flex flex-col bg-white dark:bg-zinc-900 border-r border-heritage-navy/5 dark:border-white/5 h-screen sticky top-0 pt-28 pb-10 px-6 transition-colors">
-            <div className="flex-1 space-y-2">
+        <aside className="w-80 hidden lg:flex flex-col fixed left-0 top-0 z-40 h-screen bg-[#f8f6f0] dark:bg-zinc-950 border-r border-heritage-navy/5 dark:border-white/5 pt-28 pb-6 px-6 transition-colors">
+            {/* Área scrollável: menu + suporte */}
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden space-y-2 py-2">
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path
                     return (
@@ -51,7 +52,8 @@ export default function Sidebar() {
                 })}
             </div>
 
-            <div className="pt-6 border-t border-heritage-navy/5 dark:border-white/10 space-y-4">
+            {/* Área fixa inferior: suporte + logout (sempre visível) */}
+            <div className="flex-shrink-0 pt-6 border-t border-heritage-navy/5 dark:border-white/10 space-y-4">
                 <div className="bg-heritage-sand/50 dark:bg-zinc-800 p-6 rounded-3xl text-center">
                     <p className="text-sm font-bold text-heritage-navy dark:text-white mb-2">Suporte Direto</p>
                     <p className="text-xs text-heritage-navy/40 dark:text-white/40 mb-4">Dúvida sobre as suas quotas?</p>

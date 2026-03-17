@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import ScrollToTop from "./components/ScrollToTop"
+import SmoothScroll from "./components/SmoothScroll"
 import { Suspense, lazy } from "react"
 import MainLayout from "./components/layout/MainLayout"
 import AuthWrapper from "./components/layout/AuthWrapper"
@@ -26,6 +28,7 @@ const AssemblyLive = lazy(() => import("./pages/AssemblyLive"))
 const Onboarding = lazy(() => import("./pages/Onboarding"))
 const CandidaturaDetails = lazy(() => import("./pages/CandidaturaDetails"))
 const Assessoria = lazy(() => import("./pages/Assessoria"))
+const Legal = lazy(() => import("./pages/Legal"))
 
 // Loading fallback component
 function PageLoader() {
@@ -48,7 +51,9 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light">
       <BrowserRouter>
-        <AuthWrapper>
+        <SmoothScroll>
+          <ScrollToTop />
+          <AuthWrapper>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<MainLayout />}>
@@ -59,6 +64,7 @@ function App() {
                 <Route path="traditions" element={<Traditions />} />
                 <Route path="candidatura" element={<Candidatura />} />
                 <Route path="assessoria" element={<Assessoria />} />
+                <Route path="legal" element={<Legal />} />
 
                 {/* Portal Area (Dashboard) - Protected */}
                 <Route element={<ProtectedRoute />}>
@@ -81,6 +87,7 @@ function App() {
             </Routes>
           </Suspense>
         </AuthWrapper>
+        </SmoothScroll>
       </BrowserRouter>
       <Toaster />
     </ThemeProvider>

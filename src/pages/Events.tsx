@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/context/AuthContext"
 import { toast } from "sonner"
 import { logSystemError } from "@/lib/errorLogger"
+import { Grain } from "@/components/ui/Grain"
 
 interface Event {
     id: string
@@ -22,11 +23,11 @@ interface Event {
     max_attendees?: number
 }
 
-const categoryColors: Record<string, string> = {
-    cultura: "bg-heritage-terracotta/10 text-heritage-terracotta",
-    social: "bg-heritage-ocean/10 text-heritage-ocean",
-    formacao: "bg-heritage-gold/10 text-heritage-gold",
-    assembleia: "bg-heritage-navy/10 text-heritage-navy"
+const categoryLabels: Record<string, string> = {
+    cultura: "Cultura & Património",
+    social: "Impacto & Rede",
+    formacao: "Oficinas & Ofícios",
+    assembleia: "Governância"
 }
 
 export default function Events() {
@@ -60,7 +61,7 @@ export default function Events() {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
-        return date.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' })
+        return date.toLocaleDateString('pt-PT', { day: '2-digit', month: 'long' })
     }
 
     const formatTime = (dateString: string) => {
@@ -73,126 +74,114 @@ export default function Events() {
         : events
 
     return (
-        <div className="space-y-16 transition-apple animate-in fade-in duration-700">
-            {/* Header - Apple Style */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
-                <div className="space-y-3">
-                    <Badge variant="outline" className="border-heritage-navy/10 dark:border-white/10 text-heritage-navy dark:text-white/60 px-4 py-1 rounded-full uppercase text-[9px] font-black tracking-[0.2em] backdrop-blur-xl">
-                        Comunidade Em Rede
-                    </Badge>
-                    <h1 className="text-4xl md:text-5xl font-black text-heritage-navy dark:text-white tracking-tighter transition-apple">
-                        Agenda <br /><span className="text-heritage-ocean">Impacto Social</span>.
-                    </h1>
-                </div>
-                <div className="flex gap-4 w-full md:w-auto">
-                    <Button
-                        variant="outline"
-                        onClick={() => setFilter(filter ? null : 'cultura')}
-                        className={`flex-1 md:flex-none glass-card rounded-2xl border-none font-black h-14 px-8 uppercase tracking-widest text-[9px] transition-apple ${filter ? 'bg-heritage-ocean/20 text-heritage-ocean' : 'text-heritage-navy dark:text-white'}`}
-                    >
-                        <LucideFilter className="w-4 h-4 mr-2" /> {filter || 'Filtrar'}
-                    </Button>
-                    {profile?.role === 'admin' && (
-                        <Button
-                            onClick={() => window.location.href = '/admin?tab=events'}
-                            className="flex-1 md:flex-none bg-heritage-navy dark:bg-zinc-800 rounded-2xl font-black h-14 px-8 uppercase tracking-widest text-[9px] text-white shadow-lg transition-apple hover:bg-heritage-ocean"
-                        >
-                            <LucidePlus className="w-4 h-4 mr-2" /> Gerir
-                        </Button>
-                    )}
-
-                </div>
-            </div>
-
-            {/* Event Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                    { label: 'Total', value: events.length, color: 'text-heritage-navy' },
-                    { label: 'Cultura', value: events.filter(e => e.category === 'cultura').length, color: 'text-heritage-terracotta' },
-                    { label: 'Social', value: events.filter(e => e.category === 'social').length, color: 'text-heritage-ocean' },
-                    { label: 'Próximos 7 dias', value: events.filter(e => new Date(e.date) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)).length, color: 'text-heritage-success' },
-                ].map((stat, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="glass-card p-6 rounded-[24px] border-none shadow-sm"
-                    >
-                        <div className={`text-3xl font-black ${stat.color}`}>{stat.value}</div>
-                        <p className="text-xs text-heritage-navy/40 dark:text-white/30 font-bold uppercase tracking-wider">{stat.label}</p>
-                    </motion.div>
-                ))}
-            </div>
-
-            {/* Events Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
-                {isLoading ? (
-                    Array.from({ length: 2 }).map((_, i) => (
-                        <Skeleton key={i} className="h-80 rounded-[48px]" />
-                    ))
-                ) : filteredEvents.length === 0 ? (
-                    <div className="col-span-2 text-center py-20">
-                        <LucideCalendar className="w-16 h-16 mx-auto text-heritage-navy/20 mb-4" />
-                        <p className="text-heritage-navy/40 dark:text-white/30 font-bold">Nenhum evento encontrado</p>
+        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 relative overflow-hidden font-sans pb-24">
+            <Grain opacity={0.04} />
+            
+            <div className="max-w-7xl mx-auto px-6 pt-12 relative z-10 space-y-16">
+                {/* Header - Newspaper Grid */}
+                <header className="border-b-2 border-heritage-navy dark:border-white pb-12">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+                        <div className="lg:col-span-8 space-y-6">
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-terracotta">Lisboa • Agenda de Impacto</span>
+                                <div className="h-px flex-1 bg-heritage-navy/10 dark:bg-white/10" />
+                            </div>
+                            <h1 className="text-7xl md:text-9xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.8] tracking-tighter">
+                                Agenda <br /><span className="italic">Cultural</span>.
+                            </h1>
+                        </div>
+                        <div className="lg:col-span-4 space-y-6">
+                            <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 dark:text-white/30 mb-2">Editoria de Eventos</p>
+                                <p className="text-sm font-serif italic text-heritage-navy/70 dark:text-white/50 leading-relaxed">
+                                    "A cultura não é um acessório, é a estrutura íntima da reabilitação social."
+                                </p>
+                            </div>
+                            <div className="flex gap-4">
+                               <button 
+                                  onClick={() => setFilter(null)}
+                                  className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest border transition-all ${!filter ? 'bg-heritage-navy text-white' : 'border-heritage-navy/10 text-heritage-navy/40 hover:border-heritage-navy'}`}
+                                >
+                                  Ver Tudo
+                               </button>
+                               {profile?.role === 'admin' && (
+                                    <button
+                                        onClick={() => window.location.href = '/admin?tab=events'}
+                                        className="flex-1 py-3 text-[10px] font-black uppercase tracking-widest bg-heritage-terracotta text-white hover:bg-heritage-navy transition-colors"
+                                    >
+                                        Novo Edital
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                ) : (
-                    filteredEvents.map((e, i) => (
-                        <motion.div
-                            key={e.id}
-                            initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
+                </header>
+
+                {/* Filter Navigation */}
+                <nav className="flex flex-wrap gap-8 border-b border-heritage-navy/10 dark:border-white/10 pb-6 overflow-x-auto no-scrollbar">
+                    {Object.entries(categoryLabels).map(([key, label]) => (
+                        <button
+                            key={key}
+                            onClick={() => setFilter(filter === key ? null : key)}
+                            className={`text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap transition-all relative ${filter === key ? 'text-heritage-terracotta' : 'text-heritage-navy/40 hover:text-heritage-navy'}`}
                         >
-                            <Card className="glass-card rounded-[48px] border-none shadow-sm overflow-hidden group transition-all duration-500 hover:shadow-2xl">
-                                <div className="flex flex-col lg:flex-row h-full">
-                                    <div className="w-full lg:w-2/5 h-64 lg:h-auto overflow-hidden">
-                                        <img
-                                            src={e.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800'}
-                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
-                                            alt={e.title}
-                                        />
+                            {label}
+                            {filter === key && <motion.div layoutId="underline" className="absolute -bottom-[25px] left-0 right-0 h-0.5 bg-heritage-terracotta" />}
+                        </button>
+                    ))}
+                </nav>
+
+                {/* Events Grid - Magazine Style */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
+                    {isLoading ? (
+                        Array.from({ length: 4 }).map((_, i) => (
+                            <Skeleton key={i} className="h-[500px] rounded-none opacity-20" />
+                        ))
+                    ) : (
+                        filteredEvents.map((e, i) => (
+                            <div key={e.id} className="group space-y-8 flex flex-col">
+                                <div className="aspect-[16/10] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-1000 border border-heritage-navy/5">
+                                    <img
+                                        src={e.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800'}
+                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                        alt={e.title}
+                                    />
+                                </div>
+                                <div className="space-y-6 flex-1 flex flex-col">
+                                    <div className="flex justify-between items-baseline border-b border-heritage-navy/10 dark:border-white/10 pb-4">
+                                        <Badge variant="outline" className="rounded-none border-heritage-navy/20 text-heritage-navy/40 font-black uppercase text-[9px] tracking-widest px-0 border-none">
+                                            {categoryLabels[e.category] || e.category}
+                                        </Badge>
+                                        <span className="text-[10px] font-black text-heritage-navy dark:text-white uppercase tracking-widest">{formatDate(e.date)} • {formatTime(e.date)}</span>
                                     </div>
-                                    <div className="w-full lg:w-3/5 p-12 space-y-8 flex flex-col justify-between">
-                                        <div className="space-y-6">
-                                            <Badge className={`${categoryColors[e.category] || 'bg-heritage-sand text-heritage-navy'} font-black text-[9px] uppercase tracking-widest border-none px-5 py-1.5 rounded-full transition-apple`}>
-                                                {e.category}
-                                            </Badge>
-                                            <h3 className="text-2xl md:text-3xl font-black text-heritage-navy dark:text-white leading-tight transition-apple group-hover:text-heritage-terracotta">
-                                                {e.title}
-                                            </h3>
-                                            <p className="text-sm text-heritage-navy/60 dark:text-white/40 line-clamp-2">
-                                                {e.description}
-                                            </p>
-                                            <div className="space-y-4 pt-2">
-                                                <div className="flex items-center gap-4 text-sm text-heritage-navy/40 dark:text-white/30 font-bold transition-apple">
-                                                    <div className="w-10 h-10 bg-heritage-sand dark:bg-zinc-900 rounded-xl flex items-center justify-center text-heritage-terracotta transition-apple">
-                                                        <LucideCalendar className="w-4 h-4" />
-                                                    </div>
-                                                    {formatDate(e.date)}
-                                                </div>
-                                                <div className="flex items-center gap-4 text-sm text-heritage-navy/40 dark:text-white/30 font-bold transition-apple">
-                                                    <div className="w-10 h-10 bg-heritage-sand dark:bg-zinc-900 rounded-xl flex items-center justify-center text-heritage-ocean transition-apple">
-                                                        <LucideClock className="w-4 h-4" />
-                                                    </div>
-                                                    {formatTime(e.date)}
-                                                </div>
-                                                <div className="flex items-center gap-4 text-sm text-heritage-navy/40 dark:text-white/30 font-bold transition-apple">
-                                                    <div className="w-10 h-10 bg-heritage-sand dark:bg-zinc-900 rounded-xl flex items-center justify-center text-heritage-success transition-apple">
-                                                        <LucideMapPin className="w-4 h-4" />
-                                                    </div>
-                                                    {e.location}
-                                                </div>
-                                            </div>
+                                    <div className="space-y-4 flex-1">
+                                        <h3 className="text-4xl font-serif text-heritage-navy dark:text-white leading-[0.9] tracking-tight group-hover:italic transition-all duration-300">
+                                            {e.title}
+                                        </h3>
+                                        <p className="text-sm font-serif italic text-heritage-navy/50 dark:text-white/40 leading-relaxed line-clamp-3">
+                                            {e.description}
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col gap-4 pt-4">
+                                        <div className="flex items-center gap-3 text-xs font-serif text-heritage-navy/40">
+                                           <LucideMapPin className="w-3.5 h-3.5" />
+                                           <span>{e.location}</span>
                                         </div>
-                                        <Button variant="ghost" className="p-0 h-auto self-start hover:bg-transparent text-heritage-terracotta font-black uppercase tracking-widest text-[10px] flex items-center gap-3 group/btn transition-apple">
-                                            Fazer Inscrição <LucideArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-3" />
-                                        </Button>
+                                        <button className="w-fit text-[10px] font-black uppercase tracking-[0.3em] text-heritage-terracotta flex items-center gap-4 hover:translate-x-2 transition-transform duration-500">
+                                            Solicitar Inscrição <LucideArrowRight className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </div>
-                            </Card>
-                        </motion.div>
-                    ))
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {filteredEvents.length === 0 && !isLoading && (
+                    <div className="text-center py-32 border border-dashed border-heritage-navy/20">
+                        <LucideCalendar className="w-12 h-12 mx-auto text-heritage-navy/10 mb-4" />
+                        <p className="font-serif italic text-heritage-navy/40">Sem eventos agendados para esta categoria.</p>
+                    </div>
                 )}
             </div>
         </div>

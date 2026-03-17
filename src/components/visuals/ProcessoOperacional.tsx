@@ -1,5 +1,5 @@
-import { motion } from "framer-motion"
-import { LucideFileText, LucideSearch, LucideGraduationCap, LucideHammer, LucideGlobe } from "lucide-react"
+import { motion, useScroll, useSpring, useTransform } from "framer-motion"
+import { useRef } from "react"
 
 export default function ProcessoOperacional() {
     const fases = [
@@ -7,93 +7,100 @@ export default function ProcessoOperacional() {
             fase: "Fase 1",
             nome: "Constituição",
             periodo: "1º Semestre 2026",
-            icon: LucideFileText,
-            color: "heritage-terracotta",
             tasks: ["Aprovação de Estatutos", "Assembleia Constitutiva", "Termo de Cooperação IPNS", "Contrato de Arrendamento"]
         },
         {
             fase: "Fase 2",
             nome: "Diagnóstico",
             periodo: "2º Semestre 2026",
-            icon: LucideSearch,
-            color: "heritage-ocean",
             tasks: ["Levantamento Técnico", "Plano de Intervenção", "Candidaturas (LIFE/FSE+)", "Mapeamento de Ofícios"]
         },
         {
             fase: "Fase 3",
             nome: "Captação & Formação",
-            periodo: "2027",
-            icon: LucideGraduationCap,
-            color: "heritage-gold",
+            periodo: "2026-2027",
             tasks: ["Recrutamento de Mestres", "Seleção de Aprendizes", "Módulos Teórico-Práticos", "Certificações Iniciais"]
         },
         {
             fase: "Fase 4",
-            nome: "Execução & Restauro",
+            nome: "Execução",
             periodo: "2027-2028",
-            icon: LucideHammer,
-            color: "zinc-900",
-            tasks: ["Obras de Consolidação", "Trabalhos de Restauro", "Monitorização Técnica", "Início Produção Agrícola"]
+            tasks: ["Restauro do Palacete e Torre", "Jardim Histórico", "Sistemas de Água", "Centro de Formação"]
         },
         {
             fase: "Fase 5",
             nome: "Operação & ESG",
             periodo: "2028+",
-            icon: LucideGlobe,
-            color: "heritage-success",
-            tasks: ["Abertura ao Público", "Roteiros Turísticos", "Atividade Comercial", "Relatórios de Sustentabilidade"]
+            tasks: ["Abertura ao Público", "Programa de Turismo Cultural", "Comercialização de Produtos Artesanais", "Relatórios de Sustentabilidade"]
         }
     ]
 
+    const containerRef = useRef<HTMLDivElement>(null)
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start center", "end center"]
+    })
+
+    const smoothedProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+
     return (
-        <div className="relative p-10 bg-heritage-sand/5 dark:bg-white/5 rounded-[40px] border border-heritage-navy/5 overflow-hidden">
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-heritage-terracotta/5 blur-[80px]" />
-            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-heritage-ocean/5 blur-[80px]" />
+        <div className="w-full bg-[#f8f6f0] dark:bg-zinc-950 py-12">
+            <div ref={containerRef} className="relative max-w-4xl px-4 sm:px-8 md:px-16 mx-auto">
+                {/* Linha de Fundo - The track is at a fixed 24px (left-6) from the container's left padding edge on mobile, and 48px (left-12) on desktop */}
+                <div className="absolute left-[32px] sm:left-[48px] md:left-[80px] top-6 bottom-6 w-[1px] bg-heritage-navy/10 dark:bg-white/10" />
+                
+                {/* Linha Preenchida Animada */}
+                <motion.div 
+                    className="absolute left-[32px] sm:left-[48px] md:left-[80px] top-6 bottom-6 w-[1px] bg-heritage-navy dark:bg-white origin-top"
+                    style={{ scaleY: smoothedProgress }}
+                />
+                
+                {/* Bolinha Seguindo (9px width => offset 4px to center on the 1px line) */}
+                <motion.div
+                    className="absolute left-[28px] sm:left-[44px] md:left-[76px] w-[9px] h-[9px] rounded-full bg-heritage-navy dark:bg-white z-10 shadow-[0_0_0_6px_rgba(248,246,240,1)] dark:shadow-[0_0_0_6px_rgba(9,9,11,1)]"
+                    style={{ 
+                        top: useTransform(smoothedProgress, [0, 1], ["1.5rem", "calc(100% - 1.5rem)"]) 
+                    }}
+                />
 
-            <div className="relative z-10 flex flex-col md:flex-row gap-4 items-start md:items-stretch h-full">
-                {fases.map((f, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex-1 flex flex-col group"
-                    >
-                        {/* Header da Fase */}
-                        <div className="mb-6 flex flex-col items-center md:items-start text-center md:text-left">
-                            <div className={`w-14 h-14 rounded-2xl bg-${f.color} flex items-center justify-center shadow-lg shadow-${f.color}/10 mb-4 transition-transform group-hover:scale-110 duration-500`}>
-                                <f.icon className="w-7 h-7 text-white" />
+                <div className="space-y-16">
+                    {fases.map((f, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-10%" }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="relative flex flex-col md:flex-row gap-6 md:gap-12 pl-12 sm:pl-16 md:pl-20 items-start"
+                        >
+                            {/* Bolinha Estática (Marcação de Etapas - 5px width => offset 2px to center on 1px line. Line is at 16px from content wrap, so left 14px) */}
+                            {/* Wait, instead of calculating based on container padding, let's just use absolute positioning from the viewport or fix the relative calculations. */}
+                            {/* If Item parent is at padding edge, its left=0. Track is at left=16px. So dot is at left=[14px] */}
+                            <div className="absolute left-[14px] sm:left-[14px] md:left-[14px] top-2 w-[5px] h-[5px] rounded-full bg-heritage-navy/20 dark:bg-white/20" />
+
+                            <div className="md:w-1/3 shrink-0 pt-0.5">
+                                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50 mb-3">{f.fase}</div>
+                                <h3 className="font-serif text-3xl md:text-4xl text-heritage-navy dark:text-white mb-3 leading-none tracking-tight">{f.nome}</h3>
+                                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-heritage-navy/70 dark:text-white/70">{f.periodo}</p>
                             </div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-heritage-navy/40 dark:text-white/30 mb-1">{f.periodo}</span>
-                            <h5 className="text-sm font-black text-heritage-navy dark:text-white leading-tight uppercase tracking-widest">{f.nome}</h5>
-                        </div>
-
-                        {/* Card de Tarefas */}
-                        <div className="flex-1 p-6 bg-white/40 dark:bg-white/5 rounded-3xl border border-heritage-navy/5 backdrop-blur-sm hover:border-heritage-navy/20 dark:hover:border-white/20 transition-all duration-500">
-                            <ul className="space-y-4">
-                                {f.tasks.map((task, idx) => (
-                                    <li key={idx} className="flex items-start gap-3">
-                                        <div className={`w-1.5 h-1.5 rounded-full bg-${f.color} mt-1.5 flex-shrink-0`} />
-                                        <span className="text-[11px] font-bold text-heritage-navy/70 dark:text-white/50 leading-tight">{task}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Seta de conexão (somente entre fases) */}
-                        {i < fases.length - 1 && (
-                            <div className="hidden md:flex absolute top-1/2 -right-4 translate-x-1/2 z-20">
-                                <motion.div
-                                    animate={{ x: [0, 5, 0] }}
-                                    transition={{ repeat: Infinity, duration: 2 }}
-                                    className="w-8 h-8 rounded-full bg-white dark:bg-zinc-900 border border-heritage-navy/5 flex items-center justify-center shadow-md"
-                                >
-                                    <div className="w-1.5 h-1.5 border-t-2 border-r-2 border-heritage-navy/20 dark:border-white/20 rotate-45 ml-[-2px]" />
-                                </motion.div>
+                            
+                            <div className="md:w-2/3 border-t md:border-t-0 md:border-l border-heritage-navy/10 dark:border-white/10 pt-6 md:pt-1 md:pl-8">
+                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                                    {f.tasks.map((task, idx) => (
+                                        <li key={idx} className="flex gap-4 items-start group">
+                                            <span className="text-[9px] tabular-nums tracking-widest border border-heritage-navy/20 dark:border-white/20 rounded-full w-4 h-4 flex items-center justify-center font-bold text-heritage-navy/50 dark:text-white/50 shrink-0 mt-[3px] group-hover:border-heritage-navy dark:group-hover:border-white transition-colors">
+                                                {idx + 1}
+                                            </span>
+                                            <span className="text-sm font-medium text-heritage-navy/80 dark:text-white/80 leading-snug">
+                                                {task}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                        )}
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </div>
     )

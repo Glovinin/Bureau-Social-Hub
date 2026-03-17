@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import Navbar from "./Navbar"
 import Sidebar from "./Sidebar"
 import Footer from "./Footer"
+import CursorFollower from "@/components/ui/CursorFollower"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function MainLayout() {
@@ -16,18 +17,22 @@ export default function MainLayout() {
         location.pathname.startsWith('/admin')
 
     return (
-        <div className="min-h-screen bg-background text-foreground transition-apple flex flex-col font-inter selection:bg-heritage-terracotta selection:text-white">
+        <div className={cn(
+            "min-h-screen text-foreground transition-apple flex flex-col font-inter selection:bg-heritage-terracotta selection:text-white",
+            isDashboard ? "bg-[#f8f6f0] dark:bg-zinc-950" : "bg-background"
+        )}>
+            {!isDashboard && <CursorFollower />}
             <Navbar />
 
             <div className={cn(
-                "flex flex-1",
-                isDashboard ? "max-w-screen-2xl mx-auto w-full pt-24" : "w-full"
+                "flex flex-1 min-h-0",
+                isDashboard ? "max-w-screen-2xl mx-auto w-full pt-24 bg-[#f8f6f0] dark:bg-zinc-950 lg:pl-80" : "w-full"
             )}>
                 {isDashboard && <Sidebar />}
 
                 <main className={cn(
                     "flex-1 flex flex-col transition-apple",
-                    isDashboard ? "px-6 md:px-12 pb-20 mt-8" : "w-full"
+                    isDashboard ? "px-6 md:px-12 pb-20 mt-8 bg-[#f8f6f0] dark:bg-zinc-950 min-h-screen" : "w-full"
                 )}>
                     {/* Page Transitions */}
                     <AnimatePresence mode="wait">

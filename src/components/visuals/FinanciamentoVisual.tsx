@@ -1,25 +1,25 @@
 import { motion } from "framer-motion"
-import { LucideBuilding2, LucideEuro, LucideStar, LucideTrendingUp } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { LucideBuilding2, LucideStar, LucideTrendingUp } from "lucide-react"
+import AnimatedCounter from "@/components/ui/AnimatedCounter"
+
+const formatEuro = (n: number) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 
 export default function FinanciamentoVisual() {
     const fontes = [
         {
             categoria: "União Europeia",
-            total: "€750.000",
+            totalValue: 750000,
             icon: LucideBuilding2,
-            color: "ocean",
             items: [
-                { nome: "LIFE (Biodiversidade/Património)", valor: "€300k" },
-                { nome: "FEADER (Agrícola/PDR)", valor: "€300k" },
-                { nome: "FSE+ (Formação Social)", valor: "€150k" }
+                { nome: "LIFE (Biodiversidade)", valor: "€300k" },
+                { nome: "FEADER (Agrícola)", valor: "€300k" },
+                { nome: "FSE+ (Formação)", valor: "€150k" }
             ]
         },
         {
             categoria: "Portugal",
-            total: "€200.000",
+            totalValue: 200000,
             icon: LucideTrendingUp,
-            color: "terracotta",
             items: [
                 { nome: "Turismo de Portugal", valor: "€150k" },
                 { nome: "Autarquias Locais", valor: "€50k" }
@@ -27,9 +27,8 @@ export default function FinanciamentoVisual() {
         },
         {
             categoria: "Privado",
-            total: "€360.000",
+            totalValue: 360000,
             icon: LucideStar,
-            color: "gold",
             items: [
                 { nome: "Mecenato Cultural", valor: "€80k" },
                 { nome: "Fundos Próprios Família", valor: "€280k" }
@@ -38,53 +37,48 @@ export default function FinanciamentoVisual() {
     ]
 
     return (
-        <div className="p-8 bg-heritage-sand/5 dark:bg-zinc-900 rounded-[40px] border border-heritage-navy/5 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-heritage-ocean via-heritage-terracotta to-heritage-gold opacity-50" />
+        <div className="w-full">
+            <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-heritage-navy/20 dark:border-white/20 pb-6 gap-6">
+                <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50">Investimento Total Captado</span>
+                    <h4 className="font-serif text-5xl md:text-6xl tracking-tighter text-heritage-navy dark:text-white leading-none">
+                        <AnimatedCounter to={1310000} prefix="€" format={formatEuro} duration={2} />
+                    </h4>
+                </div>
+                <p className="text-sm text-heritage-navy/60 dark:text-white/60 max-w-sm md:text-right leading-relaxed">
+                    Arquitetura financeira baseada em <strong className="text-heritage-navy dark:text-white">Sinergia Integrada</strong>, permitindo o acesso a fundos de maior escala e otimização de custos em 15%.
+                </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 border-y border-heritage-navy/20 dark:border-white/20 divide-y md:divide-y-0 md:divide-x divide-heritage-navy/20 dark:divide-white/20 bg-white dark:bg-zinc-950">
                 {fontes.map((f, i) => (
                     <motion.div
                         key={i}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="flex flex-col items-center text-center space-y-6 p-6 bg-white/50 dark:bg-white/5 rounded-3xl border border-heritage-navy/5"
+                        className="p-8 md:p-12 flex flex-col justify-between"
                     >
-                        <div className={`w-16 h-16 rounded-2xl bg-heritage-${f.color}/10 flex items-center justify-center`}>
-                            <f.icon className={`w-8 h-8 text-heritage-${f.color}`} />
-                        </div>
-
                         <div>
-                            <h4 className="font-black text-heritage-navy dark:text-white uppercase text-[10px] tracking-widest mb-1">{f.categoria}</h4>
-                            <p className={`text-3xl font-black text-heritage-${f.color}`}>{f.total}</p>
+                            <div className="flex items-center gap-3 mb-8">
+                                <f.icon className="w-5 h-5 text-heritage-navy/40 dark:text-white/40" />
+                                <h4 className="font-bold uppercase tracking-[0.2em] text-[10px] text-heritage-navy/50 dark:text-white/50">{f.categoria}</h4>
+                            </div>
+                            <p className="text-4xl md:text-5xl font-serif text-heritage-navy dark:text-white mb-10 tracking-tight">
+                                <AnimatedCounter to={f.totalValue} prefix="€" format={formatEuro} duration={1.5} />
+                            </p>
                         </div>
 
-                        <div className="space-y-2 w-full">
+                        <div className="border-t border-heritage-navy/10 dark:border-white/10 pt-6 space-y-4">
                             {f.items.map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center p-2 bg-white dark:bg-zinc-900 rounded-xl border border-heritage-navy/5">
-                                    <span className="text-[10px] font-bold text-heritage-navy/60 dark:text-white/40">{item.nome}</span>
-                                    <Badge variant="outline" className="text-[10px] font-black border-heritage-navy/10">{item.valor}</Badge>
+                                <div key={idx} className="flex justify-between items-center group">
+                                    <span className="text-xs font-medium text-heritage-navy/70 dark:text-white/70 group-hover:text-heritage-navy dark:group-hover:text-white transition-colors">{item.nome}</span>
+                                    <span className="text-[10px] font-bold tracking-[0.2em] px-2 py-0.5 border border-heritage-navy/20 dark:border-white/20 text-heritage-navy/80 dark:text-white/80">{item.valor}</span>
                                 </div>
                             ))}
                         </div>
                     </motion.div>
                 ))}
-            </div>
-
-            <div className="mt-12 p-6 bg-heritage-navy text-white rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                        <LucideEuro className="w-6 h-6 text-heritage-gold" />
-                    </div>
-                    <div className="text-left">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Investimento Total Captado</p>
-                        <p className="text-2xl font-black text-heritage-gold">€1.310.000</p>
-                    </div>
-                </div>
-                <div className="h-px md:h-12 w-full md:w-px bg-white/10" />
-                <p className="text-xs text-white/60 max-w-md text-center md:text-left">
-                    Arquitetura financeira baseada em <strong>Sinergia Integrada</strong>, permitindo o acesso a fundos de maior escala e otimização de custos operacionais em 15%.
-                </p>
             </div>
         </div>
     )
