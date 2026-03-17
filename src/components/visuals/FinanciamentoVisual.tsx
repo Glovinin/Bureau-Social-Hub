@@ -11,6 +11,8 @@ export default function FinanciamentoVisual() {
             totalValue: 750000,
             icon: LucideBuilding2,
             items: [
+                { nome: "PRR (Reabilitação)", valor: "€450k" },
+                { nome: "Portugal 2030", valor: "€200k" },
                 { nome: "LIFE (Biodiversidade)", valor: "€300k" },
                 { nome: "FEADER (Agrícola)", valor: "€300k" },
                 { nome: "FSE+ (Formação)", valor: "€150k" }
@@ -18,11 +20,12 @@ export default function FinanciamentoVisual() {
         },
         {
             categoria: "Portugal",
-            totalValue: 200000,
+            totalValue: 450000,
             icon: LucideTrendingUp,
             items: [
+                { nome: "IEFP (Formação)", valor: "€250k" },
                 { nome: "Turismo de Portugal", valor: "€150k" },
-                { nome: "Autarquias Locais", valor: "€50k" }
+                { nome: "Apoio Municipal", valor: "€50k" }
             ]
         },
         {
@@ -42,7 +45,7 @@ export default function FinanciamentoVisual() {
                 <div className="flex flex-col gap-2">
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50">Investimento Total Captado</span>
                     <h4 className="font-serif text-5xl md:text-6xl tracking-tighter text-heritage-navy dark:text-white leading-none">
-                        <AnimatedCounter to={1310000} prefix="€" format={formatEuro} duration={2} />
+                        <AnimatedCounter to={1660000} prefix="€" format={formatEuro} duration={2} />
                     </h4>
                 </div>
                 <p className="text-sm text-heritage-navy/60 dark:text-white/60 max-w-sm md:text-right leading-relaxed">

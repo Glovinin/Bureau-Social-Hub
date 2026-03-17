@@ -9,7 +9,7 @@ import {
     LucideGraduationCap, LucideHammer, LucideCheckCircle2, LucideStar, LucideTarget, 
     LucideAward, LucideArrowRight, LucideHistory, LucideHome, LucideLeaf, 
     LucideGavel, LucideFileText, LucideShieldCheck, LucideBriefcase, LucideTrendingUp, 
-    LucideShield, LucideListOrdered, LucideBookOpen, LucideArrowDownRight 
+    LucideShield, LucideListOrdered, LucideBookOpen, LucideArrowDownRight, LucideUsers 
 } from "lucide-react"
 import ModeloInstitucional from "@/components/visuals/ModeloInstitucional"
 import MapaOficios from "@/components/visuals/MapaOficios"
@@ -291,8 +291,8 @@ const torreCarvalhalDetails = {
         elementos: [
             { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
             { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria única, comparável apenas à Universidade de Évora" },
-            { nome: "Casas na Propriedade", estado: "Devoluto", descricao: "6 a 10 casas dentro dos hectares — potencial para turismo rural" },
-            { nome: "Montado (400-600 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça sustentável" },
+            { nome: "10 Unidades Turismo Rural", estado: "Devoluto", descricao: "Casas dentro dos 600-800 ha — potencial para turismo rural e experiências patrimoniais" },
+            { nome: "Montado (600-800 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça sustentável" },
             { nome: "Infraestrutura Hídrica", estado: "Abandonado", descricao: "Sistema de irrigação a restaurar para o jardim e horta" }
         ]
     },
@@ -303,9 +303,9 @@ const torreCarvalhalDetails = {
         { fase: "4", nome: "Operação", periodo: "Meses 30+", descricao: "Turismo de natureza, cortiça, apicultura e turismo rural nas casas", orcamento: "€90.000/ano" }
     ],
     impacto: [
-        { indicador: "Área", valor: "600 ha", descricao: "Hectares de montado sob gestão sustentável" },
+        { indicador: "Área", valor: "600-800 ha", descricao: "Hectares de montado sob gestão sustentável" },
         { indicador: "Capacitação", valor: "30", descricao: "Artesãos e corticeiros formados" },
-        { indicador: "Alojamento", valor: "6-10", descricao: "Casas potenciais para turismo rural / Airbnb" },
+        { indicador: "Alojamento", valor: "10", descricao: "Unidades para turismo rural e experiências patrimoniais" },
         { indicador: "Rede Natura", valor: "100%", descricao: "Inserção em área de proteção ambiental" }
     ],
     modelo: {
@@ -318,9 +318,9 @@ const torreCarvalhalDetails = {
 }
 
 const propostas = [
-    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€160.000", investimento: "€2.000.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (14 unidades, escola de artes e culinária)" },
-    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "TBD", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação de corticeiros no Alentejo (ermida, montado, casas rurais)" },
-    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "A partir de €2.000.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo." }
+    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€160.000", investimento: "€2.070.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (14 unidades, escola de artes e culinária, 30 meses)" },
+    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "€2.900.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação no Alentejo (10 unidades, 600-800 ha montado, ermida, 36 meses)" },
+    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "€4.970.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo em dois territórios." }
 ]
 
 // passosDetails moved to ProximosPassosVisual component
@@ -383,10 +383,10 @@ const governancaDetails = {
 }
 
 const kpiDetails = [
-    { meta: "Unidades Habitacionais", kpi: "14 unidades", prazo: "24 meses", icon: LucideFileText, desc: "Conversão dos anexos da Quinta em 14 unidades de alojamento Airbnb." },
-    { meta: "Financiamento Captado", kpi: "€1.800.000", prazo: "24 meses", icon: LucideEuro, desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus (FEADER, FSE+, LIFE)." },
-    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "24 meses", icon: LucideAward, desc: "Formação em culinária, botânica, música, artes, cortiça e restauro." },
-    { meta: "Empregos Criados", kpi: "25 postos", prazo: "24 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
+    { meta: "Unidades Habitacionais", kpi: "14 unidades", prazo: "30 meses", icon: LucideFileText, desc: "Conversão dos anexos da Quinta em 14 unidades de alojamento Airbnb." },
+    { meta: "Financiamento Captado", kpi: "€2.070.000", prazo: "30 meses", icon: LucideEuro, desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus (FEADER, FSE+, LIFE)." },
+    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "30 meses", icon: LucideAward, desc: "Formação em culinária, botânica, música, artes, cortiça e restauro." },
+    { meta: "Empregos Criados", kpi: "25 postos", prazo: "30 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
 ]
 
 
@@ -424,6 +424,7 @@ export default function Assessoria() {
 
     const sections = [
         { id: "programa", label: "O Programa" },
+        { id: "paraquem", label: "Para Quem É" },
         { id: "modelo", label: "Modelo Institucional" },
         { id: "processo", label: "Processo Operacional" },
         { id: "quinta", label: "Quinta Salreu" },
@@ -460,7 +461,7 @@ export default function Assessoria() {
                             <FadeIn delay={0.3}>
                                 <h1 className="font-serif text-[4rem] leading-[0.9] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-medium text-heritage-navy dark:text-white tracking-tighter">
                                     Preservar o <br />
-                                    <span className="text-heritage-terracotta italic font-normal">Património</span>.
+                                    <span className="text-heritage-terracotta italic font-normal">Património Familiar</span>.
                                 </h1>
                             </FadeIn>
                         </div>
@@ -469,7 +470,7 @@ export default function Assessoria() {
                         <div className="lg:col-span-4 flex flex-col justify-between h-full border-t border-heritage-navy/20 dark:border-white/20 pt-6 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-12">
                             <FadeIn delay={0.5} direction="left">
                                 <p className="text-xl sm:text-2xl text-heritage-navy/80 dark:text-white/80 leading-snug font-medium mb-12">
-                                    Um programa inovador que combina a preservação patrimonial com a formação em ofícios tradicionais portugueses.
+                                    Serviço de assessoria técnica para projetos de património histórico — restauro, financiamento, formação em ofícios tradicionais, governança e coordenação de parceiros.
                                 </p>
                             </FadeIn>
 
@@ -478,11 +479,11 @@ export default function Assessoria() {
                                     <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-3 font-semibold">Resumo Executivo</span>
                                     <div className="grid grid-cols-2 gap-4 pb-3">
                                         <div>
-                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">€2.000.000</p>
-                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Investimento Total</p>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">€4.970.000</p>
+                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Programa Integrado</p>
                                         </div>
                                         <div>
-                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">24-30 Meses</p>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">30-36 Meses</p>
                                             <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Duração Integrada</p>
                                         </div>
                                     </div>
@@ -542,6 +543,9 @@ export default function Assessoria() {
                                             <span className="float-left text-6xl leading-[0.8] pr-3 pt-2 font-serif text-heritage-terracotta font-medium">I</span>
                                             niciativa do Instituto Português de Negócios Sociais (IPNS) que visa recuperar o património histórico familiar através de um modelo inovador que combina preservação, formação e turismo imersivo.
                                         </p>
+                                        <p className="text-lg text-heritage-navy/60 dark:text-white/60 font-medium leading-relaxed border-l-2 border-heritage-terracotta/50 pl-6">
+                                            O Bureau Social não entra como dono do património nem substitui a família proprietária — atua como assessor técnico e estratégico, ajudando a transformar património em projeto viável, financiável e operável.
+                                        </p>
                                     </FadeIn>
                                 </div>
                             </div>
@@ -567,8 +571,51 @@ export default function Assessoria() {
                             </FadeIn>
                         </section>
 
+                        {/* Section: Para quem é */}
+                        <section id="paraquem" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f5f3ec] dark:bg-zinc-900">
+                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
+                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                    <FadeIn triggerOnView>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Público-Alvo</span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Para Quem É</h2>
+                                    </FadeIn>
+                                </div>
+                                <div className="md:col-span-8 flex flex-col gap-10">
+                                    <FadeIn triggerOnView direction="left">
+                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
+                                            A assessoria do Bureau Social dirige-se a quem tem património histórico mas precisa de apoio técnico para o estruturar, financiar e operar.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+                            <FadeIn triggerOnView direction="up">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-heritage-navy/10 dark:border-white/10">
+                                    <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
+                                        <LucideHome className="w-8 h-8 text-heritage-terracotta mb-4" />
+                                        <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">Famílias Proprietárias</h3>
+                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Quintas, torres, herdades e imóveis históricos que precisam de estruturação técnica.</p>
+                                    </div>
+                                    <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
+                                        <LucideShield className="w-8 h-8 text-heritage-ocean mb-4" />
+                                        <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">IPSS e Associações</h3>
+                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Entidades que podem assumir a gestão operacional com apoio técnico.</p>
+                                    </div>
+                                    <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
+                                        <LucideBuilding2 className="w-8 h-8 text-heritage-gold mb-4" />
+                                        <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">Entidades Gestoras</h3>
+                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Associações locais e estruturas que coordenam património e comunidade.</p>
+                                    </div>
+                                    <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950 sm:col-span-2 lg:col-span-1">
+                                        <LucideTarget className="w-8 h-8 text-heritage-terracotta mb-4" />
+                                        <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">Parceiros Institucionais</h3>
+                                        <p className="text-sm text-heritage-navy/60 dark:text-white/60">Câmaras, universidades e entidades que precisam de clarificar o papel do Bureau Social.</p>
+                                    </div>
+                                </div>
+                            </FadeIn>
+                        </section>
+
                         {/* Section: Modelo Institucional */}
-                        <section id="modelo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f5f3ec] dark:bg-zinc-900">
+                        <section id="modelo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f8f6f0] dark:bg-zinc-950">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
                                 <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
                                     <FadeIn triggerOnView>
@@ -634,11 +681,11 @@ export default function Assessoria() {
                             <FadeIn triggerOnView direction="up">
                                 <div className="grid grid-cols-2 gap-4 pb-8 mb-8 border-b border-heritage-navy/10 dark:border-white/10">
                                     <div>
-                                        <p className="font-serif text-3xl font-medium text-heritage-terracotta">€2M</p>
+                                        <p className="font-serif text-3xl font-medium text-heritage-terracotta">€2.070.000</p>
                                         <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Investimento</p>
                                     </div>
                                     <div>
-                                        <p className="font-serif text-3xl font-medium text-heritage-navy dark:text-white">24 meses</p>
+                                        <p className="font-serif text-3xl font-medium text-heritage-navy dark:text-white">30 meses</p>
                                         <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Duração</p>
                                     </div>
                                 </div>
@@ -1064,6 +1111,9 @@ export default function Assessoria() {
                                     </FadeIn>
 
                                     <FadeIn triggerOnView direction="up">
+                                        <p className="text-xl sm:text-2xl font-serif text-white/90 mb-8 italic">
+                                            Converse connosco para avaliar como podemos ajudar o seu projeto de património.
+                                        </p>
                                         <div className="mt-16 pt-8 border-t border-white/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                                             <div>
                                                 <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-1">Contato do Assessor</p>
