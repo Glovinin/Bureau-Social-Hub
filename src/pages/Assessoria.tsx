@@ -284,15 +284,16 @@ const quintaSalreuDetails = {
 const torreCarvalhalDetails = {
     historia: {
         titulo: "História da Torre",
-        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. A Ermida possui azulejaria do século XVI — comparável apenas à da Universidade de Évora. A propriedade inclui entre 400 e 600 hectares de montado com sobreiros e azinheiras endémicas, várias casas e construções dentro da propriedade, e está inserida na Rede Natura 2000 (Sítio Monfurado). O grande diferencial é o ofício do Corticeiro — a extração de cortiça dos sobreiros centenários, uma arte técnica em risco de desaparecimento."
+        texto: "A Torre do Carvalhal é um símbolo do poder senhorial na arquitetura manuelino-mudéjar alentejana do séc. XVI. A Ermida possui azulejaria mudejar do século XVI — comparável à de Sintra e Universidade de Évora. A propriedade inclui entre 600 e 800 hectares de montado com sobreiros e azinheiras endémicas, várias casas e construções dentro da propriedade, e está inserida na Rede Natura 2000 (Sítio Monfurado). O grande diferencial é o ofício do Corticeiro — a extração de cortiça dos sobreiros centenários, uma arte técnica em risco de desaparecimento."
     },
     patrimonio: {
         titulo: "Património a Preservar",
         elementos: [
             { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
-            { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria única, comparável apenas à Universidade de Évora" },
+            { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria mudejar única, comparável à de Sintra e Universidade de Évora" },
             { nome: "10 Unidades Turismo Rural", estado: "Devoluto", descricao: "Casas dentro dos 600-800 ha — potencial para turismo rural e experiências patrimoniais" },
-            { nome: "Montado (600-800 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça sustentável" },
+            { nome: "Montado (600-800 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça, percursos interpretativos e turismo de natureza off-grid" },
+            { nome: "Forno de Cal Histórico", estado: "Abandonado", descricao: "Musealização e sinalização interpretativa — peça única de património industrial alentejano" },
             { nome: "Infraestrutura Hídrica", estado: "Abandonado", descricao: "Sistema de irrigação a restaurar para o jardim e horta" }
         ]
     },
@@ -469,8 +470,11 @@ export default function Assessoria() {
                         {/* Sub-Article / Lead Paragraph */}
                         <div className="lg:col-span-4 flex flex-col justify-between h-full border-t border-heritage-navy/20 dark:border-white/20 pt-6 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-12">
                             <FadeIn delay={0.5} direction="left">
-                                <p className="text-xl sm:text-2xl text-heritage-navy/80 dark:text-white/80 leading-snug font-medium mb-12">
+                                <p className="text-xl sm:text-2xl text-heritage-navy/80 dark:text-white/80 leading-snug font-medium mb-6">
                                     Serviço de assessoria técnica para projetos de património histórico — restauro, financiamento, formação em ofícios tradicionais, governança e coordenação de parceiros.
+                                </p>
+                                <p className="text-lg font-serif italic text-heritage-navy/70 dark:text-white/70 leading-snug border-l-2 border-heritage-terracotta/50 pl-4 mb-12">
+                                    Contratem-nos para vos ajudar a captar financiamento, coordenar o projeto e montar a formação.
                                 </p>
                             </FadeIn>
 
@@ -546,6 +550,19 @@ export default function Assessoria() {
                                         <p className="text-lg text-heritage-navy/60 dark:text-white/60 font-medium leading-relaxed border-l-2 border-heritage-terracotta/50 pl-6">
                                             O Bureau Social não entra como dono do património nem substitui a família proprietária — atua como assessor técnico e estratégico, ajudando a transformar património em projeto viável, financiável e operável.
                                         </p>
+                                        <p className="text-base text-heritage-navy/70 dark:text-white/70 font-medium leading-relaxed italic">
+                                            O Bureau Social entra para tornar executável um projeto que, sem assessoria, ficaria disperso entre restauro, burocracia, formação, financiamento e operação. Ajudamos patrimónios familiares e projetos locais a sair da intenção e virar programa executável.
+                                        </p>
+                                        <div className="mt-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10 space-y-3">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50 mb-4">O que deve ficar explícito</p>
+                                            <ul className="space-y-2 text-sm text-heritage-navy/70 dark:text-white/70">
+                                                <li className="flex gap-2"><span className="text-heritage-terracotta font-bold">1.</span> O património continua a pertencer e a ser orientado pelos seus donos e estruturas locais.</li>
+                                                <li className="flex gap-2"><span className="text-heritage-terracotta font-bold">2.</span> O Bureau Social entra para apoiar, coordenar e viabilizar.</li>
+                                                <li className="flex gap-2"><span className="text-heritage-terracotta font-bold">3.</span> A formação em ofícios é parte do modelo de reabilitação, impacto e sustentabilidade — não um acessório.</li>
+                                                <li className="flex gap-2"><span className="text-heritage-terracotta font-bold">4.</span> O financiamento é montado a partir de programas compatíveis com património, formação, turismo e terceiro setor.</li>
+                                                <li className="flex gap-2"><span className="text-heritage-terracotta font-bold">5.</span> Cada projeto é desenhado à medida do lugar, da família e da entidade gestora.</li>
+                                            </ul>
+                                        </div>
                                     </FadeIn>
                                 </div>
                             </div>
@@ -585,6 +602,19 @@ export default function Assessoria() {
                                         <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
                                             A assessoria do Bureau Social dirige-se a quem tem património histórico mas precisa de apoio técnico para o estruturar, financiar e operar.
                                         </p>
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/50 dark:text-white/50 mb-3">O cliente ideal reconhece-se nestas situações</p>
+                                        <div className="grid sm:grid-cols-2 gap-4">
+                                            {[
+                                                "Tenho património, mas não tenho uma estrutura técnica montada.",
+                                                "Preciso de ajuda para captar financiamento.",
+                                                "Preciso de ajuda para organizar parceiros, formação e execução.",
+                                                "Preciso de um modelo para reabilitar sem perder a identidade do lugar."
+                                            ].map((frase, i) => (
+                                                <blockquote key={i} className="text-sm font-serif italic text-heritage-navy/70 dark:text-white/70 border-l-2 border-heritage-terracotta/40 pl-4 py-1">
+                                                    "{frase}"
+                                                </blockquote>
+                                            ))}
+                                        </div>
                                     </FadeIn>
                                 </div>
                             </div>
@@ -1111,6 +1141,9 @@ export default function Assessoria() {
                                     </FadeIn>
 
                                     <FadeIn triggerOnView direction="up">
+                                        <p className="text-base text-white/70 mb-6 leading-relaxed">
+                                            A Assessoria apresenta o Bureau Social como parceiro técnico de famílias proprietárias e entidades gestoras que precisam de ajuda para preservar património, captar financiamento e estruturar programas de formação e operação. Não é uma página para investidores externos — é para potenciais clientes de assessoria.
+                                        </p>
                                         <p className="text-xl sm:text-2xl font-serif text-white/90 mb-8 italic">
                                             Converse connosco para avaliar como podemos ajudar o seu projeto de património.
                                         </p>

@@ -1,19 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
     LucideUser,
     LucideHome,
     LucideBriefcase,
-    LucideHeart,
+    LucideFileText,
     LucideArrowRight,
     LucideArrowLeft,
     LucideCheck,
     LucideSend,
-    LucideHash,
-    LucideFileText
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { supabase } from "@/lib/supabase"
@@ -83,6 +78,42 @@ const initialFormData: FormData = {
     aceitaTermos: false
 }
 
+const FormInput = ({ label, error, ...props }: any) => (
+    <div className="space-y-2 relative group w-full">
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] flex justify-between">
+            <span className="text-black/50">{label}</span>
+            {error && <span className="text-[#E35238]">{error}</span>}
+        </label>
+        <input 
+            {...props}
+            className={`w-full bg-transparent border-0 border-b-2 ${error ? 'border-[#E35238]' : 'border-black/10 hover:border-black/30 focus:border-[#E35238]'} py-3 text-2xl font-serif focus:ring-0 transition-colors outline-none placeholder:italic placeholder:text-black/20 ${props.className || ''}`}
+        />
+    </div>
+)
+
+const FormTextarea = ({ label, error, ...props }: any) => (
+    <div className="space-y-4 relative group w-full">
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] flex justify-between">
+            <span className="text-black/50">{label}</span>
+            {error && <span className="text-[#E35238]">{error}</span>}
+        </label>
+        <textarea 
+            {...props}
+            className={`w-full min-h-[200px] bg-black/[0.02] border ${error ? 'border-[#E35238]' : 'border-black/10 hover:border-black/20 focus:border-[#E35238]'} p-6 text-xl font-serif focus:ring-0 transition-colors outline-none resize-none placeholder:italic placeholder:text-black/20 ${props.className || ''}`}
+        />
+    </div>
+)
+
+const OptionButton = ({ label, selected, onClick }: any) => (
+    <button
+        type="button"
+        onClick={onClick}
+        className={`px-6 py-4 border-2 font-black text-[10px] uppercase tracking-widest transition-all ${selected ? 'border-[#E35238] bg-[#E35238] text-white' : 'border-black/10 text-black/50 hover:border-black/30 hover:text-black'}`}
+    >
+        {label}
+    </button>
+)
+
 export default function Candidatura() {
     const [currentStep, setCurrentStep] = useState(0)
     const [formData, setFormData] = useState<FormData>(initialFormData)
@@ -90,11 +121,18 @@ export default function Candidatura() {
     const [errors, setErrors] = useState<Record<string, string>>({})
     const { session } = useAuth()
 
+    // Smooth scroll to top on step change
+    useEffect(() => {
+        if (currentStep > 0) {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+    }, [currentStep])
+
     const getSteps = () => {
-        const baseSteps = [{ id: 1, title: "Anexo I: Identificação", icon: LucideUser }]
-        if (formData.type === 'moradia') baseSteps.push({ id: 2, title: "Anexo II: Condições Habitacionais", icon: LucideHome })
-        if (['moradia', 'profissional'].includes(formData.type)) baseSteps.push({ id: 3, title: "Anexo III: Qualificação Técnica", icon: LucideBriefcase })
-        baseSteps.push({ id: 4, title: "Anexo IV: Manifesto de Motivação", icon: LucideHeart })
+        const baseSteps = [{ id: 1, title: "Anexo I", subtitle: "Identificação Pessoal", icon: LucideUser }]
+        if (formData.type === 'moradia') baseSteps.push({ id: 2, title: "Anexo II", subtitle: "Condições Habitacionais", icon: LucideHome })
+        if (['moradia', 'profissional'].includes(formData.type)) baseSteps.push({ id: 3, title: "Anexo III", subtitle: "Qualificação Técnica", icon: LucideBriefcase })
+        baseSteps.push({ id: 4, title: "Anexo IV", subtitle: "Manifesto & Termos", icon: LucideFileText })
         return baseSteps.map((s, i) => ({ ...s, stepIndex: i + 1 }))
     }
 
@@ -106,25 +144,31 @@ export default function Candidatura() {
         if (!currentStepObj) return true
 
         if (currentStepObj.id === 1) {
-            if (!formData.nome) newErrors.nome = "Campo obrigatório"
-            if (!formData.dataNascimento) newErrors.dataNascimento = "Campo obrigatório"
-            if (!formData.nif) newErrors.nif = "Campo obrigatório"
-            if (!formData.telefone) newErrors.telefone = "Campo obrigatório"
-            if (!formData.email) newErrors.email = "Campo obrigatório"
+            if (!formData.nome) newErrors.nome = "Obrigatório"
+            if (!formData.dataNascimento) newErrors.dataNascimento = "Obrigatório"
+            if (!formData.nif) newErrors.nif = "Obrigatório"
+            if (!formData.telefone) newErrors.telefone = "Obrigatório"
+            if (!formData.email) newErrors.email = "Obrigatório"
         }
         if (currentStepObj.id === 2) {
-            if (formData.agregadoTotal < 1) newErrors.agregadoTotal = "Mínimo 1"
-            if (!formData.rendimentosTrabalho) newErrors.rendimentosTrabalho = "Campo obrigatório"
+            if (formData.agregadoTotal < 1) newErrors.agregadoTotal = "Min 1"
+            if (!formData.rendimentosTrabalho) newErrors.rendimentosTrabalho = "Obrigatório"
+            if (!formData.condicoesAlojamento) newErrors.condicoesAlojamento = "Selecione uma"
         }
         if (currentStepObj.id === 3) {
-            if (!formData.oficio) newErrors.oficio = "Campo obrigatório"
-            if (!formData.descricaoOficio) newErrors.descricaoOficio = "Campo obrigatório"
+            if (!formData.oficio) newErrors.oficio = "Obrigatório"
+            if (!formData.descricaoOficio) newErrors.descricaoOficio = "Obrigatório"
         }
         if (currentStepObj.id === 4) {
-            if (!formData.motivacao) newErrors.motivacao = "Campo obrigatório"
+            if (!formData.motivacao) newErrors.motivacao = "Obrigatório"
         }
 
         setErrors(newErrors)
+        
+        if (Object.keys(newErrors).length > 0) {
+            toast.error("Por favor, preencha os campos obrigatórios.")
+        }
+        
         return Object.keys(newErrors).length === 0
     }
 
@@ -134,7 +178,6 @@ export default function Candidatura() {
         } else {
             if (validateStep(currentStep)) {
                 setCurrentStep(prev => prev + 1)
-                window.scrollTo(0, 0)
             }
         }
     }
@@ -145,11 +188,21 @@ export default function Candidatura() {
 
     const updateFormData = (field: keyof FormData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }))
+        // Clear error when user types
+        if (errors[field]) {
+            setErrors(prev => {
+                const newErrs = { ...prev }
+                delete newErrs[field]
+                return newErrs
+            })
+        }
     }
 
     const handleSubmit = async () => {
         if (!session) {
-            toast.error("Login Necessário")
+            toast.error("Login Necessário", {
+                description: "Por favor, autentique-se para submeter o seu processo."
+            })
             return
         }
         try {
@@ -163,248 +216,283 @@ export default function Candidatura() {
                 })
             if (error) throw error
             setSubmitted(true)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         } catch (error: any) {
-            toast.error("Erro ao enviar")
+            toast.error("Erro ao enviar dossier")
             logSystemError(error, 'Candidatura.handleSubmit', session?.user?.id)
         }
     }
 
     if (submitted) {
         return (
-            <div className="flex flex-col w-full min-h-screen bg-[#f8f6f0] items-center justify-center p-6 text-center">
-                <Grain opacity={0.05} />
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-2 border-heritage-navy p-12 bg-white max-w-lg shadow-2xl relative z-10">
-                    <div className="w-16 h-16 border-2 border-heritage-success flex items-center justify-center mx-auto mb-8">
-                        <LucideCheck className="w-8 h-8 text-heritage-success" />
-                    </div>
-                    <h1 className="text-4xl font-serif font-medium text-heritage-navy mb-6">Processo Recebido.</h1>
-                    <p className="text-heritage-navy/60 font-serif italic mb-10 leading-relaxed">
-                        A sua candidatura como <span className="font-bold text-heritage-terracotta capitalize">{formData.type}</span> foi integrada no nosso sistema de arquivo e será analisada pela direção técnica em breve.
+            <div className="min-h-screen bg-[#F3F0E6] text-black flex flex-col items-center justify-center p-6 relative font-sans">
+                <Grain opacity={0.06} />
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="max-w-3xl w-full bg-white p-12 md:p-24 border border-black/10 shadow-2xl relative z-10"
+                >
+                    {/* Decorative Stamp */}
+                    <motion.div 
+                        initial={{ scale: 2, opacity: 0, rotate: -20 }}
+                        animate={{ scale: 1, opacity: 1, rotate: -10 }}
+                        transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 15 }}
+                        className="absolute top-8 right-8 md:top-12 md:right-12 w-32 h-32 md:w-40 md:h-40 rounded-full border-[6px] border-[#3D8C61] flex items-center justify-center text-[#3D8C61] opacity-70 mix-blend-multiply pointer-events-none"
+                    >
+                        <div className="text-center transform rotate-12 flex flex-col items-center justify-center w-full">
+                            <span className="block text-[14px] md:text-[18px] font-black uppercase tracking-widest leading-none mb-1">Aprovado</span>
+                            <span className="block text-[10px] md:text-sm font-serif italic border-t-2 border-[#3D8C61] pt-1 px-4">{new Date().toLocaleDateString('pt-PT')}</span>
+                        </div>
+                    </motion.div>
+
+                    <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-8">Processo<br/><span className="italic text-[#3D8C61]">Integrado.</span></h1>
+                    
+                    <p className="text-xl md:text-2xl font-serif leading-relaxed text-black/60 pt-8 border-t border-black/10 max-w-xl">
+                        A sua submissão na classe <strong className="font-sans font-black text-black uppercase text-sm tracking-widest px-2">{formData.type}</strong> foi arquivada com sucesso. A direção técnica avaliará o seu processo a seu tempo.
                     </p>
-                    <button onClick={() => window.location.href = '/dashboard'} className="w-full py-4 bg-heritage-navy text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-terracotta transition-all">Regressar ao Dossier Ativo</button>
+
+                    <div className="mt-16">
+                        <Magnetic>
+                            <button onClick={() => window.location.href = '/dashboard'} className="h-16 px-12 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#E35238] transition-colors flex items-center justify-center w-max">
+                                Regressar ao Dossier
+                            </button>
+                        </Magnetic>
+                    </div>
                 </motion.div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 transition-apple relative overflow-hidden font-sans">
-            <Grain opacity={0.05} />
+        <div className="min-h-screen bg-[#F3F0E6] text-black font-sans selection:bg-[#E35238] selection:text-white relative overflow-hidden">
+            <Grain opacity={0.06} />
             
             {/* Step 0: Editorial Selection */}
             {currentStep === 0 && (
-                <div className="container mx-auto px-6 py-32 max-w-7xl relative z-10">
-                    <header className="mb-20 space-y-8 border-b-2 border-heritage-navy dark:border-white pb-12">
-                        <div className="flex items-center gap-4">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-heritage-terracotta">Chamada de Participação</span>
-                            <div className="h-px flex-1 bg-heritage-navy/10" />
+                <main className="max-w-7xl mx-auto px-6 py-24 md:py-32 relative z-10 flex flex-col min-h-screen">
+                    <header className="border-b-2 border-black pb-12 mb-16 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
+                        <div className="space-y-6">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#E35238] flex items-center gap-4">
+                                Edição Especial <span className="w-12 h-px bg-[#E35238]"></span> Chamada Pública
+                            </span>
+                            <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-serif font-medium leading-[0.85] tracking-tighter">
+                                A Nossa <br/>
+                                <span className="text-[#E35238] italic pr-8 relative">
+                                    Comunidade.
+                                </span>
+                            </h1>
                         </div>
-                        <h1 className="text-6xl md:text-8xl font-serif font-medium text-heritage-navy dark:text-white leading-[0.85] tracking-tighter">
-                            A Nossa <span className="italic text-heritage-terracotta">Comunidade</span>.
-                        </h1>
-                        <p className="max-w-2xl text-xl text-heritage-navy/60 dark:text-white/40 font-serif leading-relaxed italic">
-                            "Propomos um modelo de intervenção onde cada talento é um pilar da estrutura. Escolha a sua modalidade de compromisso."
-                        </p>
+                        <div className="lg:w-1/3 flex flex-col gap-8">
+                            <p className="text-xl md:text-2xl font-serif italic text-black/60 leading-relaxed border-l-2 border-black/20 pl-8">
+                                "Propomos um modelo de intervenção onde cada talento é um pilar da estrutura. Escolha a sua modalidade de compromisso."
+                            </p>
+                            <div className="text-[10px] font-black uppercase tracking-widest text-black/40 pl-8">
+                                Lisboa, {new Date().toLocaleDateString('pt-PT')}
+                            </div>
+                        </div>
                     </header>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-heritage-navy/10 dark:border-white/10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-black/10 flex-1 border border-black/10">
                         {[
-                            { id: 'moradia', label: 'Moradia Artesãos', icon: LucideHome, desc: 'Para mestres que necessitam de base de vida no centro histórico.' },
-                            { id: 'profissional', label: 'Corpo Técnico', icon: LucideBriefcase, desc: 'Para profissionais que procuram parcerias institucionais.' },
-                            { id: 'associado', label: 'Associado Efetivo', icon: LucideUser, desc: 'Participação ativa na governança e nos rumos da associação.' },
-                            { id: 'voluntario', label: 'Rede Voluntária', icon: LucideHeart, desc: 'Doação de tempo para apoio a projetos de impacto local.' }
-                        ].map((type) => (
+                            { id: 'moradia', num: 'I', title: 'Moradia Artesãos', desc: 'Para mestres que necessitam de base de vida no centro histórico.' },
+                            { id: 'profissional', num: 'II', title: 'Corpo Técnico', desc: 'Para profissionais que procuram parcerias institucionais.' },
+                            { id: 'associado', num: 'III', title: 'Associado Efetivo', desc: 'Participação ativa na governança e nos rumos da associação.' },
+                            { id: 'voluntario', num: 'IV', title: 'Rede Voluntária', desc: 'Doação de tempo para apoio a projetos de impacto local.' }
+                        ].map(type => (
                             <button
                                 key={type.id}
                                 onClick={() => {
                                     updateFormData('type', type.id as CandidatureType)
                                     handleNext()
                                 }}
-                                className="group relative p-12 bg-white dark:bg-zinc-900 border border-heritage-navy/5 dark:border-white/5 hover:bg-heritage-navy transition-all duration-500 text-left flex flex-col min-h-[400px]"
+                                className="bg-[#F3F0E6] p-12 flex flex-col items-start text-left group hover:bg-[#1A1A1A] transition-all duration-700 relative overflow-hidden h-full min-h-[400px]"
                             >
-                                <div className="w-12 h-12 border border-heritage-navy/20 dark:border-white/20 flex items-center justify-center text-heritage-navy dark:text-white mb-8 group-hover:bg-white group-hover:text-heritage-navy transition-all">
-                                    <type.icon className="w-5 h-5" />
+                                <span className="text-8xl font-serif text-black/5 group-hover:text-white/5 mb-auto transition-colors mt-4">{type.num}</span>
+                                <div className="mt-16 space-y-4 relative z-10 w-full">
+                                    <h3 className="text-3xl font-serif font-medium text-black group-hover:text-white transition-colors">{type.title}</h3>
+                                    <p className="text-lg font-serif italic text-black/60 group-hover:text-white/50 leading-relaxed transition-colors">{type.desc}</p>
                                 </div>
-                                <h3 className="text-2xl font-serif font-medium text-heritage-navy dark:text-white group-hover:text-heritage-gold transition-colors mb-4">{type.label}</h3>
-                                <p className="text-sm text-heritage-navy/50 dark:text-white/40 leading-relaxed font-serif italic mb-8 group-hover:text-white/70">{type.desc}</p>
-                                <div className="mt-auto pt-6 flex items-center text-heritage-navy dark:text-white font-black text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 group-hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0">
-                                    Iniciar Dossier <LucideArrowRight className="w-4 h-4 ml-4" />
+                                <div className="mt-12 absolute bottom-12 left-12 right-12 opacity-0 group-hover:opacity-100 transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 ease-out flex justify-between items-center text-[10px] uppercase font-black tracking-[0.2em] text-[#E35238]">
+                                    <span>Iniciar Dossier</span>
+                                    <LucideArrowRight className="w-5 h-5" />
                                 </div>
                             </button>
                         ))}
                     </div>
-                </div>
+                </main>
             )}
 
-            {/* Application Wizard - Paper Style */}
+            {/* Step > 0: Document Form Area */}
             {currentStep > 0 && (
-                <div className="container mx-auto px-6 py-20 max-w-5xl relative z-10 min-h-screen flex flex-col">
-                    <header className="flex flex-col md:flex-row items-baseline justify-between mb-16 border-b border-heritage-navy/20 pb-8 gap-4">
-                        <div className="flex items-center gap-6">
-                            <button onClick={prevStep} className="w-10 h-10 border border-heritage-navy/20 flex items-center justify-center hover:bg-heritage-navy hover:text-white transition-all">
+                <div className="flex flex-col md:flex-row min-h-screen pt-20 md:pt-0">
+                    {/* Sidebar / Document Spine */}
+                    <div className="md:w-80 border-r border-black/10 p-8 flex flex-col justify-between hidden md:flex relative z-20 bg-[#F3F0E6] sticky top-0 h-screen">
+                        <div>
+                            <button onClick={prevStep} className="w-12 h-12 rounded-full border border-black/20 flex items-center justify-center hover:bg-black hover:text-[#F3F0E6] transition-colors mb-16">
+                                <LucideArrowLeft className="w-5 h-5" />
+                            </button>
+                            <div className="space-y-4 mb-20">
+                                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#E35238]">Dossier Oficial</div>
+                                <div className="font-serif italic text-black/50 text-base">Processo Orgânico <br/>#{new Date().getFullYear()}/{(Math.random()*1000).toFixed(0).padStart(4,'0')}</div>
+                                <div className="inline-block px-3 py-1 bg-black/5 text-[9px] font-black uppercase tracking-widest">
+                                    Classe: {formData.type}
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-10 relative before:absolute before:left-[15px] before:top-4 before:bottom-4 before:w-px before:bg-black/10">
+                                {steps.map((s, i) => (
+                                    <div key={s.id} className={`flex items-start gap-6 relative z-10 transition-all duration-500 ${currentStep === s.stepIndex ? 'opacity-100 translate-x-1' : 'opacity-40 hover:opacity-70 cursor-pointer'}`}
+                                         onClick={() => currentStep > s.stepIndex && setCurrentStep(s.stepIndex)}
+                                    >
+                                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center min-w-[2rem] bg-[#F3F0E6] transition-colors ${currentStep === s.stepIndex ? 'border-[#E35238] text-[#E35238]' : currentStep > s.stepIndex ? 'border-black bg-black text-[#F3F0E6]' : 'border-black/20 text-transparent'}`}>
+                                            {currentStep > s.stepIndex && <LucideCheck className="w-4 h-4" />}
+                                            {currentStep === s.stepIndex && <span className="w-2 h-2 rounded-full bg-[#E35238]"></span>}
+                                        </div>
+                                        <div className="-mt-1">
+                                            <span className={`text-[10px] font-black uppercase tracking-widest block transition-colors ${currentStep === s.stepIndex ? 'text-black' : ''}`}>{s.title}</span>
+                                            <span className="font-serif italic text-sm mt-1 block">{s.subtitle}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="text-[9px] uppercase tracking-widest font-black text-black/30 transform -rotate-90 origin-bottom-left absolute bottom-8 left-16">
+                            Confidencial &bull; Bureau Social
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 flex flex-col relative z-10 bg-white min-h-screen">
+                        <header className="px-6 py-6 border-b border-black/10 flex justify-between items-center md:hidden bg-[#F3F0E6] sticky top-0 z-30">
+                            <button onClick={prevStep} className="w-10 h-10 border border-black/20 flex items-center justify-center hover:bg-black hover:text-[#F3F0E6]">
                                 <LucideArrowLeft className="w-4 h-4" />
                             </button>
-                            <div>
-                                <h2 className="text-4xl font-serif font-medium text-heritage-navy dark:text-white">
-                                    {steps.find(s => s.stepIndex === currentStep)?.title}
-                                </h2>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-heritage-terracotta mt-2">
-                                    Requisição de Candidatura: {formData.type}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <span className="text-5xl font-serif italic text-heritage-navy/10 dark:text-white/10">0{currentStep} — 0{steps.length}</span>
-                        </div>
-                    </header>
+                            <div className="text-[10px] font-black uppercase tracking-widest">Passo 0{currentStep} / 0{steps.length}</div>
+                        </header>
 
-                    <motion.div
-                        key={currentStep}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="bg-white dark:bg-zinc-900 border border-heritage-navy/10 dark:border-white/10 p-12 md:p-16 shadow-2xl flex-1 mb-20"
-                    >
-                        {/* Step content */}
-                        <div className="max-w-3xl space-y-12">
-                            {/* 1. DADOS PESSOAIS */}
-                            {steps.find(s => s.stepIndex === currentStep)?.id === 1 && (
-                                <div className="grid md:grid-cols-2 gap-12">
-                                    <div className="md:col-span-2 space-y-4">
-                                        <div className="flex justify-between items-end border-b border-heritage-navy/10 pb-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Nome Completo do Candidato</Label>
-                                            {errors.nome && <span className="text-[8px] font-black uppercase text-red-500">{errors.nome}</span>}
-                                        </div>
-                                        <Input value={formData.nome} onChange={e => updateFormData('nome', e.target.value)} className="h-12 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 text-lg font-serif italic focus-visible:ring-0 focus-visible:border-heritage-terracotta dark:text-white" placeholder="..." />
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-end border-b border-heritage-navy/10 pb-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Data de Nascimento</Label>
-                                        </div>
-                                        <Input type="date" value={formData.dataNascimento} onChange={e => updateFormData('dataNascimento', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif dark:text-white" />
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-end border-b border-heritage-navy/10 pb-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">NIF Institucional</Label>
-                                        </div>
-                                        <Input value={formData.nif} onChange={e => updateFormData('nif', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif dark:text-white" placeholder="123 456 789" />
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-end border-b border-heritage-navy/10 pb-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Terminal de Contacto</Label>
-                                        </div>
-                                        <Input value={formData.telefone} onChange={e => updateFormData('telefone', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif dark:text-white" placeholder="+351 ..." />
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-end border-b border-heritage-navy/10 pb-2">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40">Correio Eletrónico</Label>
-                                        </div>
-                                        <Input type="email" value={formData.email} onChange={e => updateFormData('email', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif dark:text-white" placeholder="exemplo@mail.pt" />
-                                    </div>
-                                </div>
-                            )}
+                        <div className="flex-1 w-full max-w-4xl p-8 md:p-16 lg:p-24 pb-40">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentStep}
+                                    initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+                                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                    exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+                                    transition={{ duration: 0.5, ease: "easeOut" }}
+                                >
+                                    <header className="mb-20">
+                                        <h2 className="text-5xl md:text-7xl font-serif text-black tracking-tight leading-none mb-6">
+                                            {steps.find(s => s.stepIndex === currentStep)?.title}.
+                                        </h2>
+                                        <p className="font-serif italic text-black/50 text-xl md:text-2xl border-l-2 border-[#E35238] pl-6">
+                                            {steps.find(s => s.stepIndex === currentStep)?.subtitle}
+                                        </p>
+                                    </header>
 
-                            {/* 2. HABITAÇÃO */}
-                            {steps.find(s => s.stepIndex === currentStep)?.id === 2 && (
-                                <div className="space-y-12">
-                                    <div className="grid md:grid-cols-2 gap-12">
-                                        <div className="space-y-4">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 mb-2 block border-b border-heritage-navy/10 pb-2">Total do Agregado Familiar</Label>
-                                            <Input type="number" min="1" value={formData.agregadoTotal} onChange={e => updateFormData('agregadoTotal', parseInt(e.target.value))} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif text-lg dark:text-white" />
-                                        </div>
-                                        <div className="space-y-4">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 mb-2 block border-b border-heritage-navy/10 pb-2">Rendimento Líquido Estimado (€)</Label>
-                                            <Input type="number" value={formData.rendimentosTrabalho} onChange={e => updateFormData('rendimentosTrabalho', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif text-lg dark:text-white" placeholder="0.00" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 mb-6 block border-b border-heritage-navy/10 pb-2">Estado Atual da Instalação Habitacional</Label>
-                                        <div className="flex flex-wrap gap-4">
-                                            {["Boas", "Razoáveis", "Más", "Precárias"].map(opt => (
-                                                <button
-                                                    key={opt}
-                                                    onClick={() => updateFormData('condicoesAlojamento', opt)}
-                                                    className={`px-8 py-3 text-[10px] font-black uppercase tracking-widest border transition-all ${formData.condicoesAlojamento === opt ? 'bg-heritage-navy text-white border-heritage-navy' : 'bg-transparent text-heritage-navy/40 border-heritage-navy/10 hover:border-heritage-navy'}`}
-                                                >
-                                                    {opt}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* 3. OFÍCIO */}
-                            {steps.find(s => s.stepIndex === currentStep)?.id === 3 && (
-                                <div className="space-y-12">
-                                    <div className="grid md:grid-cols-2 gap-12">
-                                        <div className="space-y-4">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 border-b border-heritage-navy/10 pb-2 block">Ofício Dominante</Label>
-                                            <Input value={formData.oficio} onChange={e => updateFormData('oficio', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif italic text-lg dark:text-white" placeholder="Ex: Mestre de Canteiro" />
-                                        </div>
-                                        <div className="space-y-4">
-                                            <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 border-b border-heritage-navy/10 pb-2 block">Anos de Atividade</Label>
-                                            <Input value={formData.anosExperiencia} onChange={e => updateFormData('anosExperiencia', e.target.value)} className="h-10 bg-transparent border-0 border-b border-heritage-navy/10 rounded-none px-0 font-serif text-lg dark:text-white" type="number" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 border-b border-heritage-navy/10 pb-2 block">Memorial Descritivo da Técnica e Experiência</Label>
-                                        <Textarea value={formData.descricaoOficio} onChange={e => updateFormData('descricaoOficio', e.target.value)} className="h-48 bg-heritage-sand/10 border border-heritage-navy/10 rounded-none font-serif italic p-6 leading-relaxed dark:text-white" placeholder="Descreva pormenorizadamente..." />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* 4. MOTIVAÇÃO */}
-                            {steps.find(s => s.stepIndex === currentStep)?.id === 4 && (
-                                <div className="space-y-12">
-                                    <div className="space-y-4">
-                                        <Label className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/40 border-b border-heritage-navy/10 pb-2 block">Manifesto de Motivação</Label>
-                                        <Textarea value={formData.motivacao} onChange={e => updateFormData('motivacao', e.target.value)} className="h-48 bg-heritage-sand/10 border border-heritage-navy/10 rounded-none font-serif italic p-6 leading-relaxed dark:text-white" placeholder="Escreva sobre o seu interesse..." />
-                                    </div>
-                                    
-                                    <div className="p-8 border-2 border-heritage-navy/10 bg-heritage-sand/5 space-y-4">
-                                        <label className="flex items-start gap-6 cursor-pointer">
-                                            <input type="checkbox" checked={formData.aceitaTermos} onChange={e => updateFormData('aceitaTermos', e.target.checked)} className="mt-1 w-5 h-5 border-2 border-heritage-navy rounded-none text-heritage-navy focus:ring-0" />
-                                            <div className="space-y-2">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-heritage-navy block">Termo de Responsabilidade</span>
-                                                <p className="text-[10px] leading-relaxed text-heritage-navy/50 font-serif italic">
-                                                    Declaro sob compromisso de honra que a informação prestada é expressão da verdade e autorizo o seu processamento institucional no âmbito do processo de seleção do Bureau Social.
-                                                </p>
+                                    {/* 1. IDENTIFICAÇÃO PESSOAL */}
+                                    {steps.find(s => s.stepIndex === currentStep)?.id === 1 && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                                            <div className="md:col-span-2">
+                                                <FormInput label="Nome Completo do Cidadão" value={formData.nome} onChange={(e: any) => updateFormData('nome', e.target.value)} error={errors.nome} placeholder="Escreva o seu nome completo..." />
                                             </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            )}
+                                            <FormInput label="Data de Nascimento" type="date" value={formData.dataNascimento} onChange={(e: any) => updateFormData('dataNascimento', e.target.value)} error={errors.dataNascimento} />
+                                            <FormInput label="Número de Identificação Fiscal" value={formData.nif} onChange={(e: any) => updateFormData('nif', e.target.value)} error={errors.nif} placeholder="000 000 000" />
+                                            <FormInput label="Terminal de Contacto" value={formData.telefone} onChange={(e: any) => updateFormData('telefone', e.target.value)} error={errors.telefone} placeholder="+351 ..." />
+                                            <FormInput label="Correio Eletrónico" type="email" value={formData.email} onChange={(e: any) => updateFormData('email', e.target.value)} error={errors.email} placeholder="endereco@mail.pt" />
+                                        </div>
+                                    )}
+
+                                    {/* 2. HABITAÇÃO */}
+                                    {steps.find(s => s.stepIndex === currentStep)?.id === 2 && (
+                                        <div className="space-y-16">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                                                <FormInput label="Total de Elementos no Agregado" type="number" min="1" value={formData.agregadoTotal} onChange={(e: any) => updateFormData('agregadoTotal', parseInt(e.target.value))} error={errors.agregadoTotal} />
+                                                <FormInput label="Rendimento Líquido Mensal Estimado (€)" type="number" value={formData.rendimentosTrabalho} onChange={(e: any) => updateFormData('rendimentosTrabalho', e.target.value)} error={errors.rendimentosTrabalho} placeholder="0.00" />
+                                            </div>
+                                            <div className="space-y-6">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] flex justify-between">
+                                                    <span className="text-black/50">Classificação Atual da Habitação</span>
+                                                    {errors.condicoesAlojamento && <span className="text-[#E35238]">{errors.condicoesAlojamento}</span>}
+                                                </label>
+                                                <div className="flex flex-wrap gap-4">
+                                                    {["Condições de Excelência", "Condições Médias / Razoáveis", "Apresenta Degradação", "Risco Iminente / Precária"].map(opt => (
+                                                        <OptionButton 
+                                                            key={opt} 
+                                                            label={opt} 
+                                                            selected={formData.condicoesAlojamento === opt} 
+                                                            onClick={() => updateFormData('condicoesAlojamento', opt)} 
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 3. OFÍCIO */}
+                                    {steps.find(s => s.stepIndex === currentStep)?.id === 3 && (
+                                        <div className="space-y-16">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+                                                <FormInput label="Domínio Técnico Praticado" value={formData.oficio} onChange={(e: any) => updateFormData('oficio', e.target.value)} error={errors.oficio} placeholder="Ex: Marcenaria Tradicional, Cantaria..." />
+                                                <FormInput label="Anos de Execução da Atividade" type="number" value={formData.anosExperiencia} onChange={(e: any) => updateFormData('anosExperiencia', e.target.value)} error={errors.anosExperiencia} placeholder="0" />
+                                            </div>
+                                            <FormTextarea label="Descrição Detalhada do Método de Trabalho" value={formData.descricaoOficio} onChange={(e: any) => updateFormData('descricaoOficio', e.target.value)} error={errors.descricaoOficio} placeholder="Descreva os materiais usados, técnicas dominadas e tradição da sua arte..." />
+                                        </div>
+                                    )}
+
+                                    {/* 4. MOTIVAÇÃO & TERMOS */}
+                                    {steps.find(s => s.stepIndex === currentStep)?.id === 4 && (
+                                        <div className="space-y-16">
+                                            <FormTextarea label="Justificação de Requerimento à Associação" value={formData.motivacao} onChange={(e: any) => updateFormData('motivacao', e.target.value)} error={errors.motivacao} placeholder="Explique os motivos profundos que o trazem a pretender integrar o Bureau Social..." />
+                                            
+                                            <div className="mt-12 p-8 md:p-10 border border-black border-dashed bg-black/[0.02]">
+                                                <label className="flex items-start gap-6 cursor-pointer group">
+                                                    <div className="relative pt-1">
+                                                        <input type="checkbox" checked={formData.aceitaTermos} onChange={e => updateFormData('aceitaTermos', e.target.checked)} className="peer sr-only" />
+                                                        <div className="w-6 h-6 border-2 border-black group-hover:border-[#E35238] peer-checked:bg-black peer-checked:border-black flex items-center justify-center transition-colors">
+                                                            <LucideCheck className={`w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity`} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-3">
+                                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black block">Termo de Conformidade e Compromisso Prévio</span>
+                                                        <p className="text-sm leading-relaxed text-black/60 font-serif italic">
+                                                            Declaro firmemente que a totalidade das declarações prestadas corresponde integralmente à verdade. Concedo à Associação do Bureau Social plena autoridade para o processamento dos meus dados enquadrado no protocolo de ingresso e para os fins exclusivos da sua Direção Técnica.
+                                                        </p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
 
-                        {/* Wizard controls */}
-                        <div className="mt-16 pt-12 border-t-2 border-heritage-navy flex justify-between items-center">
-                            <div className="text-[10px] font-black uppercase tracking-widest text-heritage-navy/30">
-                                Bureau Social // Arquivo {new Date().getFullYear()}
+                        {/* Footer Controls */}
+                        <div className="fixed bottom-0 md:absolute border-t-2 border-black bg-[#F3F0E6] w-full md:w-auto md:inset-x-0 z-30 p-6 flex justify-between items-center px-6 md:px-12">
+                            <div className="hidden md:block">
+                                <div className="text-[10px] font-black uppercase tracking-widest text-black/30">
+                                    Arquivo Geral da Associação
+                                </div>
                             </div>
-                            <div className="flex gap-4">
+                            <div className="flex w-full md:w-auto justify-end gap-4">
                                 {currentStep < steps.length ? (
-                                    <Magnetic>
-                                        <button
-                                            onClick={handleNext}
-                                            className="h-16 px-12 bg-heritage-navy text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-terracotta transition-all flex items-center gap-4 dark:bg-white dark:text-heritage-navy"
-                                        >
-                                            Prosseguir <LucideArrowRight className="w-4 h-4" />
-                                        </button>
-                                    </Magnetic>
+                                    <button
+                                        onClick={handleNext}
+                                        className="w-full md:w-auto h-14 md:h-16 px-10 md:px-16 bg-black text-white text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] hover:bg-[#E35238] transition-all flex items-center justify-center gap-4 group"
+                                    >
+                                        Avançar Para Assinatura <LucideArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                                    </button>
                                 ) : (
-                                    <Magnetic>
-                                        <button
-                                            onClick={handleSubmit}
-                                            disabled={!formData.aceitaTermos}
-                                            className="h-16 px-12 bg-heritage-success text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-heritage-navy transition-all flex items-center gap-4 disabled:opacity-30"
-                                        >
-                                            Submeter Dossier <LucideSend className="w-4 h-4" />
-                                        </button>
-                                    </Magnetic>
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={!formData.aceitaTermos}
+                                        className="w-full md:w-auto h-14 md:h-16 px-10 md:px-16 bg-[#3D8C61] text-white text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] hover:bg-black transition-all flex items-center justify-center gap-4 disabled:opacity-30 disabled:hover:bg-[#3D8C61]"
+                                    >
+                                        Submeter Dossier de Candidatura <LucideSend className="w-4 h-4" />
+                                    </button>
                                 )}
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
         </div>
