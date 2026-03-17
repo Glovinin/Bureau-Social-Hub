@@ -403,23 +403,24 @@ export default function Assessoria() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const offset = 280 // altura navbar + margem para considerar secção "ativa"
-            const scrollPos = window.scrollY + offset
+            const offset = 120 // linha de ativação: secção é "ativa" quando o topo está acima desta linha (px do viewport)
             let current = sections[0].id
-            for (let i = sections.length - 1; i >= 0; i--) {
+            for (let i = 0; i < sections.length; i++) {
                 const el = document.getElementById(sections[i].id)
-                if (el && el.offsetTop <= scrollPos) {
-                    current = sections[i].id
-                    break
+                if (el) {
+                    const { top } = el.getBoundingClientRect()
+                    if (top <= offset) current = sections[i].id
                 }
             }
             setActiveSection(prev => prev !== current ? current : prev)
         }
         const tid = setTimeout(handleScroll, 100) // aguarda DOM
         window.addEventListener("scroll", handleScroll, { passive: true })
+        window.addEventListener("hashchange", handleScroll) // atualiza ao clicar no índice
         return () => {
             clearTimeout(tid)
             window.removeEventListener("scroll", handleScroll)
+            window.removeEventListener("hashchange", handleScroll)
         }
     }, [])
 
