@@ -575,12 +575,12 @@ export default function Assessoria() {
                                         <p className="text-heritage-navy/60 dark:text-white/60">Restauro de edifícios, jardins históricos e elementos patrimoniais utilizando técnicas tradicionais.</p>
                                     </div>
                                     <div className="space-y-4">
-                                        <LucideGraduationCap className="w-8 h-8 text-heritage-ocean" />
+                                        <LucideGraduationCap className="w-8 h-8 text-heritage-terracotta" />
                                         <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Artes, Culinária e Ofícios</h3>
                                         <p className="text-heritage-navy/60 dark:text-white/60">Formação em culinária, botânica, música, e ofícios em risco.</p>
                                     </div>
                                     <div className="space-y-4 sm:col-span-2 lg:col-span-1">
-                                        <LucideLeaf className="w-8 h-8 text-heritage-gold" />
+                                        <LucideLeaf className="w-8 h-8 text-heritage-terracotta" />
                                         <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Turismo Imersivo</h3>
                                         <p className="text-heritage-navy/60 dark:text-white/60">14 unidades Airbnb, escola de culinária e concertos nos jardins.</p>
                                     </div>
@@ -591,7 +591,7 @@ export default function Assessoria() {
                         {/* Section: Para quem é */}
                         <section id="paraquem" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f5f3ec] dark:bg-zinc-900">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Público-Alvo</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Para Quem É</h2>
@@ -626,12 +626,12 @@ export default function Assessoria() {
                                         <p className="text-sm text-heritage-navy/60 dark:text-white/60">Quintas, torres, herdades e imóveis históricos que precisam de estruturação técnica.</p>
                                     </div>
                                     <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
-                                        <LucideShield className="w-8 h-8 text-heritage-ocean mb-4" />
+                                        <LucideShield className="w-8 h-8 text-heritage-terracotta mb-4" />
                                         <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">IPSS e Associações</h3>
                                         <p className="text-sm text-heritage-navy/60 dark:text-white/60">Entidades que podem assumir a gestão operacional com apoio técnico.</p>
                                     </div>
                                     <div className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
-                                        <LucideBuilding2 className="w-8 h-8 text-heritage-gold mb-4" />
+                                        <LucideBuilding2 className="w-8 h-8 text-heritage-terracotta mb-4" />
                                         <h3 className="font-serif text-xl font-medium text-heritage-navy dark:text-white mb-2">Entidades Gestoras</h3>
                                         <p className="text-sm text-heritage-navy/60 dark:text-white/60">Associações locais e estruturas que coordenam património e comunidade.</p>
                                     </div>
@@ -647,7 +647,7 @@ export default function Assessoria() {
                         {/* Section: Modelo Institucional */}
                         <section id="modelo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative bg-[#f8f6f0] dark:bg-zinc-950">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Estrutura</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Modelo Institucional</h2>
@@ -670,7 +670,7 @@ export default function Assessoria() {
                         {/* Section: Processo Operacional */}
                         <section id="processo" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Implementação</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Processo Operacional</h2>
@@ -701,6 +701,26 @@ export default function Assessoria() {
                                 </div>
                                 <div className="md:col-span-8 flex flex-col gap-10">
                                     <FadeIn triggerOnView direction="left">
+                                        <div className="mb-8 w-full">
+                                            <div className="relative w-full aspect-[16/9] bg-[#f0eee4] dark:bg-zinc-800 border-x border-t border-heritage-navy/20 dark:border-white/20 p-2 sm:p-4">
+                                                <div className="w-full h-full relative overflow-hidden ring-1 ring-heritage-navy/10 dark:ring-white/10 shadow-inner">
+                                                    <img 
+                                                        src="/images/quinta-etching.jpg" 
+                                                        alt="Ilustração em azulejo da Quinta de Salreu" 
+                                                        className="w-full h-full object-cover saturate-[0.85] contrast-[1.05] hover:saturate-100 transition-all duration-700 ease-in-out cursor-pointer"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-heritage-navy/20 dark:border-white/20 pb-3 pt-3">
+                                                <p className="text-xs font-serif text-heritage-navy/70 dark:text-white/70 max-w-lg">
+                                                    <span className="font-bold mr-2 text-heritage-navy dark:text-white">Fig 1.</span>
+                                                    Gravura de azulejaria tradicional ilustrando a propriedade histórica, o palacete de torre e os jardins envolventes.
+                                                </p>
+                                                <span className="text-[9px] uppercase tracking-[0.15em] font-bold text-heritage-navy/40 dark:text-white/40 mt-2 sm:mt-0 whitespace-nowrap">
+                                                    Acervo // Bureau Social
+                                                </span>
+                                            </div>
+                                        </div>
                                         <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
                                             {quintaSalreuDetails.historia.texto}
                                         </p>
@@ -760,7 +780,7 @@ export default function Assessoria() {
                         {/* Section: Torre Carvalhal */}
                         <section id="torre" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Projeto Alentejo</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h2>
@@ -768,6 +788,26 @@ export default function Assessoria() {
                                 </div>
                                 <div className="md:col-span-8 flex flex-col gap-10">
                                     <FadeIn triggerOnView direction="left">
+                                        <div className="mb-8 w-full">
+                                            <div className="relative w-full aspect-[16/9] bg-[#f0eee4] dark:bg-zinc-800 border-x border-t border-heritage-navy/20 dark:border-white/20 p-2 sm:p-4">
+                                                <div className="w-full h-full relative overflow-hidden ring-1 ring-heritage-navy/10 dark:ring-white/10 shadow-inner">
+                                                    <img 
+                                                        src="/images/torre-etching.jpg" 
+                                                        alt="Ilustração em azulejo da Torre do Carvalhal" 
+                                                        className="w-full h-full object-cover saturate-[0.85] contrast-[1.05] hover:saturate-100 transition-all duration-700 ease-in-out cursor-pointer"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-heritage-navy/20 dark:border-white/20 pb-3 pt-3">
+                                                <p className="text-xs font-serif text-heritage-navy/70 dark:text-white/70 max-w-lg">
+                                                    <span className="font-bold mr-2 text-heritage-terracotta">Fig 2.</span>
+                                                    A emblemática torre quinhentista manuelina, impondo-se na ruralidade da vasta paisagem de montado.
+                                                </p>
+                                                <span className="text-[9px] uppercase tracking-[0.15em] font-bold text-heritage-navy/40 dark:text-white/40 mt-2 sm:mt-0 whitespace-nowrap">
+                                                    Acervo // Bureau Social
+                                                </span>
+                                            </div>
+                                        </div>
                                         <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
                                             {torreCarvalhalDetails.historia.texto}
                                         </p>
@@ -779,10 +819,10 @@ export default function Assessoria() {
                                 <h3 className="font-serif text-2xl mb-6">Estado de Conservação</h3>
                                 <div className="grid sm:grid-cols-2 gap-6 mb-8">
                                     {torreCarvalhalDetails.patrimonio.elementos.map((elem, i) => (
-                                        <div key={i} className="p-6 bg-heritage-ocean/5 dark:bg-ocean/10 border border-heritage-ocean/10">
+                                        <div key={i} className="p-6 bg-heritage-terracotta/5 dark:bg-heritage-terracotta/10 border border-heritage-terracotta/10">
                                             <div className="flex justify-between items-start mb-4">
                                                 <h4 className="font-bold text-sm tracking-wide">{elem.nome}</h4>
-                                                <Badge variant="outline" className={`text-[10px] rounded-none border-heritage-ocean text-heritage-ocean`}>
+                                                <Badge variant="outline" className={`text-[10px] rounded-none border-heritage-terracotta text-heritage-terracotta`}>
                                                     {elem.estado}
                                                 </Badge>
                                             </div>
@@ -798,7 +838,7 @@ export default function Assessoria() {
                                     {torreCarvalhalDetails.fases.map((fase, i) => (
                                         <div key={i} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                             <div className="flex-1">
-                                                <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-ocean mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
+                                                <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-terracotta mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
                                                 <h4 className="font-bold text-sm mb-2">{fase.nome}</h4>
                                                 <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed max-w-lg">{fase.descricao}</p>
                                             </div>
@@ -814,7 +854,7 @@ export default function Assessoria() {
                         {/* Section: Artes & Ofícios */}
                         <section id="oficios" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Escola</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Artes & Ofícios <br/><span className="italic font-normal">Tradicionais</span></h2>
@@ -928,7 +968,7 @@ export default function Assessoria() {
                         {/* Section: Funcionamento */}
                         <section id="funcionamento" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-ocean pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Pedagogia</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Funcionamento <br/>da Escola</h2>
@@ -947,9 +987,9 @@ export default function Assessoria() {
                                 <div className="border border-heritage-navy/10 dark:border-white/10 grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-heritage-navy/10 dark:divide-white/10">
                                     {funcionamentoDetails.modalidades.map((mod, i) => (
                                         <div key={i} className="p-6">
-                                            <mod.icon className="w-8 h-8 text-heritage-ocean mb-4" />
+                                            <mod.icon className="w-8 h-8 text-heritage-terracotta mb-4" />
                                             <h3 className="font-serif text-xl mb-1">{mod.titulo}</h3>
-                                            <p className="text-[10px] uppercase tracking-widest text-heritage-ocean font-bold mb-3">{mod.duracao}</p>
+                                            <p className="text-[10px] uppercase tracking-widest text-heritage-terracotta font-bold mb-3">{mod.duracao}</p>
                                             <p className="text-xs text-heritage-navy/60 dark:text-white/60">{mod.objetivo}</p>
                                         </div>
                                     ))}
@@ -962,7 +1002,7 @@ export default function Assessoria() {
                                     {funcionamentoDetails.componentes.map((c, i) => (
                                         <div key={i} className="p-6 bg-white/50 dark:bg-zinc-900/50 border border-heritage-navy/10 dark:border-white/10">
                                             <h4 className="font-serif text-lg text-heritage-navy dark:text-white mb-1">{c.label}</h4>
-                                            <p className="text-3xl font-serif text-heritage-ocean dark:text-heritage-gold mb-2">
+                                            <p className="text-3xl font-serif text-heritage-terracotta dark:text-heritage-terracotta mb-2">
                                                 <AnimatedCounter to={parseInt(c.percent, 10)} suffix="%" duration={1.2} />
                                             </p>
                                             <p className="text-xs text-heritage-navy/60 dark:text-white/60">{c.desc}</p>
@@ -975,7 +1015,7 @@ export default function Assessoria() {
                         {/* Section: Governança */}
                         <section id="governanca" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Estrutura Social</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Governança e Transparência</h2>
@@ -1086,7 +1126,7 @@ export default function Assessoria() {
                         {/* Section: Financiamento */}
                         <section id="financiamento" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-gold pt-4">
+                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
                                     <FadeIn triggerOnView>
                                         <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Capitais</span>
                                         <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Fontes de Financiamento</h2>
