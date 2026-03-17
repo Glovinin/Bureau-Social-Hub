@@ -28,7 +28,7 @@ export default function Auth() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f8f6f0] dark:bg-zinc-950 px-6 pt-40 sm:pt-48 pb-12 relative overflow-hidden font-sans">
+        <div className="min-h-screen flex items-start justify-center bg-[#f8f6f0] dark:bg-zinc-950 px-6 pt-16 sm:pt-20 pb-12 relative overflow-hidden font-sans">
             <Grain opacity={0.07} />
             
             {/* Background elements */}
@@ -39,7 +39,7 @@ export default function Auth() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-xl bg-white dark:bg-zinc-900 border border-heritage-navy/20 dark:border-white/10 p-10 md:p-16 relative z-10 shadow-[20px_20px_0px_rgba(28,45,64,0.05)] dark:shadow-[20px_20px_0px_rgba(255,255,255,0.02)]"
+                className="w-full max-w-xl bg-white dark:bg-zinc-900 border border-heritage-navy/20 dark:border-white/10 p-10 md:p-16 relative z-10 shadow-[20px_20px_0px_rgba(28,45,64,0.05)] dark:shadow-[20px_20px_0px_rgba(255,255,255,0.02)] -translate-y-12 sm:-translate-y-16"
             >
                 {/* Editorial Header */}
                 <div className="border-b-2 border-heritage-navy dark:border-white pb-10 mb-12 flex flex-col items-center">
