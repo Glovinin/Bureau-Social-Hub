@@ -2,14 +2,18 @@ import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { motion, useScroll, useSpring } from "framer-motion"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion"
 import PasswordGate from "@/components/PasswordGate"
+import { Link } from "react-router-dom"
 import { 
-    LucideBuilding2, LucideCastle, LucideEuro, LucideCalendarClock, LucideMapPin, 
-    LucideGraduationCap, LucideHammer, LucideCheckCircle2, LucideStar, LucideTarget, 
-    LucideAward, LucideArrowRight, LucideHistory, LucideHome, LucideLeaf, 
-    LucideGavel, LucideFileText, LucideShieldCheck, LucideBriefcase, LucideTrendingUp, 
-    LucideShield, LucideListOrdered, LucideBookOpen, LucideArrowDownRight, LucideUsers 
+    LucideBuilding2, LucideCastle, LucideEuro, LucideGraduationCap, LucideHammer, 
+    LucideCheckCircle2, LucideStar, LucideTarget, LucideAward, LucideArrowRight, 
+    LucideArrowLeft, LucideHome, LucideLeaf, LucideFileText, LucideBriefcase, 
+    LucideTrendingUp, LucideShield, LucideUsers, LucideChevronRight, LucideLock, 
+    LucideEye, LucideEyeOff 
 } from "lucide-react"
 import ModeloInstitucional from "@/components/visuals/ModeloInstitucional"
 import MapaOficios from "@/components/visuals/MapaOficios"
@@ -254,19 +258,19 @@ const quintaSalreuDetails = {
             { nome: "Jardim Histórico", estado: "Urgente", descricao: "Restauro completo do jardim (proj. Cristina Castelo Branco) — lago, ponte, estufas, espécies raras" },
             { nome: "Sistema Hídrico por Gravidade", estado: "Urgente", descricao: "Recuperação dos dutos de irrigação por gravidade (sem energia elétrica na época)" },
             { nome: "Lagares de Azeite e Vinho", estado: "Alta", descricao: "Restauro dos lagares nos anexos para produção e experiência turística" },
-            { nome: "14 Unidades Habitacionais", estado: "Alta", descricao: "Conversão dos anexos (garagem, lagar, casa de lenha) em 14 unidades Airbnb" },
+            { nome: "8 Unidades Habitacionais", estado: "Alta", descricao: "Conversão dos anexos (garagem, lagar, casa de lenha) em 8 unidades Airbnb" },
             { nome: "Estufas e Viveiros", estado: "Média", descricao: "Duas estufas históricas para propagação botânica e recuperação de espécies" },
             { nome: "Palacete Principal", estado: "Preservação", descricao: "Visitação guiada agendada — mantém carácter de casa de família" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-4", descricao: "Levantamento arquitetónico, estudo estrutural, projeto de arquitetura, licenciamento e projeto de jardim (Cristina Castelo Branco)", orcamento: "€80.000" },
-        { fase: "2", nome: "Estrutura e Cobertura", periodo: "Meses 5-12", descricao: "Consolidação estrutural, substituição de cobertura, reforço de paredes, tratamento de madeiras", orcamento: "€380.000" },
-        { fase: "3", nome: "Instalações e Restauro", periodo: "Meses 13-20", descricao: "Instalação técnica (elétrica/encanamento), restauro de fachadas, caixilharia, pavimentos e revestimentos", orcamento: "€340.000" },
-        { fase: "4", nome: "Paisagismo e Botânica", periodo: "Meses 18-24", descricao: "Restauro do jardim histórico, infraestrutura de água por gravidade, recuperação botânica de espécies raras", orcamento: "€400.000" }
+        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-4", descricao: "Levantamento arquitetónico, estudo estrutural, projeto de arquitetura, licenciamento e projeto de jardim (Cristina Castelo Branco)", orcamento: "€100.000" },
+        { fase: "2", nome: "Estrutura e Cobertura", periodo: "Meses 5-12", descricao: "Consolidação estrutural, substituição de cobertura, reforço de paredes, tratamento de madeiras", orcamento: "€500.000" },
+        { fase: "3", nome: "Instalações e Restauro", periodo: "Meses 13-20", descricao: "Instalação técnica (elétrica/encanamento), restauro de fachadas, caixilharia, pavimentos e revestimentos", orcamento: "€400.000" },
+        { fase: "4", nome: "Paisagismo e Botânica", periodo: "Meses 18-24", descricao: "Restauro do jardim histórico, infraestrutura de água por gravidade, recuperação botânica de espécies raras", orcamento: "€500.000" }
     ],
     impacto: [
-        { indicador: "Alojamento", valor: "14", descricao: "Unidades habitacionais criadas nos anexos (Airbnb)" },
+        { indicador: "Alojamento", valor: "8", descricao: "Unidades habitacionais criadas nos anexos (Airbnb)" },
         { indicador: "Capacitação", valor: "30+", descricao: "Pessoas formadas em artes, culinária e ofícios" },
         { indicador: "Emprego", valor: "25", descricao: "Postos de trabalho diretos no restauro" },
         { indicador: "Sustentável", valor: "Sim", descricao: "Quinta sustentável replicável com sequestro de carbono" }
@@ -291,22 +295,22 @@ const torreCarvalhalDetails = {
         elementos: [
             { nome: "Torre Principal", estado: "Ruína Avançada", descricao: "Consolidação urgente da estrutura manuelina de 17 metros" },
             { nome: "Ermida com Azulejaria séc. XVI", estado: "Ruína", descricao: "Azulejaria mudejar única, comparável à de Sintra e Universidade de Évora" },
-            { nome: "10 Unidades Turismo Rural", estado: "Devoluto", descricao: "Casas dentro dos 600-800 ha — potencial para turismo rural e experiências patrimoniais" },
+            { nome: "6 Unidades Turismo Rural", estado: "Devoluto", descricao: "Casas dentro dos 600-800 ha — potencial para turismo rural e experiências patrimoniais" },
             { nome: "Montado (600-800 ha)", estado: "Bom", descricao: "Sobreiros e azinheiras endémicos — produção de cortiça, percursos interpretativos e turismo de natureza off-grid" },
             { nome: "Forno de Cal Histórico", estado: "Abandonado", descricao: "Musealização e sinalização interpretativa — peça única de património industrial alentejano" },
             { nome: "Infraestrutura Hídrica", estado: "Abandonado", descricao: "Sistema de irrigação a restaurar para o jardim e horta" }
         ]
     },
     fases: [
-        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-6", descricao: "Levantamento técnico, projeto de arquitetura, mapeamento das casas e ermida", orcamento: "€60.000" },
-        { fase: "2", nome: "Consolidação", periodo: "Meses 7-18", descricao: "Estabilização estrutural da torre, ermida e casas prioritárias", orcamento: "€250.000" },
-        { fase: "3", nome: "Restauro e Formação", periodo: "Meses 18-30", descricao: "Restauro integral, formação em ofícios alentejanos e corticeiros", orcamento: "€400.000" },
+        { fase: "1", nome: "Estudo e Projeto", periodo: "Meses 1-6", descricao: "Levantamento técnico, projeto de arquitetura, mapeamento das casas e ermida", orcamento: "€100.000" },
+        { fase: "2", nome: "Consolidação", periodo: "Meses 7-18", descricao: "Estabilização estrutural da torre, ermida e casas prioritárias", orcamento: "€400.000" },
+        { fase: "3", nome: "Restauro e Formação", periodo: "Meses 18-30", descricao: "Restauro integral, formação em ofícios alentejanos e corticeiros", orcamento: "€700.000" },
         { fase: "4", nome: "Operação", periodo: "Meses 30+", descricao: "Turismo de natureza, cortiça, apicultura e turismo rural nas casas", orcamento: "€90.000/ano" }
     ],
     impacto: [
         { indicador: "Área", valor: "600-800 ha", descricao: "Hectares de montado sob gestão sustentável" },
         { indicador: "Capacitação", valor: "30", descricao: "Artesãos e corticeiros formados" },
-        { indicador: "Alojamento", valor: "10", descricao: "Unidades para turismo rural e experiências patrimoniais" },
+        { indicador: "Alojamento", valor: "6", descricao: "Unidades para turismo rural e experiências patrimoniais" },
         { indicador: "Rede Natura", valor: "100%", descricao: "Inserção em área de proteção ambiental" }
     ],
     modelo: {
@@ -319,9 +323,9 @@ const torreCarvalhalDetails = {
 }
 
 const propostas = [
-    { opcao: "A", projeto: "Quinta Salreu", honorarios: "€160.000", investimento: "€2.070.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (14 unidades, escola de artes e culinária, 30 meses)" },
-    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "€2.900.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação no Alentejo (10 unidades, 600-800 ha montado, ermida, 36 meses)" },
-    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "€4.970.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo em dois territórios." }
+    { opcao: "A", projeto: "Quinta Salreu", honorarios: "TBD", investimento: "€1.500.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para o projeto de experiência imersiva em Estarreja (8 unidades, escola de artes e culinária, 24 meses)" },
+    { opcao: "B", projeto: "Torre Carvalhal", honorarios: "TBD", investimento: "€1.200.000", taxaGestao: "8%", desconto: "—", destaque: false, descricao: "Assessoria para restauro e formação no Alentejo (6 unidades, 600-800 ha montado, ermida, 30 meses)" },
+    { opcao: "C", projeto: "Programa Integrado", honorarios: "TBD", investimento: "€2.700.000", taxaGestao: "6,8%", economia: "TBD", desconto: "15%", destaque: true, descricao: "Assessoria integrada Norte-Sul: culinária, botânica, música, cortiça e turismo imersivo em dois territórios." }
 ]
 
 // passosDetails moved to ProximosPassosVisual component
@@ -368,28 +372,38 @@ const funcionamentoDetails = {
     apoios: ["Bolsa de formação mensal", "Subsídio de transporte", "Subsídio de alimentação", "Seguro de acidentes pessoais"]
 }
 
-const governancaDetails = {
+const governancaQuinta = {
     niveis: [
         { pilar: "Família Proprietária (Sócios Fundadores)", papel: "A família mantém a titularidade e residência no palacete. Visitantes acedem apenas por marcação. Garantem o DNA do projeto e o legado histórico." },
         { pilar: "IPSS Banda Visconde de Salreu", papel: "IPSS já constituída com licenças, estrutura e mais de 50 associados. Gestora: Raquel (presidente da Câmara da Banda). Articulação direta com a prefeitura." },
         { pilar: "IPNS — Bureau Social", papel: "Assessor estratégico para captação de recursos (PRR, IEFP), coordenação técnica, formação e marcação." }
-    ],
-    estatutos: [
-        "IPSS Banda Visconde de Salreu como entidade gestora já constituída",
-        "Mínimo de 50 associados exigido para a estrutura operaçónal",
-        "Resultados integralmente reinvestidos nos fins estatutários",
-        "Articulação com a prefeitura para licenciamentos e apoios",
-        "Direito de veto da família proprietária para proteção do legado histórico"
     ]
 }
 
-const kpiDetails = [
-    { meta: "Unidades Habitacionais", kpi: "14 unidades", prazo: "30 meses", icon: LucideFileText, desc: "Conversão dos anexos da Quinta em 14 unidades de alojamento Airbnb." },
-    { meta: "Financiamento Captado", kpi: "€2.070.000", prazo: "30 meses", icon: LucideEuro, desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus (FEADER, FSE+, LIFE)." },
-    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "30 meses", icon: LucideAward, desc: "Formação em culinária, botânica, música, artes, cortiça e restauro." },
-    { meta: "Empregos Criados", kpi: "25 postos", prazo: "30 meses", icon: LucideCheckCircle2, desc: "Postos de trabalho diretos no restauro, operação e turismo de experiência." }
+const governancaTorre = {
+    niveis: [
+        { pilar: "Proprietário (DOVA)", papel: "Detém a titularidade e assegura a visão de longo prazo do legado." },
+        { pilar: "Associação (APHC)", papel: "Gestora local focada no restauro, cortiça e montado sustentável." },
+        { pilar: "IPNS + Rede de Mestres", papel: "Especialistas em técnicas alentejanas e corticeiros que coordenam a formação." }
+    ]
+}
+
+const kpiQuinta = [
+    { meta: "Unidades Habitacionais", kpi: "8 unidades", prazo: "24 meses", icon: LucideFileText, to: 8, suffix: " unidades", desc: "Unidades criadas nos anexos (Airbnb)." },
+    { meta: "Financiamento Captado", kpi: "€1.500.000", prazo: "24 meses", icon: LucideEuro, to: 1500000, prefix: "€", desc: "Captação via PRR/Portugal 2030, IEFP e fundos europeus." },
+    { meta: "Pessoas Capacitadas", kpi: "30+ pessoas", prazo: "24 meses", icon: LucideAward, to: 30, suffix: "+ pessoas", desc: "Formação em artes, culinária e ofícios." },
+    { meta: "Empregos Criados", kpi: "25 postos", prazo: "24 meses", icon: LucideCheckCircle2, to: 25, suffix: " postos", desc: "Postos de trabalho diretos no restauro." }
 ]
 
+const kpiTorre = [
+    { meta: "Unidades Turismo Rural", kpi: "6 unidades", prazo: "30 meses", icon: LucideFileText, to: 6, suffix: " unidades", desc: "Unidades para turismo rural e experiências patrimoniais." },
+    { meta: "Financiamento Captado", kpi: "€1.200.000", prazo: "30 meses", icon: LucideEuro, to: 1200000, prefix: "€", desc: "Captação via PRR/Portugal 2030 e fundos europeus." },
+    { meta: "Pessoas Capacitadas", kpi: "30 pessoas", prazo: "30 meses", icon: LucideAward, to: 30, suffix: " pessoas", desc: "Artesãos e corticeiros formados." },
+    { meta: "Área Montado", kpi: "600-800 ha", prazo: "30 meses", icon: LucideCheckCircle2, to: null, suffix: "", desc: "Hectares de montado sob gestão sustentável." }
+]
+
+
+type ProjectChoice = "quinta" | "torre" | null
 
 export default function Assessoria() {
     const { scrollYProgress } = useScroll()
@@ -399,11 +413,83 @@ export default function Assessoria() {
         restDelta: 0.001
     })
 
+    const [selectedProject, setSelectedProject] = useState<ProjectChoice>(null)
     const [activeSection, setActiveSection] = useState("programa")
+    const [showPasswordModal, setShowPasswordModal] = useState(false)
+    const [pendingProject, setPendingProject] = useState<ProjectChoice>(null)
+    const [passwordInput, setPasswordInput] = useState("")
+    const [passwordError, setPasswordError] = useState("")
+    const [isShaking, setIsShaking] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+
+    const PROJECT_PASSWORD = "Bureau222"
+
+    const handleProjectClick = (project: "quinta" | "torre") => {
+        setPendingProject(project)
+        setShowPasswordModal(true)
+        setPasswordInput("")
+        setPasswordError("")
+        setShowPassword(false)
+    }
+
+    const handlePasswordSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (passwordInput === PROJECT_PASSWORD) {
+            if (pendingProject) setSelectedProject(pendingProject)
+            setShowPasswordModal(false)
+            setPendingProject(null)
+            setPasswordInput("")
+            setPasswordError("")
+            setShowPassword(false)
+        } else {
+            setPasswordError("Senha incorreta")
+            setIsShaking(true)
+            setTimeout(() => setIsShaking(false), 500)
+            setPasswordInput("")
+        }
+    }
+
+    const handleClosePasswordModal = () => {
+        setShowPasswordModal(false)
+        setPendingProject(null)
+        setPasswordInput("")
+        setPasswordError("")
+        setShowPassword(false)
+    }
+
+    const sectionsQuinta = [
+        { id: "programa", label: "O Programa" },
+        { id: "paraquem", label: "Para Quem É" },
+        { id: "modelo", label: "Modelo Institucional" },
+        { id: "processo", label: "Processo Operacional" },
+        { id: "projeto", label: "Quinta Salreu" },
+        { id: "oficios", label: "Artes & Ofícios" },
+        { id: "funcionamento", label: "Funcionamento" },
+        { id: "governanca", label: "Governança" },
+        { id: "proposta", label: "Proposta & KPIs" },
+        { id: "financiamento", label: "Financiamento" },
+        { id: "passos", label: "Próximos Passos" },
+    ]
+
+    const sectionsTorre = [
+        { id: "programa", label: "O Programa" },
+        { id: "paraquem", label: "Para Quem É" },
+        { id: "modelo", label: "Modelo Institucional" },
+        { id: "processo", label: "Processo Operacional" },
+        { id: "projeto", label: "Torre Carvalhal" },
+        { id: "oficios", label: "Artes & Ofícios" },
+        { id: "funcionamento", label: "Funcionamento" },
+        { id: "governanca", label: "Governança" },
+        { id: "proposta", label: "Proposta & KPIs" },
+        { id: "financiamento", label: "Financiamento" },
+        { id: "passos", label: "Próximos Passos" },
+    ]
+
+    const sections = selectedProject === "quinta" ? sectionsQuinta : sectionsTorre
 
     useEffect(() => {
         const handleScroll = () => {
-            const offset = 120 // linha de ativação: secção é "ativa" quando o topo está acima desta linha (px do viewport)
+            const offset = 120
             let current = sections[0].id
             for (let i = 0; i < sections.length; i++) {
                 const el = document.getElementById(sections[i].id)
@@ -414,42 +500,298 @@ export default function Assessoria() {
             }
             setActiveSection(prev => prev !== current ? current : prev)
         }
-        const tid = setTimeout(handleScroll, 100) // aguarda DOM
+        const tid = setTimeout(handleScroll, 100)
         window.addEventListener("scroll", handleScroll, { passive: true })
-        window.addEventListener("hashchange", handleScroll) // atualiza ao clicar no índice
+        window.addEventListener("hashchange", handleScroll)
         return () => {
             clearTimeout(tid)
             window.removeEventListener("scroll", handleScroll)
             window.removeEventListener("hashchange", handleScroll)
         }
-    }, [])
+    }, [selectedProject])
 
-    const sections = [
-        { id: "programa", label: "O Programa" },
-        { id: "paraquem", label: "Para Quem É" },
-        { id: "modelo", label: "Modelo Institucional" },
-        { id: "processo", label: "Processo Operacional" },
-        { id: "quinta", label: "Quinta Salreu" },
-        { id: "torre", label: "Torre Carvalhal" },
-        { id: "oficios", label: "Artes & Ofícios" },
-        { id: "funcionamento", label: "Funcionamento" },
-        { id: "governanca", label: "Governança" },
-        { id: "proposta", label: "Proposta & KPIs" },
-        { id: "financiamento", label: "Financiamento" },
-        { id: "passos", label: "Próximos Passos" },
-    ]
+    // Scroll para o topo ao trocar de tela (escolher projeto ou voltar à seleção)
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [selectedProject])
+
+    // Tela de seleção de projeto
+    if (selectedProject === null) {
+        return (
+            <PasswordGate password="#333" disabled>
+                <div className="flex flex-col w-full min-h-screen bg-[#f8f6f0] dark:bg-zinc-950 transition-colors duration-500 relative font-sans text-heritage-navy dark:text-white pt-24 pb-12">
+                    <Grain opacity={0.09} />
+                    
+                    <section className="relative flex flex-col px-4 sm:px-8 md:px-12 py-12 flex-1">
+                        <div className="max-w-[1400px] mx-auto w-full mb-16 pb-12">
+                            <FadeIn delay={0.1}>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-2 h-2 rounded-full bg-heritage-terracotta"></div>
+                                    <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-heritage-navy/70 dark:text-white/70">
+                                        Caderno Especial // Projetos de Assessoria
+                                    </span>
+                                </div>
+                            </FadeIn>
+                            <div className="grid lg:grid-cols-12 gap-8 items-end">
+                                <div className="lg:col-span-8">
+                                    <FadeIn delay={0.2}>
+                                        <h1 className="font-serif text-[4rem] sm:text-[5rem] md:text-[6rem] leading-[0.9] text-heritage-navy dark:text-white tracking-tighter">
+                                            Edição de<br/>
+                                            <span className="italic font-normal text-heritage-terracotta">Projetos Atuais</span>.
+                                        </h1>
+                                    </FadeIn>
+                                </div>
+                                <div className="lg:col-span-4 lg:border-l border-heritage-navy/20 dark:border-white/20 lg:pl-8">
+                                    <FadeIn delay={0.3} direction="left">
+                                        <p className="text-xl font-serif italic text-heritage-navy/70 dark:text-white/70 leading-relaxed">
+                                            Selecione o projeto sobre o qual deseja consultar a proposta detalhada de intervenção, orçamento e modelo operacional.
+                                        </p>
+                                    </FadeIn>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="max-w-[1400px] mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-24 relative">
+                            {/* Divider line between columns on desktop */}
+                            <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-heritage-navy/10 dark:bg-white/10 -translate-x-1/2"></div>
+                            
+                            <FadeIn delay={0.4} direction="up" className="relative group">
+                                <button
+                                    onClick={() => handleProjectClick("quinta")}
+                                    className="w-full text-left flex flex-col items-start focus:outline-none"
+                                >
+                                    <div className="flex items-center justify-between w-full mb-6 border-t border-heritage-navy/20 dark:border-white/20 pt-4">
+                                        <h2 className="font-serif text-3xl md:text-4xl text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors leading-[0.9]">
+                                            Quinta do Visconde de Salreu
+                                        </h2>
+                                        <span className="font-serif text-3xl font-medium text-heritage-terracotta/50">I</span>
+                                    </div>
+                                    
+                                    <div className="relative w-full aspect-[16/10] bg-[#f0eee4] dark:bg-zinc-800 mb-8 overflow-hidden">
+                                        <img
+                                            src="/images/quinta-etching.jpg"
+                                            alt="Quinta do Visconde de Salreu"
+                                            className="w-full h-full object-cover saturate-0 mix-blend-multiply dark:mix-blend-luminosity opacity-80 group-hover:saturate-100 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+                                        />
+                                        <div className="absolute inset-0 border border-heritage-navy/10 dark:border-white/10 pointer-events-none"></div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-4 w-full mb-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10 relative">
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Localização</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">Estarreja</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Foco</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">Artes & Culinária</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Duração</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">24 meses</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Configuração</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">8 unidades</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-base text-heritage-navy/70 dark:text-white/70 leading-relaxed mb-8 flex-1">
+                                        Restauro completo do património de um dos maiores exportadores de azeite de Portugal, conjugado com a criação de uma escola de artes tradicionais e unidades de turismo ecológico integradas na paisagem única da Ria de Aveiro.
+                                    </p>
+
+                                    <div className="flex items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-widest text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors py-4 border-y border-heritage-navy/10 dark:border-white/10 w-full relative">
+                                        Ler Documento Completo
+                                        <LucideArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-2 transition-transform duration-300" />
+                                    </div>
+                                </button>
+                            </FadeIn>
+
+                            <FadeIn delay={0.5} direction="up" className="relative group">
+                                <button
+                                    onClick={() => handleProjectClick("torre")}
+                                    className="w-full text-left flex flex-col items-start focus:outline-none"
+                                >
+                                    <div className="flex items-center justify-between w-full mb-6 border-t border-heritage-navy/20 dark:border-white/20 pt-4">
+                                        <h2 className="font-serif text-3xl md:text-4xl text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors leading-[0.9]">
+                                            Torre do Carvalhal
+                                        </h2>
+                                        <span className="font-serif text-3xl font-medium text-heritage-terracotta/50">II</span>
+                                    </div>
+                                    
+                                    <div className="relative w-full aspect-[16/10] bg-[#f0eee4] dark:bg-zinc-800 mb-8 overflow-hidden">
+                                        <img
+                                            src="/images/torre-etching.jpg"
+                                            alt="Torre do Carvalhal"
+                                            className="w-full h-full object-cover saturate-0 mix-blend-multiply dark:mix-blend-luminosity opacity-80 group-hover:saturate-100 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+                                        />
+                                        <div className="absolute inset-0 border border-heritage-navy/10 dark:border-white/10 pointer-events-none"></div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-4 w-full mb-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10 relative">
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Localização</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">Alentejo</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Foco</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">Cortiça & Montado</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Duração</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">30 meses</p>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-1 font-semibold">Extensão</span>
+                                            <p className="font-serif text-lg text-heritage-navy dark:text-white">600-800 ha</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-base text-heritage-navy/70 dark:text-white/70 leading-relaxed mb-8 flex-1">
+                                        Consolidação de uma torre manuelina do século XVI e gestão sustentável de vasto montado, orientada para a preservação ancestral da arte dos corticeiros e estabelecimento de unidades de ecoturismo no Alentejo profundo.
+                                    </p>
+
+                                    <div className="flex items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-widest text-heritage-navy dark:text-white group-hover:text-heritage-terracotta transition-colors py-4 border-y border-heritage-navy/10 dark:border-white/10 w-full relative">
+                                        Ler Documento Completo
+                                        <LucideArrowRight className="w-4 h-4 ml-auto group-hover:translate-x-2 transition-transform duration-300" />
+                                    </div>
+                                </button>
+                            </FadeIn>
+
+                        </div>
+                    </section>
+
+                    {/* Modal de Acesso Restrito — design jornal */}
+                    <Dialog open={showPasswordModal} onOpenChange={(open) => !open && handleClosePasswordModal()}>
+                        <DialogContent className="max-w-md rounded-none border-2 border-heritage-navy/20 dark:border-white/20 bg-[#f8f6f0] dark:bg-zinc-950 p-0 overflow-hidden font-sans">
+                            <div className="relative">
+                                <Grain opacity={0.06} />
+                                <div className="relative p-8 md:p-12">
+                                    <DialogHeader>
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="w-2 h-2 rounded-full bg-heritage-terracotta"></div>
+                                            <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-heritage-navy/70 dark:text-white/70">
+                                                Acesso Restrito
+                                            </span>
+                                        </div>
+                                        <DialogTitle className="font-serif text-3xl md:text-4xl text-heritage-navy dark:text-white text-left tracking-tight">
+                                            Documento Confidencial
+                                        </DialogTitle>
+                                        <p className="text-heritage-navy/60 dark:text-white/60 font-medium mt-3 text-left">
+                                            A proposta detalhada está reservada a parceiros e investidores. Insira a senha de acesso para continuar.
+                                        </p>
+                                    </DialogHeader>
+
+                                    <form onSubmit={handlePasswordSubmit} className="mt-8 space-y-6">
+                                        <motion.div
+                                            animate={isShaking ? { x: [-8, 8, -8, 8, 0] } : {}}
+                                            transition={{ duration: 0.4 }}
+                                            className="relative"
+                                        >
+                                            <LucideLock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-heritage-navy/40 dark:text-white/40" />
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                value={passwordInput}
+                                                onChange={(e) => setPasswordInput(e.target.value)}
+                                                placeholder="Senha de acesso"
+                                                className="h-14 pl-12 pr-12 rounded-none border-2 border-heritage-navy/20 dark:border-white/20 bg-white/50 dark:bg-zinc-900/50 font-sans text-heritage-navy dark:text-white focus-visible:ring-heritage-terracotta focus-visible:border-heritage-terracotta"
+                                                autoFocus
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-heritage-navy/40 dark:text-white/40 hover:text-heritage-terracotta transition-colors"
+                                                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                                            >
+                                                {showPassword ? <LucideEyeOff className="w-5 h-5" /> : <LucideEye className="w-5 h-5" />}
+                                            </button>
+                                        </motion.div>
+
+                                        <AnimatePresence>
+                                            {passwordError && (
+                                                <motion.p
+                                                    initial={{ opacity: 0, y: -4 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0 }}
+                                                    className="text-red-600 dark:text-red-400 text-sm font-bold"
+                                                >
+                                                    {passwordError}
+                                                </motion.p>
+                                            )}
+                                        </AnimatePresence>
+
+                                        <Button
+                                            type="submit"
+                                            className="w-full h-14 rounded-none bg-heritage-terracotta hover:bg-heritage-terracotta/90 text-white font-bold text-sm uppercase tracking-[0.2em] transition-colors"
+                                        >
+                                            Aceder ao Documento <LucideArrowRight className="ml-2 w-4 h-4" />
+                                        </Button>
+                                    </form>
+
+                                    <p className="mt-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10 text-[9px] uppercase tracking-[0.2em] text-heritage-navy/40 dark:text-white/40 font-bold">
+                                        Bureau Social // Instituto Português de Negócios Sociais
+                                    </p>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            </PasswordGate>
+        )
+    }
+
+    const projectDetails = selectedProject === "quinta" ? quintaSalreuDetails : torreCarvalhalDetails
+    const governancaDetails = selectedProject === "quinta" ? governancaQuinta : governancaTorre
+    const kpiDetails = selectedProject === "quinta" ? kpiQuinta : kpiTorre
+    const propostaAtual = selectedProject === "quinta" ? propostas[0] : propostas[1]
 
     return (
         <PasswordGate password="#333" disabled>
             <div className="flex flex-col w-full bg-[#f8f6f0] dark:bg-zinc-950 transition-colors duration-500 relative font-sans text-heritage-navy dark:text-white">
                 <Grain opacity={0.09} />
                 
-                {/* Progress bar editorial style */}
                 <motion.div className="fixed top-0 left-0 right-0 h-1 bg-heritage-terracotta origin-left z-50 mix-blend-multiply" style={{ scaleX }} />
 
-                {/* Editorial Hero Section (Masthead Style) */}
+                {/* Editorial Hero Section */}
                 <section className="relative min-h-[90svh] flex flex-col justify-end px-4 sm:px-8 md:px-12 pb-12 pt-32 overflow-hidden border-b border-heritage-navy/10 dark:border-white/10">
-                    <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end relative z-10">
+                    <button
+                        onClick={() => setSelectedProject(null)}
+                        className="lg:hidden absolute top-24 right-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/60 dark:text-white/60 hover:text-heritage-terracotta z-20 transition-colors"
+                    >
+                        <LucideArrowLeft className="w-3.5 h-3.5" />
+                        Trocar projeto
+                    </button>
+                    <div className="max-w-[1400px] mx-auto w-full relative z-10">
+                        {/* Breadcrumb Navigation */}
+                        <nav aria-label="Breadcrumb" className="mb-8">
+                            <ol className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                <li>
+                                    <Link
+                                        to="/"
+                                        className="text-heritage-navy/60 dark:text-white/60 hover:text-heritage-terracotta transition-colors"
+                                    >
+                                        Início
+                                    </Link>
+                                </li>
+                                <li className="flex items-center gap-2 text-heritage-navy/40 dark:text-white/40" aria-hidden="true">
+                                    <LucideChevronRight className="w-3.5 h-3.5" />
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => setSelectedProject(null)}
+                                        className="text-heritage-navy/60 dark:text-white/60 hover:text-heritage-terracotta transition-colors"
+                                    >
+                                        ASSESSORIA
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2 text-heritage-navy/40 dark:text-white/40" aria-hidden="true">
+                                    <LucideChevronRight className="w-3.5 h-3.5" />
+                                </li>
+                                <li className="text-heritage-terracotta" aria-current="page">
+                                    {selectedProject === "quinta" ? "Quinta do Visconde de Salreu" : "Torre do Carvalhal"}
+                                </li>
+                            </ol>
+                        </nav>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
                         {/* Main Headline */}
                         <div className="lg:col-span-8 space-y-8">
                             <FadeIn delay={0.1}>
@@ -472,10 +814,10 @@ export default function Assessoria() {
                         <div className="lg:col-span-4 flex flex-col justify-between h-full border-t border-heritage-navy/20 dark:border-white/20 pt-6 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-12">
                             <FadeIn delay={0.5} direction="left">
                                 <p className="text-xl sm:text-2xl text-heritage-navy/80 dark:text-white/80 leading-snug font-medium mb-6">
-                                    Serviço de assessoria técnica para projetos de património histórico — restauro, financiamento, formação em ofícios tradicionais, governança e coordenação de parceiros.
+                                    Serviço de assessoria técnica do Bureau Social para projetos de património histórico — restauro, financiamento, formação em ofícios tradicionais, governança e coordenação de parceiros.
                                 </p>
                                 <p className="text-lg font-serif italic text-heritage-navy/70 dark:text-white/70 leading-snug border-l-2 border-heritage-terracotta/50 pl-4 mb-12">
-                                    Contratem-nos para vos ajudar a captar financiamento, coordenar o projeto e montar a formação.
+                                    Transformamos património histórico em projetos viáveis, financiáveis e operacionais, sem descaracterizar o legado do lugar.
                                 </p>
                             </FadeIn>
 
@@ -484,16 +826,23 @@ export default function Assessoria() {
                                     <span className="block text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 mb-3 font-semibold">Resumo Executivo</span>
                                     <div className="grid grid-cols-2 gap-4 pb-3">
                                         <div>
-                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">€4.970.000</p>
-                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Programa Integrado</p>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">
+                                                {selectedProject === "quinta" ? "€1.500.000" : "€1.200.000"}
+                                            </p>
+                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">
+                                                {selectedProject === "quinta" ? "Quinta Salreu" : "Torre Carvalhal"}
+                                            </p>
                                         </div>
                                         <div>
-                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">30-36 Meses</p>
-                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Duração Integrada</p>
+                                            <p className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">
+                                                {selectedProject === "quinta" ? "24" : "30"} Meses
+                                            </p>
+                                            <p className="text-xs uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-semibold mb-1">Duração</p>
                                         </div>
                                     </div>
                                 </div>
                             </FadeIn>
+                        </div>
                         </div>
                     </div>
                 </section>
@@ -503,6 +852,13 @@ export default function Assessoria() {
                     {/* Left Sidebar Table of Contents (Sticky) */}
                     <div className="hidden lg:block lg:col-span-3 border-r border-heritage-navy/10 dark:border-white/10 p-12 relative bg-[#f8f6f0]/80 dark:bg-zinc-950/80 backdrop-blur-md">
                         <div className="sticky top-32 space-y-4">
+                            <button
+                                onClick={() => setSelectedProject(null)}
+                                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-navy/60 dark:text-white/60 hover:text-heritage-terracotta mb-6 transition-colors"
+                            >
+                                <LucideArrowLeft className="w-3.5 h-3.5" />
+                                Trocar projeto
+                            </button>
                             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-heritage-terracotta mb-6">Índice da Edição</h4>
                             {sections.map((item) => (
                                 <a
@@ -583,7 +939,7 @@ export default function Assessoria() {
                                     <div className="space-y-4 sm:col-span-2 lg:col-span-1">
                                         <LucideLeaf className="w-8 h-8 text-heritage-terracotta" />
                                         <h3 className="font-serif text-2xl font-medium text-heritage-navy dark:text-white">Turismo Imersivo</h3>
-                                        <p className="text-heritage-navy/60 dark:text-white/60">14 unidades Airbnb, escola de culinária e concertos nos jardins.</p>
+                                        <p className="text-heritage-navy/60 dark:text-white/60">Alojamento ecológico, escola de culinária e experiências na natureza.</p>
                                     </div>
                                 </div>
                             </FadeIn>
@@ -691,13 +1047,17 @@ export default function Assessoria() {
                             </FadeIn>
                         </section>
 
-                        {/* Section: Quinta Salreu */}
-                        <section id="quinta" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
+                        {/* Section: Projeto (Quinta ou Torre) */}
+                        <section id="projeto" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
                             <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
                                 <div className="md:col-span-4 border-t-2 border-heritage-navy dark:border-white pt-4">
                                     <FadeIn triggerOnView>
-                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Projeto Principal</span>
-                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">Quinta do Visconde de Salreu</h2>
+                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">
+                                            {selectedProject === "quinta" ? "Projeto Principal" : "Projeto Alentejo"}
+                                        </span>
+                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">
+                                            {selectedProject === "quinta" ? "Quinta do Visconde de Salreu" : projectDetails.historia.titulo}
+                                        </h2>
                                     </FadeIn>
                                 </div>
                                 <div className="md:col-span-8 flex flex-col gap-10">
@@ -706,8 +1066,8 @@ export default function Assessoria() {
                                             <div className="relative w-full aspect-[16/9] bg-[#f0eee4] dark:bg-zinc-800 border-x border-t border-heritage-navy/20 dark:border-white/20 p-2 sm:p-4">
                                                 <div className="w-full h-full relative overflow-hidden ring-1 ring-heritage-navy/10 dark:ring-white/10 shadow-inner">
                                                     <img 
-                                                        src="/images/quinta-etching.jpg" 
-                                                        alt="Ilustração em azulejo da Quinta de Salreu" 
+                                                        src={selectedProject === "quinta" ? "/images/quinta-etching.jpg" : "/images/torre-etching.jpg"} 
+                                                        alt={selectedProject === "quinta" ? "Ilustração em azulejo da Quinta de Salreu" : "Ilustração em azulejo da Torre do Carvalhal"} 
                                                         className="w-full h-full object-cover saturate-[0.85] contrast-[1.05] hover:saturate-100 transition-all duration-700 ease-in-out cursor-pointer"
                                                     />
                                                 </div>
@@ -715,7 +1075,9 @@ export default function Assessoria() {
                                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-heritage-navy/20 dark:border-white/20 pb-3 pt-3">
                                                 <p className="text-xs font-serif text-heritage-navy/70 dark:text-white/70 max-w-lg">
                                                     <span className="font-bold mr-2 text-heritage-navy dark:text-white">Fig 1.</span>
-                                                    Gravura de azulejaria tradicional ilustrando a propriedade histórica, o palacete de torre e os jardins envolventes.
+                                                    {selectedProject === "quinta" 
+                                                        ? "Gravura de azulejaria tradicional ilustrando a propriedade histórica, o palacete de torre e os jardins envolventes."
+                                                        : "A emblemática torre quinhentista manuelina, impondo-se na ruralidade da vasta paisagem de montado."}
                                                 </p>
                                                 <span className="text-[9px] uppercase tracking-[0.15em] font-bold text-heritage-navy/40 dark:text-white/40 mt-2 sm:mt-0 whitespace-nowrap">
                                                     Acervo // Bureau Social
@@ -723,7 +1085,7 @@ export default function Assessoria() {
                                             </div>
                                         </div>
                                         <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
-                                            {quintaSalreuDetails.historia.texto}
+                                            {projectDetails.historia.texto}
                                         </p>
                                     </FadeIn>
                                 </div>
@@ -732,24 +1094,30 @@ export default function Assessoria() {
                             <FadeIn triggerOnView direction="up">
                                 <div className="grid grid-cols-2 gap-4 pb-8 mb-8 border-b border-heritage-navy/10 dark:border-white/10">
                                     <div>
-                                        <p className="font-serif text-3xl font-medium text-heritage-terracotta">€2.070.000</p>
+                                        <p className="font-serif text-3xl font-medium text-heritage-terracotta">
+                                            {selectedProject === "quinta" ? "€1.500.000" : "€1.200.000"}
+                                        </p>
                                         <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Investimento</p>
                                     </div>
                                     <div>
-                                        <p className="font-serif text-3xl font-medium text-heritage-navy dark:text-white">30 meses</p>
+                                        <p className="font-serif text-3xl font-medium text-heritage-navy dark:text-white">
+                                            {selectedProject === "quinta" ? "24" : "30"} meses
+                                        </p>
                                         <p className="text-[10px] uppercase tracking-widest text-heritage-navy/50 dark:text-white/50 font-bold mb-1">Duração</p>
                                     </div>
                                 </div>
                             </FadeIn>
 
                             <FadeIn triggerOnView direction="up">
-                                <h3 className="font-serif text-2xl mb-6">Património a Preservar</h3>
+                                <h3 className="font-serif text-2xl mb-6">
+                                    {selectedProject === "quinta" ? "Património a Preservar" : "Estado de Conservação"}
+                                </h3>
                                 <div className="grid sm:grid-cols-2 gap-6 mb-8">
-                                    {quintaSalreuDetails.patrimonio.elementos.map((elem, i) => (
-                                        <div key={i} className="p-6 bg-[#f8f6f0] dark:bg-zinc-950 border border-heritage-navy/10 dark:border-white/10">
+                                    {projectDetails.patrimonio.elementos.map((elem, i) => (
+                                        <div key={i} className={`p-6 border ${selectedProject === "quinta" ? "bg-[#f8f6f0] dark:bg-zinc-950 border-heritage-navy/10 dark:border-white/10" : "bg-heritage-terracotta/5 dark:bg-heritage-terracotta/10 border-heritage-terracotta/10"}`}>
                                             <div className="flex justify-between items-start mb-4">
                                                 <h4 className="font-bold text-sm tracking-wide">{elem.nome}</h4>
-                                                <Badge variant="outline" className={`text-[10px] rounded-none ${elem.estado === "Urgente" ? "border-red-500 text-red-500" : "border-heritage-navy/30 dark:border-white/30"}`}>
+                                                <Badge variant="outline" className={`text-[10px] rounded-none ${elem.estado === "Urgente" || elem.estado === "Ruína Avançada" || elem.estado === "Ruína" ? "border-red-500 text-red-500" : selectedProject === "torre" ? "border-heritage-terracotta text-heritage-terracotta" : "border-heritage-navy/30 dark:border-white/30"}`}>
                                                     {elem.estado}
                                                 </Badge>
                                             </div>
@@ -760,83 +1128,11 @@ export default function Assessoria() {
                             </FadeIn>
 
                             <FadeIn triggerOnView direction="up">
-                                <h3 className="font-serif text-2xl mb-6">Cronograma & Orçamento</h3>
+                                <h3 className="font-serif text-2xl mb-6">
+                                    {selectedProject === "quinta" ? "Cronograma & Orçamento" : "Cronograma de Intervenção"}
+                                </h3>
                                 <div className="border border-heritage-navy/10 dark:border-white/10 divide-y divide-heritage-navy/10 dark:divide-white/10">
-                                    {quintaSalreuDetails.fases.map((fase, i) => (
-                                        <div key={i} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                            <div className="flex-1">
-                                                <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-terracotta mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
-                                                <h4 className="font-bold text-sm mb-2">{fase.nome}</h4>
-                                                <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed max-w-lg">{fase.descricao}</p>
-                                            </div>
-                                            <div className="text-right whitespace-nowrap">
-                                                <p className="font-serif text-2xl text-heritage-navy dark:text-white">{fase.orcamento}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </FadeIn>
-                        </section>
-
-                        {/* Section: Torre Carvalhal */}
-                        <section id="torre" className="p-8 md:p-16 lg:p-24 border-b border-heritage-navy/10 dark:border-white/10 bg-[#f5f3ec] dark:bg-zinc-900 relative">
-                            <div className="grid md:grid-cols-12 gap-8 lg:gap-16 mb-16">
-                                <div className="md:col-span-4 border-t-2 border-heritage-terracotta pt-4">
-                                    <FadeIn triggerOnView>
-                                        <span className="text-heritage-navy/60 dark:text-white/60 font-semibold uppercase tracking-[0.2em] text-[10px] block mb-2">Projeto Alentejo</span>
-                                        <h2 className="font-serif text-4xl leading-tight text-heritage-navy dark:text-white">{torreCarvalhalDetails.historia.titulo}</h2>
-                                    </FadeIn>
-                                </div>
-                                <div className="md:col-span-8 flex flex-col gap-10">
-                                    <FadeIn triggerOnView direction="left">
-                                        <div className="mb-8 w-full">
-                                            <div className="relative w-full aspect-[16/9] bg-[#f0eee4] dark:bg-zinc-800 border-x border-t border-heritage-navy/20 dark:border-white/20 p-2 sm:p-4">
-                                                <div className="w-full h-full relative overflow-hidden ring-1 ring-heritage-navy/10 dark:ring-white/10 shadow-inner">
-                                                    <img 
-                                                        src="/images/torre-etching.jpg" 
-                                                        alt="Ilustração em azulejo da Torre do Carvalhal" 
-                                                        className="w-full h-full object-cover saturate-[0.85] contrast-[1.05] hover:saturate-100 transition-all duration-700 ease-in-out cursor-pointer"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-heritage-navy/20 dark:border-white/20 pb-3 pt-3">
-                                                <p className="text-xs font-serif text-heritage-navy/70 dark:text-white/70 max-w-lg">
-                                                    <span className="font-bold mr-2 text-heritage-terracotta">Fig 2.</span>
-                                                    A emblemática torre quinhentista manuelina, impondo-se na ruralidade da vasta paisagem de montado.
-                                                </p>
-                                                <span className="text-[9px] uppercase tracking-[0.15em] font-bold text-heritage-navy/40 dark:text-white/40 mt-2 sm:mt-0 whitespace-nowrap">
-                                                    Acervo // Bureau Social
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className="text-xl sm:text-2xl text-heritage-navy/70 dark:text-white/70 leading-relaxed font-medium">
-                                            {torreCarvalhalDetails.historia.texto}
-                                        </p>
-                                    </FadeIn>
-                                </div>
-                            </div>
-
-                            <FadeIn triggerOnView direction="up">
-                                <h3 className="font-serif text-2xl mb-6">Estado de Conservação</h3>
-                                <div className="grid sm:grid-cols-2 gap-6 mb-8">
-                                    {torreCarvalhalDetails.patrimonio.elementos.map((elem, i) => (
-                                        <div key={i} className="p-6 bg-heritage-terracotta/5 dark:bg-heritage-terracotta/10 border border-heritage-terracotta/10">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <h4 className="font-bold text-sm tracking-wide">{elem.nome}</h4>
-                                                <Badge variant="outline" className={`text-[10px] rounded-none border-heritage-terracotta text-heritage-terracotta`}>
-                                                    {elem.estado}
-                                                </Badge>
-                                            </div>
-                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60 leading-relaxed">{elem.descricao}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </FadeIn>
-
-                            <FadeIn triggerOnView direction="up">
-                                <h3 className="font-serif text-2xl mb-6">Cronograma de Intervenção</h3>
-                                <div className="border border-heritage-navy/10 dark:border-white/10 divide-y divide-heritage-navy/10 dark:divide-white/10">
-                                    {torreCarvalhalDetails.fases.map((fase, i) => (
+                                    {projectDetails.fases.map((fase, i) => (
                                         <div key={i} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                             <div className="flex-1">
                                                 <span className="text-[10px] uppercase tracking-widest font-bold text-heritage-terracotta mb-1 block">Fase {fase.fase} // {fase.periodo}</span>
@@ -1070,56 +1366,53 @@ export default function Assessoria() {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
                                     {kpiDetails.map((kpi, i) => {
                                         const Icon = kpi.icon
+                                        const hasCounter = kpi.to != null
                                         return (
                                             <div key={i} className="p-6 border border-heritage-navy/10 dark:border-white/10 bg-white dark:bg-zinc-950">
                                                 <Icon className="w-6 h-6 text-heritage-terracotta mb-4" />
                                                 <div className="font-serif text-3xl md:text-4xl font-medium text-heritage-navy dark:text-white mb-2">
-                                                    {i === 0 && <AnimatedCounter to={14} suffix=" unidades" duration={1.5} />}
-                                                    {i === 1 && <AnimatedCounter to={1800000} prefix="€" format={(n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} duration={2} />}
-                                                    {i === 2 && <AnimatedCounter to={30} suffix="+ pessoas" duration={1.5} />}
-                                                    {i === 3 && <AnimatedCounter to={25} suffix=" postos" duration={1.5} />}
+                                                    {hasCounter ? (
+                                                        kpi.prefix ? (
+                                                            <AnimatedCounter to={kpi.to!} prefix={kpi.prefix} format={(n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} duration={2} />
+                                                        ) : (
+                                                            <AnimatedCounter to={kpi.to!} suffix={kpi.suffix || ""} duration={1.5} />
+                                                        )
+                                                    ) : (
+                                                        kpi.kpi
+                                                    )}
                                                 </div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-heritage-navy/50 dark:text-white/50">{kpi.meta}</p>
-                                            <p className="text-xs text-heritage-navy/40 dark:text-white/40 mt-1">{kpi.prazo}</p>
-                                        </div>
-                                    );
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-heritage-navy/50 dark:text-white/50">{kpi.meta}</p>
+                                                <p className="text-xs text-heritage-navy/40 dark:text-white/40 mt-1">{kpi.prazo}</p>
+                                            </div>
+                                        );
                                     })}
                                 </div>
                             </FadeIn>
 
                             <FadeIn triggerOnView direction="up">
-                                <div className="grid md:grid-cols-3 gap-6 mb-16">
-                                    {propostas.map((prop, i) => (
-                                        <div key={i} className={`p-8 border flex flex-col justify-between ${prop.destaque ? 'border-heritage-terracotta bg-[#f5f3ec] dark:bg-zinc-900 shadow-xl relative' : 'border-heritage-navy/10 dark:border-white/10'}`}>
-                                            {prop.destaque && (
-                                                <div className="absolute top-0 right-0 bg-heritage-terracotta text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 -mt-3 -mr-3 transform rotate-3">
-                                                    Recomendado
-                                                </div>
-                                            )}
-                                            <div>
-                                                <div className="text-sm font-bold uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 mb-4">Opção {prop.opcao}</div>
-                                                <h3 className="font-serif text-2xl mb-2">{prop.projeto}</h3>
-                                                <p className="text-xs text-heritage-navy/60 dark:text-white/60 min-h-[60px]">{prop.descricao}</p>
+                                <div className="mb-16">
+                                    <div className="p-8 border-2 border-heritage-terracotta bg-[#f5f3ec] dark:bg-zinc-900 shadow-xl relative max-w-xl">
+                                        <div>
+                                            <div className="text-sm font-bold uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 mb-4">Opção {propostaAtual.opcao}</div>
+                                            <h3 className="font-serif text-2xl mb-2">{propostaAtual.projeto}</h3>
+                                            <p className="text-xs text-heritage-navy/60 dark:text-white/60 min-h-[60px]">{propostaAtual.descricao}</p>
+                                        </div>
+                                        
+                                        <div className="mt-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10">
+                                            <div className="mb-4">
+                                                <p className="text-[10px] uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 font-bold">Honorários Base</p>
+                                                <p className="font-serif text-3xl text-heritage-terracotta">{propostaAtual.honorarios}</p>
                                             </div>
-                                            
-                                            <div className="mt-8 pt-6 border-t border-heritage-navy/10 dark:border-white/10">
-                                                <div className="mb-4">
-                                                    <p className="text-[10px] uppercase tracking-widest text-heritage-navy/40 dark:text-white/40 font-bold">Honorários Base</p>
-                                                    <p className={`font-serif text-3xl ${prop.destaque ? 'text-heritage-terracotta' : ''}`}>{prop.honorarios}</p>
-                                                </div>
-                                                <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2">
-                                                    <span className="text-heritage-navy/60 dark:text-white/60">Taxa de Gestão</span>
-                                                    <span className="font-bold">{prop.taxaGestao}</span>
-                                                </div>
-                                                {prop.economia && (
-                                                    <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2 mt-2">
-                                                        <span className="text-heritage-navy/60 dark:text-white/60">Economia</span>
-                                                        <span className="font-bold text-green-600 dark:text-green-400">{prop.economia}</span>
-                                                    </div>
-                                                )}
+                                            <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2">
+                                                <span className="text-heritage-navy/60 dark:text-white/60">Investimento</span>
+                                                <span className="font-bold">{propostaAtual.investimento}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm border-t border-heritage-navy/5 dark:border-white/5 pt-2">
+                                                <span className="text-heritage-navy/60 dark:text-white/60">Taxa de Gestão</span>
+                                                <span className="font-bold">{propostaAtual.taxaGestao}</span>
                                             </div>
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
                             </FadeIn>
                         </section>
@@ -1183,10 +1476,10 @@ export default function Assessoria() {
 
                                     <FadeIn triggerOnView direction="up">
                                         <p className="text-base text-white/70 mb-6 leading-relaxed">
-                                            A Assessoria apresenta o Bureau Social como parceiro técnico de famílias proprietárias e entidades gestoras que precisam de ajuda para preservar património, captar financiamento e estruturar programas de formação e operação. Não é uma página para investidores externos — é para potenciais clientes de assessoria.
+                                            A Assessoria do Bureau Social é um serviço técnico e estratégico para famílias proprietárias e entidades gestoras que têm património histórico e precisam de ajuda para estruturar, financiar, coordenar e ativar o projeto.
                                         </p>
                                         <p className="text-xl sm:text-2xl font-serif text-white/90 mb-8 italic">
-                                            Converse connosco para avaliar como podemos ajudar o seu projeto de património.
+                                            Ajudamos quem tem património a montar o projeto certo, captar os recursos certos e coordenar a execução com visão de longo prazo.
                                         </p>
                                         <div className="mt-16 pt-8 border-t border-white/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                                             <div>
